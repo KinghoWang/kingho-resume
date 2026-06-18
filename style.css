@@ -146,7 +146,7 @@ body{
 
 /* Mobile */
 @media(max-width:640px){
-  .hero{flex-direction-column;text-align:center;padding:40px 20px 36px;gap:20px}
+  .hero{flex-direction:column;text-align:center;padding:40px 20px 36px;gap:20px}
   .contact-row{justify-content:center}
   .bento{grid-template-columns:1fr}
   .info-grid{grid-template-columns:1fr}
