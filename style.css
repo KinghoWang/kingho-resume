@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap');
+/* 字体：本地系统字体栈，零外部请求（去除 Google Fonts @import，加载更快、国内更稳）。
+   若访客本机装有 Playfair Display / Source Sans 3 仍会优先使用，否则即时回退系统字体。 */
 
 *{margin:0;padding:0;box-sizing:border-box}
 
@@ -12,8 +13,8 @@
   --border:#e0ddd8;
   --radius:6px;
   --shadow:0 2px 12px rgba(0,0,0,0.06);
-  --font-display:'Playfair Display',Georgia,serif;
-  --font-body:'Source Sans 3','Noto Sans SC',system-ui,sans-serif;
+  --font-display:'Playfair Display',Georgia,'Times New Roman','Songti SC','STSong','SimSun',serif;
+  --font-body:'Source Sans 3',system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif;
 }
 
 html{scroll-behavior:smooth}
