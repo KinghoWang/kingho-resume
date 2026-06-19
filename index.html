@@ -17,6 +17,9 @@
     .cta-btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:600;
       font-size:.92rem;padding:12px 26px;border-radius:var(--radius);transition:transform .2s,box-shadow .2s}
     .cta-btn:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(192,57,43,.25)}
+    /* 工程能力亮点卡：横跨整行、左侧强调边 */
+    .bento-card.span2{grid-column:1/-1;border-left:3px solid var(--accent);background:linear-gradient(180deg,#fff,#fdf6f4)}
+    .bento-card.span2 h3{color:var(--accent)}
   </style>
 </head>
 <body>
@@ -57,6 +60,10 @@
     <div class="bento-card">
       <h3>从0到1突破者</h3>
       <p>大健康行业消耗占比 <span class="num">5%</span> → <span class="num">90%+</span>，日均消耗 <span class="num">200-300万</span></p>
+    </div>
+    <div class="bento-card span2">
+      <h3>数据工程能力 · 自建工具</h3>
+      <p>独立开发广告数据取数工具与财务对账系统（<span class="num">Python / Flask + SQL</span>），指标口径 1:1 对齐、替代通用 BI 面板——广告运营中稀缺的工程化能力，让数据分析从"看数"走到"造工具"</p>
     </div>
   </div>
 </section>
@@ -212,12 +219,20 @@
   <h2 class="section-title"><span class="icon">5</span>其他信息</h2>
   <div class="info-grid">
     <div class="info-card">
+      <h4>核心技能 · 数据 &amp; 分析</h4>
+      <ul class="info-list"><li>SQL（ODPS / MySQL 取数）</li><li>Python（Flask 自动化脚本）</li><li>数据分析与归因建模</li><li>A/B 测试 · DMP 人群洞察</li></ul>
+    </div>
+    <div class="info-card">
+      <h4>投放与看板</h4>
+      <ul class="info-list"><li>多平台投放：腾讯 / 巨量 / 百度 / 微众</li><li>Grafana / Power BI 数据看板</li><li>自建 BI 取数 &amp; 财务对账工具</li><li>Excel 数据建模 · 透视分析</li></ul>
+    </div>
+    <div class="info-card">
       <h4>资格证书</h4>
       <ul class="info-list"><li>腾讯广告认证营销顾问</li><li>巨量引擎资深信息流广告营销师</li></ul>
     </div>
     <div class="info-card">
-      <h4>软件技能</h4>
-      <ul class="info-list"><li>Microsoft Office</li><li>Adobe PS / PR</li><li>剪映 / Power BI</li><li>Axure RP</li></ul>
+      <h4>设计 &amp; 办公</h4>
+      <ul class="info-list"><li>Adobe PS / PR</li><li>剪映</li><li>Axure RP</li><li>Microsoft Office</li></ul>
     </div>
   </div>
 </section>
