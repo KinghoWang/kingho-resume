@@ -20,6 +20,11 @@
     /* 工程能力亮点卡：横跨整行、左侧强调边 */
     .bento-card.span2{grid-column:1/-1;border-left:3px solid var(--accent);background:linear-gradient(180deg,#fff,#fdf6f4)}
     .bento-card.span2 h3{color:var(--accent)}
+    /* 职业总结 lead 块 */
+    .lead{max-width:960px;margin:0 auto;padding:4px 48px 44px}
+    .lead p{font-size:1.02rem;line-height:1.85;color:#3a3a3a;border-left:3px solid var(--accent);padding:8px 0 8px 20px}
+    .lead strong{color:var(--accent);font-weight:600}
+    @media(max-width:640px){.lead{padding:4px 20px 32px}}
   </style>
 </head>
 <body>
@@ -41,29 +46,34 @@
   </div>
 </header>
 
+<!-- Professional Summary (新增) -->
+<div class="lead">
+  <p>5 年商业化广告运营，横跨效果广告优化（腾讯 / 巨量 / 百度 / 微众）、整合营销与数据分析。理工科背景、量化驱动——从行业归因、看板搭建到<strong>自建取数与对账工具</strong>，把数据能力延伸到工程层。独立操盘过<strong>年预算过亿</strong>、<strong>日耗百万级</strong>项目，主导大健康行业从 0 到规模化（消耗占比 <strong>5% → 90%+</strong>）。</p>
+</div>
+
 <!-- Highlights -->
 <section class="section" data-reveal>
   <h2 class="section-title"><span class="icon">1</span>优势亮点</h2>
   <div class="bento">
     <div class="bento-card">
       <h3>效果广告专家</h3>
-      <p>3年主流媒体效果广告优化 + 1年百度整合营销，擅长输出商业化运营方案</p>
+      <p>3 年主流媒体效果广告优化 + 1 年百度整合营销，擅长输出体系化商业化投放方案</p>
     </div>
     <div class="bento-card">
       <h3>数据驱动决策</h3>
-      <p>理工科背景，量化分析与逻辑思维，擅长广告数据复盘与策略优化</p>
+      <p>量化分析 + 逻辑建模，擅长广告数据复盘、归因与策略迭代</p>
     </div>
     <div class="bento-card">
       <h3>大项目操盘手</h3>
-      <p>独立操盘年预算过亿项目，跨平台（百度/腾讯/字节/微众）投放能力</p>
+      <p>独立操盘年预算过亿项目，具备腾讯 / 巨量 / 百度 / 微众跨平台投放能力</p>
     </div>
     <div class="bento-card">
-      <h3>从0到1突破者</h3>
-      <p>大健康行业消耗占比 <span class="num">5%</span> → <span class="num">90%+</span>，日均消耗 <span class="num">200-300万</span></p>
+      <h3>从 0 到 1 突破者</h3>
+      <p>大健康行业消耗占比 <span class="num">5%</span> → <span class="num">90%+</span>，日均消耗 <span class="num">200–300 万</span></p>
     </div>
     <div class="bento-card span2">
       <h3>数据工程能力 · 自建工具</h3>
-      <p>独立开发广告数据取数工具与财务对账系统（<span class="num">Python / Flask + SQL</span>），指标口径 1:1 对齐、替代通用 BI 面板——广告运营中稀缺的工程化能力，让数据分析从"看数"走到"造工具"</p>
+      <p>独立开发广告数据取数工具与财务对账系统（<span class="num">Python / Flask + SQL</span>），指标口径 1:1 对齐、替代通用 BI 面板——广告运营中稀缺的工程化能力，让数据分析从「看数」走到「造工具」</p>
     </div>
   </div>
 </section>
@@ -80,12 +90,12 @@
         </div>
         <div class="tags"><span class="tag tag-ind">大健康</span><span class="tag tag-ind">兴趣教育</span><span class="tag tag-role">行业运营</span><span class="tag tag-met">日耗200-300万</span></div>
         <ul class="tl-list">
-          <li><strong>客户运营</strong>：服务老年教育（10+客户）&amp; 中医大健康（50+客户），年消耗规模 <strong>3亿+</strong>，对行业趋势、投放消耗及预算稳定性负责</li>
-          <li><strong>大健康攻坚</strong>：推动中医大健康行业从冷启动到规模化投放，预算占比 5% → <strong>90%+</strong>，CPM 最高达 <strong>400</strong></li>
+          <li><strong>客户运营</strong>：服务老年教育（10+ 客户）&amp; 中医大健康（50+ 客户），年消耗规模 <strong>3 亿+</strong>，统筹行业趋势、投放消耗与预算稳定性</li>
+          <li><strong>大健康攻坚</strong>：推动中医大健康行业从冷启动到规模化投放，预算占比 5% → <strong>90%+</strong>，行业 CPM 最高达 <strong>¥400</strong>（媒体变现口径，显著高于大盘均值）</li>
           <li><strong>广告链路调研</strong>：调研竞品投放链路与产品形态，输出行业分析报告，指导客户投放策略优化</li>
           <li><strong>广告系统建设</strong>：参与广告财务结算系统搭建，推动内部投放数据流程标准化</li>
-          <li><strong>增长投放</strong>：负责企微投放买量 &amp; 公众号投放买量，拓展私域获客渠道</li>
-          <li><strong>数据分析</strong>：占工作比重 70-80%，负责行业趋势分析、投放消耗监控、素材效果复盘及策略迭代</li>
+          <li><strong>增长投放</strong>：企微 &amp; 公众号投放买量，拓展私域获客渠道</li>
+          <li><strong>数据分析</strong>：占工作比重 <strong>70–80%</strong>，覆盖行业趋势分析、消耗监控、素材复盘与策略迭代</li>
         </ul>
       </div>
     </div>
@@ -97,9 +107,9 @@
         </div>
         <div class="tags"><span class="tag tag-ind">教育</span><span class="tag tag-ind">医疗</span><span class="tag tag-role">效果优化</span><span class="tag tag-met">收入增长287%</span></div>
         <ul class="tl-list">
-          <li><strong>广告运营</strong>：负责教育及医疗类客户效果广告优化，客户广告收入环比增长 <strong>61%</strong>，同比增长 <strong>287%</strong>，获"最佳新人奖"</li>
+          <li><strong>广告运营</strong>：操盘教育及医疗类客户效果广告优化，客户广告收入环比 <strong>+61%</strong>、同比 <strong>+287%</strong>，获"最佳新人奖"</li>
           <li><strong>链路优化</strong>：结合行业大客户案例及新产品流量政策，适配优化投放链路，头部少儿书法客户转化率提升 <strong>12%</strong></li>
-          <li><strong>产品分析</strong>：推动教育类产品探索线上闭环电商变现，线索有效率提升，客户框架收入提升 <strong>25%</strong></li>
+          <li><strong>产品分析</strong>：推动教育类产品探索线上闭环电商变现，线索有效率改善，带动客户框架收入提升 <strong>25%</strong></li>
           <li><strong>行业调研</strong>：月度行业分析 &amp; 竞品调研，输出综合性报告，赋能客户及代理商消费增长</li>
         </ul>
       </div>
@@ -113,7 +123,7 @@
         <div class="tags"><span class="tag tag-ind">金融</span><span class="tag tag-role">年预算过亿</span><span class="tag tag-met">转化率+27%</span></div>
         <ul class="tl-list">
           <li><strong>广告运营</strong>：银行业头部产品效果广告营销，独立操盘年预算过亿项目（微众银行等）</li>
-          <li><strong>人群洞察</strong>：通过 DMP 人群及已转化受众分析，拓展相似人群，精准分层测试，提升转化率 <strong>27%</strong></li>
+          <li><strong>人群洞察</strong>：基于 DMP 人群与已转化受众分析拓展相似人群，精准分层测试，转化率提升 <strong>27%</strong></li>
           <li><strong>创意优化</strong>：熟悉金融行业广告审核政策，针对行业爆款创意迭代优化，获公司"金狮创意"奖</li>
           <li><strong>数据分析</strong>：多维度同环比数据分析，实时监控转化效果，周期性调整策略，形成 SOP 流程</li>
         </ul>
@@ -129,39 +139,39 @@
     <div class="tl-item"><div class="tl-dot"></div>
       <div class="tl-card">
         <div class="tl-header">
-          <div><h3>大健康行业攻坚</h3><span class="company-tag">太字流动 · 项目负责人</span></div>
+          <div><h3>大健康行业 0–1 攻坚</h3><span class="company-tag">太字流动 · 项目负责人</span></div>
           <span class="date-tag">2024.06 - 2024.12</span>
         </div>
         <ul class="tl-list">
-          <li><strong>成果</strong>：行业 0-1 突破，预算占比 5% → <strong>70%+</strong>，CPM/CTR/CVR 多项指标突破</li>
-          <li><strong>素材优化</strong>：梳理中医养生类素材结构，推动代理商定向测试，CTCVR 提升 <strong>47%</strong></li>
-          <li><strong>链路改造</strong>：主导自建站产品接入，A/B 测试验证 CTCVR 提升 <strong>5%-10%</strong>，方案推向行业全面使用</li>
+          <li><strong>素材方法论</strong>：梳理中医养生类素材结构，建立「定向 × 素材」可复用测试框架，推动代理商定向测试，CTCVR 提升 <strong>47%</strong></li>
+          <li><strong>链路改造</strong>：主导自建站产品接入并跑通 A/B 验证，CTCVR 再提升 <strong>5%–10%</strong>，方案沉淀为行业标准打法全面推广</li>
+          <li><strong>可迁移沉淀</strong>：将冷启动到规模化的打法封装为行业 SOP，支撑该行业成为公司核心增量（规模见工作经历）</li>
         </ul>
       </div>
     </div>
     <div class="tl-item"><div class="tl-dot"></div>
       <div class="tl-card">
         <div class="tl-header">
-          <div><h3>企业培训线索产品项目</h3><span class="company-tag">百度 · 项目负责人</span></div>
+          <div><h3>教育线索产品商业化创新</h3><span class="company-tag">百度 · 项目负责人</span></div>
           <span class="date-tag">2022.11 - 2023.07</span>
         </div>
         <ul class="tl-list">
-          <li><strong>效果</strong>：产品组合与链路升级，提升客户 ROI 并获得年度续框与投放预算增长</li>
-          <li><strong>商业化创新</strong>："线上直播+低价体验+附赠图书"组合，拓展线上新变现路径</li>
-          <li><strong>方法论沉淀</strong>：线索有效率 <strong>20%</strong> → <strong>60%</strong>，作为行业方法论在部内 5 家客户落地并稳定跑量</li>
+          <li><strong>商业化创新</strong>：设计「线上直播 + 低价体验 + 附赠图书」转化组合，为教育客户开辟线上闭环变现新路径</li>
+          <li><strong>方法论沉淀</strong>：线索有效率 <strong>20%</strong> → <strong>60%</strong>，封装为行业方法论，在部门内 <strong>5 家客户</strong>复制落地并稳定跑量</li>
+          <li><strong>结果</strong>：产品组合与链路升级带动客户 ROI 提升，赢得年度续框与预算增长</li>
         </ul>
       </div>
     </div>
     <div class="tl-item"><div class="tl-dot"></div>
       <div class="tl-card">
         <div class="tl-header">
-          <div><h3>微众银行企业贷款项目</h3><span class="company-tag">亿科 · 客户对接人</span></div>
+          <div><h3>金融行业 0–1 投放体系（微众银行）</h3><span class="company-tag">亿科 · 客户对接人</span></div>
           <span class="date-tag">2020.06 - 2022.07</span>
         </div>
         <ul class="tl-list">
-          <li><strong>效果</strong>：构建 0-1 投放体系，覆盖微信生态+抖音信息流，实现冷启动到<strong>百万级日耗</strong></li>
-          <li><strong>策略制定</strong>：基于历史转化人群构建精准模型，推动引入搜索广告位提升 ROI</li>
-          <li><strong>精细运营</strong>：转化成本下降 <strong>13%</strong>，素材获"金狮创意"奖，成本优于大盘 <strong>14%</strong></li>
+          <li><strong>体系搭建</strong>：为企业贷款产品从 0 构建跨端投放体系，覆盖微信生态 + 抖音信息流，冷启动到<strong>百万级日耗</strong></li>
+          <li><strong>人群建模</strong>：基于历史转化人群构建精准相似模型，分层测试并引入搜索广告位，结构性提升 ROI</li>
+          <li><strong>精细运营</strong>：转化成本下降 <strong>13%</strong>，成本优于大盘 <strong>14%</strong>（成本侧越低越优）</li>
         </ul>
       </div>
     </div>
