@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>王钧灏 - 数据看板作品集（脱敏案例）</title>
+  <meta name="description" content="王钧灏的数据看板作品集（脱敏）：商业化数据分析、全链路漏斗、变更日志、实时 DAU、自建取数对账工具与跨行业归因方法论，含可交互 Demo。">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.png" type="image/png" sizes="256x256">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="王钧灏 · 数据看板作品集（脱敏案例）">
+  <meta property="og:description" content="6 个脱敏数据看板与自建分析工具案例，含可交互 Demo，展示数据分析与工程化能力。">
+  <meta property="og:image" content="https://kinghowang.github.io/kingho-resume/og-image.png">
+  <meta property="og:url" content="https://kinghowang.github.io/kingho-resume/cases.html">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="style.css">
   <style>
     /* ===== 案例页专属样式（复用 style.css 变量） ===== */
@@ -117,6 +126,20 @@
     .feat h5 .kbd{font-family:var(--mono);font-size:.68rem;background:#2d2a26;color:#f5e9d0;padding:1px 6px;border-radius:4px;font-weight:500}
     .feat p{font-size:.78rem;color:#555;line-height:1.55}
 
+    /* 交互式 demo */
+    .demo-toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:13px}
+    .demo-filters{display:flex;gap:8px;flex-wrap:wrap}
+    .chip{font-size:.76rem;padding:5px 13px;border:1px solid var(--border);border-radius:20px;background:#fff;cursor:pointer;color:#555;font-family:inherit;transition:all .18s}
+    .chip:hover{border-color:var(--accent);color:var(--accent)}
+    .chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .demo-hint{font-size:.72rem;color:var(--muted)}
+    .live-badge{margin-left:auto;font-size:.68rem;font-weight:700;color:var(--c-green);display:flex;align-items:center;gap:5px}
+    .live-badge::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--c-green);box-shadow:0 0 0 0 rgba(30,132,73,.5);animation:pulse 1.8s infinite}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(30,132,73,.45)}70%{box-shadow:0 0 0 6px rgba(30,132,73,0)}100%{box-shadow:0 0 0 0 rgba(30,132,73,0)}}
+    .sortable{cursor:pointer;user-select:none;white-space:nowrap}
+    .sortable:hover{color:var(--accent)}
+    .sort-ar{font-size:.62rem;color:var(--accent)}
+
     @media(max-width:640px){
       .page-head,.case{padding-left:20px;padding-right:20px}
       .story,.kpi-row,.feat-grid,.twocol{grid-template-columns:1fr}
@@ -188,19 +211,28 @@
   </div>
 
   <div class="panel">
-    <div class="panel-bar"><span class="dot"></span><span class="ttl">头部客户异常监控（按消耗影响面倒序）</span><span class="src">示意数据 · 已脱敏</span></div>
+    <div class="panel-bar"><span class="dot"></span><span class="ttl">头部客户异常监控</span><span class="live-badge">可交互 Demo</span></div>
     <div class="panel-body">
-      <table class="dash-table">
-        <thead><tr><th>排名</th><th>客户</th><th>行业</th><th class="num">效率CPM</th><th class="num">超成本</th><th class="num">CTCVR</th><th>诊断</th></tr></thead>
-        <tbody>
-          <tr><td>1</td><td>客户 A</td><td>知识付费</td><td class="num">¥118</td><td class="num">+8%</td><td class="num">1.62%</td><td><span class="pill green">正常</span></td></tr>
-          <tr><td>2</td><td>客户 B</td><td>健康养生</td><td class="num">¥392</td><td class="num">+27%</td><td class="num">0.94%</td><td><span class="pill red">超成本偏高</span></td></tr>
-          <tr><td>3</td><td>客户 C</td><td>大健康</td><td class="num">¥165</td><td class="num">+5%</td><td class="num">1.21%</td><td><span class="pill green">正常</span></td></tr>
-          <tr><td>4</td><td>客户 D</td><td>知识付费</td><td class="num">¥98</td><td class="num">−2%</td><td class="num">1.75%</td><td><span class="pill blue">效率优</span></td></tr>
-          <tr><td>5</td><td>客户 E</td><td>健康养生</td><td class="num">¥451</td><td class="num">+33%</td><td class="num">0.71%</td><td><span class="pill red">超成本+低CTCVR</span></td></tr>
-        </tbody>
+      <div class="demo-toolbar">
+        <div class="demo-filters" id="indFilters">
+          <button class="chip active" data-ind="全部">全部</button>
+          <button class="chip" data-ind="知识付费">知识付费</button>
+          <button class="chip" data-ind="健康养生">健康养生</button>
+          <button class="chip" data-ind="大健康">大健康</button>
+        </div>
+        <span class="demo-hint">点击行业筛选 · 点击列头排序</span>
+      </div>
+      <table class="dash-table" id="custTable">
+        <thead><tr>
+          <th>客户</th><th>行业</th>
+          <th class="num sortable" data-key="cpm">效率CPM <span class="sort-ar">▼</span></th>
+          <th class="num sortable" data-key="over">超成本 <span class="sort-ar"></span></th>
+          <th class="num sortable" data-key="ctcvr">CTCVR <span class="sort-ar"></span></th>
+          <th>诊断</th>
+        </tr></thead>
+        <tbody id="custBody"></tbody>
       </table>
-      <p class="note"><b>下钻逻辑：</b>对超成本 &gt;10% 的客户（B / E）继续拆解——广告行为分层占比 → 分层内效率 CPM → 出价 / 调价记录 → 真实 CTCVR，区分是「结构占比变化」还是「竞价效率恶化」。</p>
+      <p class="note"><b>下钻逻辑：</b>对超成本 &gt;10% 的客户继续拆解——广告行为分层占比 → 分层内效率 CPM → 出价 / 调价记录 → 真实 CTCVR，区分是「结构占比变化」还是「竞价效率恶化」。<b>（本表为脱敏示意数据，可实时筛选 / 排序）</b></p>
     </div>
   </div>
 </section>
@@ -491,6 +523,79 @@
   </div>
 </section>
 
+<!-- ============ CASE 6 ============ -->
+<section class="case" id="case6" data-reveal>
+  <div class="case-head">
+    <div class="case-no">06</div>
+    <div>
+      <h2>跨行业流量质量归因 · 分析方法论</h2>
+      <span class="kind">深度分析 ｜ 混淆变量控制 · 因果方向验证 · 结构效应分解</span>
+    </div>
+  </div>
+
+  <div class="story">
+    <div class="story-card bg"><div class="lab">背景</div><p>业务方常问「哪个行业 / 哪种流量质量更好」，但直接对均值排序、把客户到客率加权成「行业到客率」，会得出<strong>看似合理、实则错误</strong>的结论。</p></div>
+    <div class="story-card act"><div class="lab">动作</div><p>建立一套<strong>归因纪律</strong>：任何「A 比 B 高/低」先控制混淆变量，任何「A 导致 B」按结果分位反查原因分布，组间差异先拆「结构效应 + 水平效应」，并坚持<strong>同客户内对照</strong>。</p></div>
+    <div class="story-card res"><div class="lab">成果</div><p>纠正了「算法流量质量差、应砍量」的错误决策——证明<strong>算法流量是「低到客率、高付费率」的强意向用户</strong>，砍掉等于砍掉高价值客户。</p></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-bar"><span class="dot"></span><span class="ttl">归因方法论 · 四条纪律</span><span class="src">方法论</span></div>
+    <div class="panel-body">
+      <div class="feat-grid" style="grid-template-columns:repeat(2,1fr)">
+        <div class="feat"><h5>① 混淆变量排查</h5><p>「A 组比 B 组高/低」→ 先控制行业 / 分层再对比，避免把结构差异误读为质量差异。</p></div>
+        <div class="feat"><h5>② 因果方向验证</h5><p>得出「A 导致 B」→ 按结果分位反查原因指标分布，确认方向而非相关。</p></div>
+        <div class="feat"><h5>③ 结构效应分解</h5><p>CPM/CPA 组间差异 → 拆解为「结构效应（占比变化）+ 水平效应（单价变化）」。</p></div>
+        <div class="feat"><h5>④ 行业不可跨比</h5><p>不同行业转化目标不同（扫码加微 vs 付费下单），到客 / 付费口径不可直接横比。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-bar"><span class="dot"></span><span class="ttl">同客户内 · 算法流量 vs 保量流量 到客率对照</span><span class="src">示意数据 · 已脱敏</span></div>
+    <div class="panel-body">
+      <table class="dash-table">
+        <thead><tr><th>客户</th><th class="num">算法占比</th><th class="num">算法千次到客</th><th class="num">保量千次到客</th><th class="num">算法 / 保量</th></tr></thead>
+        <tbody>
+          <tr><td>客户 甲</td><td class="num">56.8%</td><td class="num">0.678</td><td class="num">0.882</td><td class="num"><span class="pill red">−23%</span></td></tr>
+          <tr><td>客户 乙</td><td class="num">49.9%</td><td class="num">0.506</td><td class="num">0.659</td><td class="num"><span class="pill red">−23%</span></td></tr>
+          <tr><td>客户 丙</td><td class="num">55.8%</td><td class="num">0.411</td><td class="num">0.468</td><td class="num"><span class="pill amber">−12%</span></td></tr>
+          <tr><td>客户 丁</td><td class="num">50.8%</td><td class="num">0.363</td><td class="num">0.356</td><td class="num"><span class="pill green">+2%</span></td></tr>
+        </tbody>
+      </table>
+      <p class="note"><b>反直觉发现：</b>客户丙的算法流量到客率虽低 12%，但<b>正价课付费率 1.67% 反而高于保量 1.62%</b>——算法投放的是「到客谨慎、但付费意向强」的高价值用户。<b>结论：砍算法流量 = 砍强意向客户，决策反转。</b>同时四个客户到客率最高差 1.75 倍，<b>不可加权聚合成「行业到客率」</b>。</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-bar"><span class="dot"></span><span class="ttl">混淆变量实例 · 别把「结构差异」误判为「流量变差」</span><span class="src">示意 · 脱敏</span></div>
+    <div class="panel-body">
+      <div class="twocol">
+        <div>
+          <table class="dash-table">
+            <thead><tr><th>网络</th><th class="num">占比</th><th class="num">千次到客</th></tr></thead>
+            <tbody>
+              <tr><td>WiFi</td><td class="num">83%</td><td class="num">0.598</td></tr>
+              <tr><td>4G</td><td class="num">8.7%</td><td class="num"><span class="pill amber">0.326</span></td></tr>
+            </tbody>
+          </table>
+          <p class="note">4G 效率仅 WiFi 的 <b>55%</b>——若不控制网络占比，会把网络结构变化误读为流量整体变差。</p>
+        </div>
+        <div>
+          <table class="dash-table">
+            <thead><tr><th>地域</th><th class="num">效率 vs 大盘</th><th>处置</th></tr></thead>
+            <tbody>
+              <tr><td>头部省份</td><td class="num">−9.5%</td><td><span class="pill green">保留</span></td></tr>
+              <tr><td>未知地域（空省份）</td><td class="num"><span class="pill red">−54%</span></td><td><span class="pill red">剔除</span></td></tr>
+            </tbody>
+          </table>
+          <p class="note">「未知地域」效率比大盘低 <b>54%</b>，是最该优先剔除的劣质流量——定位到它才能避免拉低整体出价效率。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <footer class="footer">王钧灏 · 商业化广告运营 · 数据看板作品集（脱敏） · 2026</footer>
 
 <script>
@@ -501,6 +606,46 @@ document.addEventListener('DOMContentLoaded',()=>{
   },{threshold:.08});
   els.forEach(el=>io.observe(el));
 });
+
+/* 交互式客户监控表（脱敏示意数据） */
+(function(){
+  const data=[
+    {name:'客户 A',ind:'知识付费',cpm:118,over:8,ctcvr:1.62,diag:'正常',cls:'green'},
+    {name:'客户 B',ind:'健康养生',cpm:392,over:27,ctcvr:0.94,diag:'超成本偏高',cls:'red'},
+    {name:'客户 C',ind:'大健康',cpm:165,over:5,ctcvr:1.21,diag:'正常',cls:'green'},
+    {name:'客户 D',ind:'知识付费',cpm:98,over:-2,ctcvr:1.75,diag:'效率优',cls:'blue'},
+    {name:'客户 E',ind:'健康养生',cpm:451,over:33,ctcvr:0.71,diag:'超成本+低CTCVR',cls:'red'},
+    {name:'客户 F',ind:'知识付费',cpm:124,over:11,ctcvr:1.40,diag:'超成本偏高',cls:'red'},
+    {name:'客户 G',ind:'大健康',cpm:178,over:6,ctcvr:1.08,diag:'正常',cls:'green'},
+    {name:'客户 H',ind:'健康养生',cpm:365,over:19,ctcvr:0.88,diag:'需关注',cls:'amber'},
+    {name:'客户 I',ind:'知识付费',cpm:105,over:3,ctcvr:1.69,diag:'正常',cls:'green'},
+    {name:'客户 J',ind:'大健康',cpm:152,over:14,ctcvr:1.02,diag:'超成本偏高',cls:'red'}
+  ];
+  const body=document.getElementById('custBody');
+  if(!body) return;
+  let curInd='全部', sortKey='cpm', sortDir=-1;
+  const fmtOver=v=>(v>0?'+':'')+v+'%';
+  function render(){
+    let rows=data.filter(r=>curInd==='全部'||r.ind===curInd);
+    rows.sort((a,b)=>(a[sortKey]-b[sortKey])*sortDir);
+    body.innerHTML=rows.map(r=>`<tr><td>${r.name}</td><td>${r.ind}</td>`+
+      `<td class="num">¥${r.cpm}</td><td class="num">${fmtOver(r.over)}</td>`+
+      `<td class="num">${r.ctcvr.toFixed(2)}%</td>`+
+      `<td><span class="pill ${r.cls}">${r.diag}</span></td></tr>`).join('');
+  }
+  document.querySelectorAll('#indFilters .chip').forEach(b=>b.addEventListener('click',function(){
+    document.querySelectorAll('#indFilters .chip').forEach(x=>x.classList.remove('active'));
+    this.classList.add('active'); curInd=this.dataset.ind; render();
+  }));
+  document.querySelectorAll('#custTable .sortable').forEach(th=>th.addEventListener('click',function(){
+    const k=this.dataset.key;
+    if(sortKey===k){sortDir*=-1;}else{sortKey=k;sortDir=-1;}
+    document.querySelectorAll('#custTable .sort-ar').forEach(s=>s.textContent='');
+    this.querySelector('.sort-ar').textContent=sortDir<0?'▼':'▲';
+    render();
+  }));
+  render();
+})();
 </script>
 </body>
 </html>
