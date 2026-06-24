@@ -4,10 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>王钧灏 - 商业化广告运营</title>
+  <meta name="description" content="王钧灏 · 商业化广告运营 · 5 年经验。效果广告优化（腾讯/巨量/百度/微众）、数据分析与自建取数对账工具，年消耗操盘 3 亿+，主导大健康行业从 0 到规模化。">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.png" type="image/png" sizes="256x256">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="王钧灏 · 商业化广告运营">
+  <meta property="og:description" content="5 年商业化广告运营 · 数据驱动增长 · 自建数据看板与取数工具，年消耗 3 亿+ 操盘。">
+  <meta property="og:image" content="https://kinghowang.github.io/kingho-resume/og-image.png">
+  <meta property="og:url" content="https://kinghowang.github.io/kingho-resume/">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="style.css">
   <style>
     /* 数据看板作品集入口（新增） */
-    .hero-links{margin-top:14px}
+    .hero-links{margin-top:14px;display:flex;flex-wrap:wrap;gap:20px}
     .hero-cta{font-size:.9rem;color:var(--accent);text-decoration:none;font-weight:600;border-bottom:1px dashed var(--accent);padding-bottom:2px}
     .hero-cta:hover{opacity:.72}
     .bento-card.cas{display:block;text-decoration:none;color:inherit;cursor:pointer}
@@ -25,6 +34,13 @@
     .lead p{font-size:1.02rem;line-height:1.85;color:#3a3a3a;border-left:3px solid var(--accent);padding:8px 0 8px 20px}
     .lead strong{color:var(--accent);font-weight:600}
     @media(max-width:640px){.lead{padding:4px 20px 32px}}
+    /* 数据战绩数字墙 */
+    .statwall{max-width:960px;margin:0 auto;padding:0 48px 48px;display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+    .stat{text-align:center;padding:16px 8px;border:1px solid var(--border);border-radius:var(--radius);background:linear-gradient(180deg,#fff,#fbf7f5);transition:transform .25s ease,box-shadow .25s ease}
+    .stat:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+    .stat .s-num{font-family:var(--font-display);font-size:1.5rem;font-weight:700;color:var(--accent);line-height:1.05;white-space:nowrap}
+    .stat .s-lab{font-size:.72rem;color:var(--muted);margin-top:7px;line-height:1.45}
+    @media(max-width:640px){.statwall{grid-template-columns:repeat(2,1fr);padding:0 20px 36px}}
   </style>
 </head>
 <body>
@@ -42,13 +58,26 @@
       <span>17512006748</span>
       <span>27岁 · 男 · 工科学士</span>
     </div>
-    <div class="hero-links"><a class="hero-cta" href="cases.html">数据看板作品集（脱敏案例）→</a></div>
+    <div class="hero-links">
+      <a class="hero-cta" href="cases.html">数据看板作品集（脱敏案例）→</a>
+      <a class="hero-cta" href="kingho-resume.pdf" download="王钧灏-商业化广告运营-简历.pdf">下载 PDF 简历 ↓</a>
+    </div>
   </div>
 </header>
 
 <!-- Professional Summary (新增) -->
 <div class="lead">
   <p>5 年商业化广告运营，横跨效果广告优化（腾讯 / 巨量 / 百度 / 微众）、整合营销与数据分析。理工科背景、量化驱动——从行业归因、看板搭建到<strong>自建取数与对账工具</strong>，把数据能力延伸到工程层。独立操盘过<strong>年预算过亿</strong>、<strong>日耗百万级</strong>项目，主导大健康行业从 0 到规模化（消耗占比 <strong>5% → 90%+</strong>）。</p>
+</div>
+
+<!-- Stat Wall (数据战绩) -->
+<div class="statwall">
+  <div class="stat"><div class="s-num">5 年</div><div class="s-lab">商业化广告经验</div></div>
+  <div class="stat"><div class="s-num">3 亿+</div><div class="s-lab">年消耗操盘规模</div></div>
+  <div class="stat"><div class="s-num">+287%</div><div class="s-lab">客户广告收入（同比）</div></div>
+  <div class="stat"><div class="s-num">+47%</div><div class="s-lab">素材 CTCVR 提升</div></div>
+  <div class="stat"><div class="s-num">+27%</div><div class="s-lab">投放转化率提升</div></div>
+  <div class="stat"><div class="s-num">5%→90%</div><div class="s-lab">大健康行业占比</div></div>
 </div>
 
 <!-- Highlights -->
@@ -199,12 +228,17 @@
     </a>
     <a class="bento-card cas" href="cases.html#case5">
       <h3>自建取数 &amp; 财务对账工具</h3>
-      <p>Python+Flask 键盘流取数 REPL，55 维度口径 1:1 对齐，财务对账自动对齐 Excel 模板</p>
+      <p>Python + Flask 键盘流取数 REPL，55 维度口径 1:1 对齐，财务对账自动对齐 Excel 模板</p>
+      <span class="arrow">查看复刻 →</span>
+    </a>
+    <a class="bento-card cas span2" href="cases.html#case6">
+      <h3>跨行业流量质量归因 · 深度分析</h3>
+      <p>算法 vs 保量 CPM 倒挂、到客率不可聚合、强意向用户反直觉发现——以混淆变量控制 / 因果方向验证 / 结构效应分解，证明从「会看数」到「会归因」的深度能力</p>
       <span class="arrow">查看复刻 →</span>
     </a>
   </div>
   <div class="cases-cta-wrap">
-    <a class="cta-btn" href="cases.html">查看 5 个脱敏看板案例（含可视化复刻）→</a>
+    <a class="cta-btn" href="cases.html">查看 6 个脱敏看板案例（含可交互 Demo）→</a>
   </div>
 </section>
 
