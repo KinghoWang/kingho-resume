@@ -156,6 +156,10 @@
     .section-divider h2{font-family:var(--font-display);font-size:1.15rem;font-weight:700;color:#333;border-bottom:2px solid var(--border);padding-bottom:8px;display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
     .section-divider .sd-tag{font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.02em}
     .demo-lead{max-width:960px;margin:2px auto 0;padding:0 48px;font-size:.9rem;color:var(--muted);line-height:1.6}
+    .demo-pointer{margin:0 0 20px;padding:10px 14px;background:#eaf2fb;border-left:3px solid var(--c-blue);border-radius:6px;font-size:.83rem;color:#2c5570;line-height:1.6}
+    .demo-pointer a{color:var(--c-blue);font-weight:700;text-decoration:none}
+    .demo-pointer a:hover{text-decoration:underline}
+    .demo-pointer strong{color:var(--accent);font-weight:600}
 
     @media(max-width:640px){
       .page-head,.case{padding-left:20px;padding-right:20px}
@@ -225,16 +229,18 @@
   <div class="case-head">
     <div class="case-no">01</div>
     <div>
-      <h2>商业化数据分析看板 · 多维下钻日报</h2>
-      <span class="kind">数据看板 ｜ 大盘 → 行业 → 代理商 → 客户 四级下钻 ｜ 数据源：广告投放主表</span>
+      <h2>多维下钻分析框架 · 算法 vs 保量流量洞察</h2>
+      <span class="kind">分析框架 ｜ 大盘 → 行业 → 代理商 → 客户 四级下钻 · 统一口径 ｜ 数据源：广告投放主表</span>
     </div>
   </div>
 
   <div class="story">
-    <div class="story-card bg"><div class="lab">背景</div><p>服务 <strong>60+ 客户</strong>、年消耗规模 <strong>3 亿+</strong>，每天需在海量投放数据中快速定位异常并给出归因，人工逐维度看数效率低、易漏判。</p></div>
-    <div class="story-card act"><div class="lab">动作</div><p>搭建「大盘 → 行业 → 代理商 → 客户」四级下钻看板，统一 <strong>效率 CPM / 超成本 / CTCVR / 曝光比 DAU</strong> 口径，引入<strong>双基线</strong>（前 1 日 + 前 7 日均值）异常检测，波动 &gt;10% 自动触发下钻。</p></div>
-    <div class="story-card res"><div class="lab">成果</div><p>日报从「罗列数据」升级为「<strong>现象 → 根因 → 建议动作</strong>」三段式结论，TOP3 异常一屏定位；沉淀为部门标准 SOP。</p></div>
+    <div class="story-card bg"><div class="lab">背景</div><p>服务 <strong>60+ 客户</strong>、年消耗规模 <strong>3 亿+</strong>，海量投放数据里要快速定位异常并归因，人工逐维度看数效率低、易漏判，且「看哪些维度、怎么比」全凭个人经验。</p></div>
+    <div class="story-card act"><div class="lab">动作</div><p>设计「大盘 → 行业 → 代理商 → 客户」四级下钻框架，统一 <strong>效率 CPM / 超成本 / CTCVR / 曝光比 DAU</strong> 口径，用<strong>双基线</strong>（前 1 日 + 前 7 日均值）异常检测触发下钻——把分析路径<strong>标准化、可复用</strong>。</p></div>
+    <div class="story-card res"><div class="lab">成果</div><p>沉淀为部门标准<strong>分析框架 / SOP</strong>；并据此挖出「<strong>知识付费算法 CPM 倒挂</strong>」等结构性洞察，指导出价与流量结构调整（见下方图表）。</p></div>
   </div>
+
+  <p class="demo-pointer">🔗 这套下钻框架的口径与异常规则，正是 <a href="demo-shufen.html">① 数分机器人 Demo</a> 的规则底座 —— <strong>本案例讲方法沉淀，Demo 讲自动化产品化</strong>，一体两面。</p>
 
   <div class="panel">
     <div class="panel-bar"><span class="dot"></span><span class="ttl">大盘核心指标（含 7 日基线对比）</span><span class="src">示意数据 · 已脱敏</span></div>
