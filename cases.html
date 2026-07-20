@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>王钧灏 - 数据看板作品集（脱敏案例）</title>
-  <meta name="description" content="王钧灏的数据看板作品集（脱敏）：商业化数据分析、全链路漏斗、变更日志、实时 DAU、自建取数对账工具与跨行业归因方法论，含可交互 Demo。">
+  <title>王钧灏 - 作品集：AI/数据产品 + 数据分析案例</title>
+  <meta name="description" content="王钧灏作品集：自建 AI/数据产品在线 Demo（数分机器人、竞品广告情报引擎、创意分段诊断、归因质量 Eval）+ 脱敏数据看板与跨行业归因方法论，展示 AI 产品化与数据分析能力。">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="favicon.png" type="image/png" sizes="256x256">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="王钧灏 · 数据看板作品集（脱敏案例）">
-  <meta property="og:description" content="6 个脱敏数据看板与自建分析工具案例，含可交互 Demo，展示数据分析与工程化能力。">
+  <meta property="og:title" content="王钧灏 · 作品集：AI/数据产品 + 数据分析案例">
+  <meta property="og:description" content="4 个自建 AI/数据产品在线 Demo（真实引擎 + 合成脱敏数据）+ 脱敏数据看板与归因方法论。">
   <meta property="og:image" content="https://kinghowang.github.io/kingho-resume/og-image.png">
   <meta property="og:url" content="https://kinghowang.github.io/kingho-resume/cases.html">
   <meta name="twitter:card" content="summary_large_image">
@@ -140,10 +140,30 @@
     .sortable:hover{color:var(--accent)}
     .sort-ar{font-size:.62rem;color:var(--accent)}
 
+    /* ===== 在线 Demo 画廊 ===== */
+    .demo-gallery{max-width:960px;margin:6px auto 8px;padding:0 48px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .demo-card{position:relative;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--border);border-top:3px solid var(--accent);border-radius:var(--radius);padding:20px 22px 18px;box-shadow:var(--shadow);opacity:0;transform:translateY(24px)}
+    .demo-card.visible{animation:fadeUp .55s ease forwards}
+    .demo-card .dc-badge{position:absolute;top:16px;right:18px;font-size:.66rem;font-weight:700;color:var(--c-green);background:#e8f8f0;border-radius:20px;padding:3px 10px;letter-spacing:.02em}
+    .demo-card h3{font-family:var(--font-display);font-size:1.12rem;font-weight:700;margin:0 0 4px;padding-right:92px}
+    .demo-card .dc-kind{font-size:.72rem;color:var(--muted);letter-spacing:.03em;margin-bottom:10px}
+    .demo-card .dc-desc{font-size:.85rem;line-height:1.62;color:#333;flex:1}
+    .demo-card .dc-desc strong{color:var(--accent);font-weight:600}
+    .demo-card .dc-meta{font-size:.72rem;color:var(--muted);margin:11px 0 13px;padding-left:11px;border-left:2px solid var(--border)}
+    .demo-card .dc-open{display:inline-flex;align-items:center;gap:7px;align-self:flex-start;font-size:.82rem;font-weight:700;color:#fff;background:var(--accent);border-radius:7px;padding:8px 16px;text-decoration:none;transition:opacity .18s,transform .18s}
+    .demo-card .dc-open:hover{opacity:.9;transform:translateX(2px)}
+    .section-divider{max-width:960px;margin:34px auto 0;padding:0 48px}
+    .section-divider h2{font-family:var(--font-display);font-size:1.15rem;font-weight:700;color:#333;border-bottom:2px solid var(--border);padding-bottom:8px;display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+    .section-divider .sd-tag{font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.02em}
+    .demo-lead{max-width:960px;margin:2px auto 0;padding:0 48px;font-size:.9rem;color:var(--muted);line-height:1.6}
+
     @media(max-width:640px){
       .page-head,.case{padding-left:20px;padding-right:20px}
       .story,.kpi-row,.feat-grid,.twocol{grid-template-columns:1fr}
       .barrow{grid-template-columns:70px 1fr}
+      .demo-gallery{grid-template-columns:1fr;padding:0 20px}
+      .section-divider,.demo-lead{padding:0 20px}
+      .demo-card h3{padding-right:80px}
     }
   </style>
 </head>
@@ -151,13 +171,54 @@
 
 <header class="page-head" data-reveal>
   <a class="back-link" href="index.html">← 返回简历主页</a>
-  <h1>数据看板作品集</h1>
-  <p class="sub">以下为日常商业化广告运营中沉淀的 5 个核心数据看板与自建分析工具的<strong>脱敏复刻</strong>，呈现分析框架、指标口径与方法论。</p>
+  <h1>作品集 · AI/数据产品 + 数据分析案例</h1>
+  <p class="sub">两部分：<strong>①</strong> 自建 AI / 数据产品的<strong>在线 Demo</strong>（跑真实工具引擎 + 合成脱敏数据）；<strong>②</strong> 日常沉淀的数据看板与归因方法论<strong>脱敏复刻</strong>。</p>
 </header>
 
 <div class="disclaimer" data-reveal>
-  <strong>脱敏说明：</strong>本页所有客户 / 代理商名称、内部数据表名、看板地址与具体数值均已做<strong>脱敏或示意化</strong>处理（客户以 A–H 代称、代理商以甲乙丙代称、数值为代表性示意值），仅用于展示数据分析能力与看板设计思路，不代表任何企业真实经营数据。
+  <strong>脱敏说明：</strong>本页所有客户 / 代理商名称、内部数据表名、看板地址与具体数值均已做<strong>脱敏或示意化</strong>处理（客户以 A–L / 甲乙丙代称、数值为代表性示意值），Demo 跑的是真实工具的引擎与看板本体、仅替换数据，不代表任何企业真实经营数据。
 </div>
+
+<!-- ============ ① 在线 DEMO 画廊 ============ -->
+<div class="section-divider" data-reveal><h2>① 自建 AI / 数据产品 <span class="sd-tag">在线 Demo · 真实引擎 + 合成脱敏数据</span></h2></div>
+<p class="demo-lead" data-reveal>以下四个可直接打开体验：跑的是真实工具的<strong style="color:var(--accent)">引擎 / 看板本体</strong>，仅把客户名、表名、数值换成合成脱敏数据 —— 而非简化复刻。</p>
+<div class="demo-gallery">
+  <div class="demo-card" data-reveal>
+    <span class="dc-badge">真实规则引擎</span>
+    <h3>数分机器人</h3>
+    <div class="dc-kind">广告日报 ｜ 规则引擎 + LLM 归因 · human-in-the-loop</div>
+    <p class="dc-desc">从数仓拉 8 天大盘 / 行业 / 客户数据，规则引擎自动做<strong>阈值异常检出</strong>、<strong>结构 / 效率效应分解</strong>与转化目标迁移检测，产出「现象 → 根因 → 建议」三段式日报。<strong>数值全由代码算、模型只做叙述</strong>，从架构上防幻觉。</p>
+    <div class="dc-meta">团队 3 人日常使用 · 日报 30min → 分钟级复核</div>
+    <a class="dc-open" href="demo-shufen.html">▶ 打开在线 Demo</a>
+  </div>
+  <div class="demo-card" data-reveal>
+    <span class="dc-badge">真实库 schema</span>
+    <h3>竞品广告情报引擎</h3>
+    <div class="dc-kind">竞品侦察 ｜ 多源采集 + 结构化检索 · 分源分桶</div>
+    <p class="dc-desc">汇聚多平台竞品广告（评级制 / 数值制曝光），统一 canonical schema 与周度快照；按<strong>行业 / 曝光量 / 标签</strong>检索，点开看<strong>秒级时序、多模态标签、受众下钻</strong>。严守「禁止跨曝光类型混排」的口径纪律。</p>
+    <div class="dc-meta">竞品情报侦察 · 非二创素材生产</div>
+    <a class="dc-open" href="demo-advideo.html">▶ 打开在线 Demo</a>
+  </div>
+  <div class="demo-card" data-reveal>
+    <span class="dc-badge">真实看板本体</span>
+    <h3>创意分段诊断中台</h3>
+    <div class="dc-kind">素材诊断 ｜ 分秒级 CTR 归因 + A/B 对比</div>
+    <p class="dc-desc">把一条素材<strong>逐秒拆解</strong>，定位「哪一秒观众流失、哪一段话术促成转化」；支持双素材<strong>逐段 A/B 对比</strong>，叠加话术 / 画面 / 受众多模态标签做归因。</p>
+    <div class="dc-meta">78 素材 · Chart.js · 首次加载约 7MB 稍慢</div>
+    <a class="dc-open" href="demo-creative.html">▶ 打开在线 Demo</a>
+  </div>
+  <div class="demo-card" data-reveal>
+    <span class="dc-badge">真实跑分</span>
+    <h3>归因质量 Eval 评测</h3>
+    <div class="dc-kind">评测体系 ｜ 黄金集 + 代码指标 + LLM-as-judge</div>
+    <p class="dc-desc">给数分机器人建的自动化评测：22 例带标注答案的历史日报为<strong>黄金集</strong>，代码型指标校验<strong>数值忠实率</strong>与异常召回 / 精确，LLM-as-judge 评<strong>归因质量与机制编造率</strong>，并作 prompt 改动的回归门禁。含 with / without skill A/B 对照。</p>
+    <div class="dc-meta">数值忠实率 90% · 机制编造率已量化</div>
+    <a class="dc-open" href="demo-eval.html">▶ 打开在线 Demo</a>
+  </div>
+</div>
+
+<!-- ============ ② 数据分析 & 工程化案例 ============ -->
+<div class="section-divider" data-reveal style="margin-top:44px"><h2>② 数据分析 &amp; 工程化案例 <span class="sd-tag">脱敏复刻 · 呈现分析框架与方法论</span></h2></div>
 
 <!-- ============ CASE 1 ============ -->
 <section class="case" id="case1" data-reveal>
@@ -237,195 +298,10 @@
   </div>
 </section>
 
-<!-- ============ CASE 2 ============ -->
+<!-- ============ CASE 02 · 取数工具+对账 ============ -->
 <section class="case" id="case2" data-reveal>
   <div class="case-head">
     <div class="case-no">02</div>
-    <div>
-      <h2>广告全链路漏斗 &amp; eCPM 过滤看板</h2>
-      <span class="kind">数据看板 ｜ 请求 → 出广告 → 曝光 → 转化全链路 ｜ 数据源：实时日志 + 投放主表</span>
-    </div>
-  </div>
-
-  <div class="story">
-    <div class="story-card bg"><div class="lab">背景</div><p>收入波动时，需快速判断到底是「<strong>请求少了、过滤多了，还是转化差了</strong>」，单看曝光 / 收入无法定位漏损环节。</p></div>
-    <div class="story-card act"><div class="lab">动作</div><p>把「请求 → 算法出广告 → 最终出广告 → 曝光 → 点击 → 转化」做成<strong>全链路漏斗</strong>，叠加<strong>填充率</strong>与<strong>低 eCPM 过滤</strong>分层，用 pqtid 作精确请求分母。</p></div>
-    <div class="story-card res"><div class="lab">成果</div><p>定位漏损集中在「<strong>有曝光无点击层</strong>」（eCPM 过滤占比最高 10%）；7 日填充率 <strong>67.7%→71.5%</strong> 持续改善，为算法侧优化提供量化依据。</p></div>
-  </div>
-
-  <div class="panel">
-    <div class="panel-bar"><span class="dot"></span><span class="ttl">广告请求 → 转化 全链路漏斗</span><span class="src">示意数据 · 已脱敏</span></div>
-    <div class="panel-body">
-      <div class="funnel">
-        <div class="f-step" style="width:100%;background:#2471a3"><span>① 广告请求（pqtid）</span><span class="f-n">9,980,000</span></div>
-        <div class="f-step" style="width:92%;background:#2e7d9a"><span>② 算法判定出广告</span><span class="f-n">9,180,000 <small>92.0%</small></span></div>
-        <div class="f-step" style="width:80%;background:#1e8449"><span>③ 最终出广告</span><span class="f-n">8,010,000 <small>80.3%</small></span></div>
-        <div class="f-step" style="width:72%;background:#27955a"><span>④ 曝光（填充率 71.5%）</span><span class="f-n">7,140,000 <small>71.5%</small></span></div>
-        <div class="f-step" style="width:34%;background:#b9770e"><span>⑤ 点击（CTR 6.0%）</span><span class="f-n">428,000</span></div>
-        <div class="f-step" style="width:18%;background:#c0392b"><span>⑥ 转化（CTCVR 1.5%）</span><span class="f-n">107,000</span></div>
-      </div>
-      <p class="note"><b>口径：</b>填充率 = 曝光次数 / 请求数(count distinct pqtid)；每个 pqtid 一对一映射一次请求，是精确的请求分母，避免用曝光 UV 误算。</p>
-    </div>
-  </div>
-
-  <div class="twocol">
-    <div class="panel">
-      <div class="panel-bar"><span class="dot"></span><span class="ttl">分层填充率 &amp; eCPM 过滤占比</span><span class="src">示意 · 脱敏</span></div>
-      <div class="panel-body">
-        <table class="dash-table">
-          <thead><tr><th>行为分层</th><th class="num">填充率</th><th class="num">eCPM过滤占比</th></tr></thead>
-          <tbody>
-            <tr><td>有转化</td><td class="num">79.3%</td><td class="num">1.5%</td></tr>
-            <tr><td>有点击无转化</td><td class="num">71.5%</td><td class="num">5.9%</td></tr>
-            <tr><td>有曝光无点击</td><td class="num">70.4%</td><td class="num"><span class="pill red">10.0%</span></td></tr>
-            <tr><td>无曝光</td><td class="num">67.6%</td><td class="num">1.2%</td></tr>
-          </tbody>
-        </table>
-        <p class="note"><b>洞察：</b>过滤并非集中在「无曝光首层」，而是「有曝光无点击层」——这部分用户近期看广告但不点击，模型预估 CTR 极低 → eCPM 极低 → 被过滤。<b>是否首层不是过滤主因。</b></p>
-      </div>
-    </div>
-    <div class="panel">
-      <div class="panel-bar"><span class="dot"></span><span class="ttl">7 日填充率趋势</span><span class="src">示意 · 脱敏</span></div>
-      <div class="panel-body">
-        <svg viewBox="0 0 320 180" class="arch" role="img" aria-label="填充率7日上升趋势">
-          <line x1="40" y1="20" x2="40" y2="150" stroke="#e0ddd8"/>
-          <line x1="40" y1="150" x2="310" y2="150" stroke="#e0ddd8"/>
-          <text x="8" y="34" font-size="9" fill="#7f8c8d">73%</text>
-          <text x="8" y="92" font-size="9" fill="#7f8c8d">70%</text>
-          <text x="8" y="150" font-size="9" fill="#7f8c8d">67%</text>
-          <polyline fill="none" stroke="#c0392b" stroke-width="2.5"
-            points="55,128 95,120 135,108 175,96 215,78 255,60 300,50"/>
-          <g fill="#c0392b">
-            <circle cx="55" cy="128" r="3.2"/><circle cx="95" cy="120" r="3.2"/><circle cx="135" cy="108" r="3.2"/>
-            <circle cx="175" cy="96" r="3.2"/><circle cx="215" cy="78" r="3.2"/><circle cx="255" cy="60" r="3.2"/><circle cx="300" cy="50" r="3.2"/>
-          </g>
-          <text x="48" y="143" font-size="8.5" fill="#7f8c8d">D1</text>
-          <text x="293" y="143" font-size="8.5" fill="#7f8c8d">D7</text>
-          <text x="250" y="42" font-size="9" fill="#c0392b" font-weight="700">71.5%</text>
-          <text x="40" y="125" font-size="9" fill="#7f8c8d">67.7%</text>
-        </svg>
-        <p class="note">填充率稳步上行，反映算法出广告效率与流量匹配持续优化。</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ CASE 3 ============ -->
-<section class="case" id="case3" data-reveal>
-  <div class="case-head">
-    <div class="case-no">03</div>
-    <div>
-      <h2>广告变更日志看板 · 调价方向与批量停投检测</h2>
-      <span class="kind">数据看板 ｜ 操作行为归因 ｜ 数据源：投放操作日志</span>
-    </div>
-  </div>
-
-  <div class="story">
-    <div class="story-card bg"><div class="lab">背景</div><p>每天数千条操作日志（调价 / 开停投 / 定向变更），按时间或次数排序无法看出<strong>哪些操作真正影响了大盘</strong>。</p></div>
-    <div class="story-card act"><div class="lab">动作</div><p>建立「<strong>调价方向三部曲</strong>」（提降比 / 降幅分布 / 极端事件），叠加<strong>批量操作检测</strong>（单分钟停投≥5 次）与停投恢复跟踪，统一<strong>按消耗影响面倒序</strong>。</p></div>
-    <div class="story-card res"><div class="lab">成果</div><p>用提降比量化市场竞争力变化；识别 <strong>17:00–18:00 批量停投高峰</strong>，并测算停投释放曝光的 CPM 差价损失。</p></div>
-  </div>
-
-  <div class="twocol">
-    <div class="panel">
-      <div class="panel-bar"><span class="dot"></span><span class="ttl">调价方向统计</span><span class="src">示意 · 脱敏</span></div>
-      <div class="panel-body">
-        <div class="kpi-row" style="grid-template-columns:1fr 1fr">
-          <div class="kpi"><div class="k-lab">总调价次数</div><div class="k-val">312</div></div>
-          <div class="kpi"><div class="k-lab">提降比</div><div class="k-val">1.74</div><span class="k-delta up">🟢 竞争力提升</span></div>
-        </div>
-        <div class="barset" style="margin-top:14px">
-          <div class="barrow"><span class="b-lab">提价</span><div class="b-track"><div class="b-fill algo" style="width:100%"><span class="b-val">198 次</span></div></div></div>
-          <div class="barrow"><span class="b-lab">降价</span><div class="b-track"><div class="b-fill gua" style="width:58%"><span class="b-val dark">114 次</span></div></div></div>
-        </div>
-        <p class="note"><b>判定规则：</b>提降比 &gt;1.5 🟢竞争力提升 ｜ 0.67–1.5 🟡中性 ｜ &lt;0.67 🔴竞争力下降。降价幅度比次数更重要。</p>
-      </div>
-    </div>
-    <div class="panel">
-      <div class="panel-bar"><span class="dot"></span><span class="ttl">极端降价事件（Top）</span><span class="src">示意 · 脱敏</span></div>
-      <div class="panel-body">
-        <table class="dash-table">
-          <thead><tr><th>客户</th><th class="num">操作前</th><th class="num">操作后</th><th class="num">降幅</th></tr></thead>
-          <tbody>
-            <tr><td>客户 E</td><td class="num">22.0</td><td class="num">1.0</td><td class="num"><span class="pill red">−21.0</span></td></tr>
-            <tr><td>客户 B</td><td class="num">18.5</td><td class="num">6.0</td><td class="num"><span class="pill red">−12.5</span></td></tr>
-            <tr><td>客户 G</td><td class="num">15.0</td><td class="num">8.0</td><td class="num"><span class="pill amber">−7.0</span></td></tr>
-            <tr><td>客户 C</td><td class="num">12.0</td><td class="num">7.5</td><td class="num"><span class="pill amber">−4.5</span></td></tr>
-          </tbody>
-        </table>
-        <p class="note"><b>批量检测：</b>单分钟 status 操作≥5 次记为批量高峰；重点关注 17:00–18:00 集中停投及其对大盘曝光的影响。</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ CASE 4 ============ -->
-<section class="case" id="case4" data-reveal>
-  <div class="case-head">
-    <div class="case-no">04</div>
-    <div>
-      <h2>实时 DAU / 流量质量看板</h2>
-      <span class="kind">数据看板 ｜ 5 分钟实时监控 + 归因决策 ｜ 数据源：实时日志</span>
-    </div>
-  </div>
-
-  <div class="story">
-    <div class="story-card bg"><div class="lab">背景</div><p>收入下滑时需立刻判断是「<strong>用户量少了</strong>」还是「<strong>人均曝光频次低了</strong>」，否则容易误判优化方向。</p></div>
-    <div class="story-card act"><div class="lab">动作</div><p>定义并实时监控 <strong>广告DAU / AD&nbsp;PV·DAU / ARPU / 曝光成功率</strong> 四大健康度指标，配套<strong>归因决策树</strong>一键定位根因。</p></div>
-    <div class="story-card res"><div class="lab">成果</div><p>异常时 5 分钟内定位「量 vs 频次 vs 效率」问题归属，把模糊的「收入跌了」转化为<strong>可执行的单一根因</strong>。</p></div>
-  </div>
-
-  <div class="panel">
-    <div class="panel-bar"><span class="dot"></span><span class="ttl">流量健康度核心指标</span><span class="src">示意数据 · 已脱敏</span></div>
-    <div class="panel-body">
-      <div class="kpi-row">
-        <div class="kpi"><div class="k-lab">广告 DAU</div><div class="k-val">182 万</div><span class="k-delta down">▼ 4.1% vs 前1日</span></div>
-        <div class="kpi"><div class="k-lab">AD PV / DAU</div><div class="k-val">112%</div><span class="k-delta up">稳定（100–120%）</span></div>
-        <div class="kpi"><div class="k-lab">ARPU</div><div class="k-val">36%</div><span class="k-delta up">正常（25–45%）</span></div>
-        <div class="kpi"><div class="k-lab">曝光成功率</div><div class="k-val">84%</div><span class="k-delta up">正常（80–86%）</span></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="twocol">
-    <div class="panel">
-      <div class="panel-bar"><span class="dot"></span><span class="ttl">广告 DAU · 7 日趋势</span><span class="src">示意 · 脱敏</span></div>
-      <div class="panel-body">
-        <svg viewBox="0 0 320 180" class="arch" role="img" aria-label="广告DAU 7日趋势">
-          <line x1="40" y1="20" x2="40" y2="150" stroke="#e0ddd8"/>
-          <line x1="40" y1="150" x2="310" y2="150" stroke="#e0ddd8"/>
-          <polyline fill="none" stroke="#2471a3" stroke-width="2.5"
-            points="55,70 95,62 135,66 175,58 215,64 255,72 300,90"/>
-          <g fill="#2471a3">
-            <circle cx="55" cy="70" r="3.2"/><circle cx="95" cy="62" r="3.2"/><circle cx="135" cy="66" r="3.2"/>
-            <circle cx="175" cy="58" r="3.2"/><circle cx="215" cy="64" r="3.2"/><circle cx="255" cy="72" r="3.2"/><circle cx="300" cy="90" r="3.2"/>
-          </g>
-          <text x="48" y="143" font-size="8.5" fill="#7f8c8d">D1</text>
-          <text x="293" y="143" font-size="8.5" fill="#7f8c8d">D7</text>
-          <text x="258" y="64" font-size="9" fill="#c0392b" font-weight="700">↓ 末日回落</text>
-          <text x="12" y="64" font-size="9" fill="#7f8c8d">DAU</text>
-        </svg>
-        <p class="note">末日 DAU 回落而 AD&nbsp;PV·DAU 保持稳定 → 收入下降主因是<b>用户量减少</b>，非曝光频次问题。</p>
-      </div>
-    </div>
-    <div class="panel">
-      <div class="panel-bar"><span class="dot"></span><span class="ttl">DAU 归因决策树</span><span class="src">方法论</span></div>
-      <div class="panel-body">
-        <div class="logic">
-          <div class="logic-row"><span class="cond">DAU↓ &amp; PV·DAU 稳</span><span class="arrow">→</span><span class="concl">用户量减少（非频次）</span></div>
-          <div class="logic-row"><span class="cond">PV·DAU &gt;130%</span><span class="arrow">→</span><span class="concl">疑似反复请求 bug，需排查</span></div>
-          <div class="logic-row"><span class="cond">ARPU &lt;20%</span><span class="arrow">→</span><span class="concl">点击/转化率低或行业结构问题</span></div>
-          <div class="logic-row"><span class="cond">曝光成功率 &lt;80%</span><span class="arrow">→</span><span class="concl">出广告后拦截升高（网络/设备）</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ CASE 5 ============ -->
-<section class="case" id="case5" data-reveal>
-  <div class="case-head">
-    <div class="case-no">05</div>
     <div>
       <h2>自建广告数据取数工具 &amp; 财务对账模块</h2>
       <span class="kind">自建工具 ｜ Python(Flask) + 单文件前端 ｜ 替代通用 BI 面板的 ad-hoc 取数 REPL</span>
@@ -523,10 +399,10 @@
   </div>
 </section>
 
-<!-- ============ CASE 6 ============ -->
-<section class="case" id="case6" data-reveal>
+<!-- ============ CASE 03 · 跨行业归因 ============ -->
+<section class="case" id="case3" data-reveal>
   <div class="case-head">
-    <div class="case-no">06</div>
+    <div class="case-no">03</div>
     <div>
       <h2>跨行业流量质量归因 · 分析方法论</h2>
       <span class="kind">深度分析 ｜ 混淆变量控制 · 因果方向验证 · 结构效应分解</span>
@@ -596,7 +472,7 @@
   </div>
 </section>
 
-<footer class="footer">王钧灏 · 商业化广告运营 · 数据看板作品集（脱敏） · 2026</footer>
+<footer class="footer">王钧灏 · 商业化广告运营 → AI 商业化产品 · 作品集（脱敏） · 2026</footer>
 
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
