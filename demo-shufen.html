@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>数分机器人 · 广告数据分析日报（真引擎 · 脱敏 Demo）</title>
+<style>
+:root{--bg:#efe7d0;--bg-soft:#f6efd8;--ink:#2d2a26;--amber:#8a5a18;--mute:#8a7f63;--rule:#d6cbab;--rule2:#e2d9bd;--blood:#b03a2e;--moss:#3f6f3f;--ground:#fff;
+--mono:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,'Sarasa Mono SC','PingFang SC','Microsoft YaHei',monospace;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--mono);background:var(--bg);color:var(--ink);font-size:12px}
+.demohead{padding:14px 24px 16px;border-bottom:1px solid var(--rule);background:var(--bg-soft)}
+.demohead a{color:var(--amber);font-size:12px;text-decoration:none;font-weight:600}
+.demohead h1{font-size:16px;margin:10px 0 5px}
+.demohead p{font-size:11.5px;color:#4a453b;line-height:1.7;max-width:940px}
+.demohead p b{color:var(--amber)}
+.demohead .badge{display:inline-block;background:#fef5e7;color:#8a6a18;border:1px solid #f3d9a8;border-radius:12px;padding:2px 11px;font-size:10.5px;margin-top:8px}
+.wrap{display:flex;flex-direction:column}
+.bar{display:flex;gap:10px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--rule);font-size:11px;color:var(--mute);flex-wrap:wrap}
+.bar b{color:var(--ink);letter-spacing:.06em}
+.bar button{background:var(--bg-soft);color:var(--ink);border:1px solid var(--rule2);padding:5px 12px;cursor:pointer;font-family:inherit;font-size:11px;border-radius:3px}
+.bar button:hover{border-color:var(--amber);color:var(--amber)}
+.bar button.primary{background:var(--amber);color:var(--ground);border-color:var(--amber);font-weight:600}
+.bar button:disabled{opacity:.4;cursor:default}
+#body{overflow:auto;padding:16px 24px;font-size:12px;line-height:1.65}
+#body h2{font-size:14px;color:var(--amber);border-bottom:1px solid var(--rule);padding-bottom:4px;margin:22px 0 8px;letter-spacing:.06em}
+#body h2:first-of-type{margin-top:0}
+#body table{border-collapse:collapse;margin:6px 0 10px;width:100%;font-size:11.5px;font-variant-numeric:tabular-nums}
+#body th,#body td{border:1px solid var(--rule2);padding:3px 8px;text-align:right;white-space:nowrap}
+#body th{background:var(--bg-soft);color:var(--ink)}
+#body td:first-child,#body th:first-child{text-align:left}
+#body .warn{color:var(--blood);font-weight:600}
+#body .up{color:var(--moss)} #body .down{color:var(--blood)}
+#body .sumcard{background:var(--bg-soft);border:1px solid var(--rule2);border-left:3px solid var(--amber);padding:8px 12px;margin:8px 0}
+#body .note{color:var(--mute);font-size:11px} #body ol{margin:4px 0 4px 20px}
+</style></head><body>
+<div class="demohead">
+  <a href="cases.html">← 返回作品集</a>
+  <h1>📊 数分机器人 · 广告数据分析日报</h1>
+  <p>把广告投放异常归因日报自动化：脚本自数仓抓取 8 天大盘 / 行业 / 客户等多维数据 → <b>规则引擎</b>做阈值异常检出、结构/效率效应分解、转化目标迁移检测 → 输出「现象 → 根因 → 建议」三段式日报；再点「复制给Claude」交 LLM 做叙事式深度归因（human-in-the-loop）。<b>数值全部由规则引擎/数仓计算、模型不做算术 → 从架构上规避数值幻觉。</b></p>
+  <span class="badge">本 Demo 运行的是真实规则引擎（daily_rules.js 一字未改），数据为合成脱敏 · 点「生成日报」即跑</span>
+</div>
+<div class="wrap">
+  <div class="bar"><b>📊 广告数据分析日报</b><span>2026-07-16（合成示例日）</span>
+    <button class="primary" id="run">生成日报</button>
+    <button id="copy-claude" disabled title="复制规则引擎中间结论 JSON，粘贴给 Claude 做叙事式深度日报">复制给Claude</button>
+    <button id="copy-md" disabled>复制文本</button>
+    <span class="status" id="status"></span>
+  </div>
+  <div id="body"><p class="note">点「生成日报」→ 真引擎跑合成数据出日报。</p></div>
+</div>
+<script>/**
+ * GLDaily — 日报规则引擎（油猴 grafana-daily-report.user.js v1.1.1 原样保真迁移）
+ *
+ * 纯计算 + 纯字符串渲染，无 DOM 依赖 → browser + node 双端（同 agg_logic 模式，node 可单测）。
+ * 输入：raw = {daily, industry, layer, client, agent, traffic, hourly, targetmix, logsum, bids, statusops}
+ *       （每项 list-of-dicts，后端 /api/daily/run 返回），ctx = {D,P,W1,W2,RT,maxHh}
+ * 输出：analyze(raw, ctx) → 结构化结论对象；render(out) → 日报 HTML 字符串。
+ *
+ * ⚠ 口径保真承诺：本文件的规则/阈值与油猴 v1.1.1 逐字一致（阈值：CPM±10%、超成本10/15%、
+ *   消耗环比30/50%、加微成本90、迁移>8pp、炸群15-21%正常）。改阈值 = 改日报口径，须记 CHANGELOG。
+ */
+(function (root) {
+  'use strict';
+  const N = x => Number(x) || 0;
+  const R = (x, d = 2) => Math.round(x * 10 ** d) / 10 ** d;
+  const W = x => (x >= 10000 || x <= -10000) ? R(x / 10000, 1) + '万' : R(x, 0);
+  const pct = (a, b) => b ? R((a / b - 1) * 100, 1) : null;
+  const fmtChg = v => v === null ? '—' : (v > 0 ? '+' : '') + v + '%';
+  const dash = s => `${Math.floor(s / 10000)}-${String(Math.floor(s / 100) % 100).padStart(2, '0')}-${String(s % 100).padStart(2, '0')}`;
+
+  // 转化目标迁移检测：扫码↔加企业微信占比是否日间大幅变化 → CTCVR/CPA 不可同比
+  function detectTargetMigration(raw, ctx) {
+    if (!raw.targetmix) return null;
+    const agg = {};
+    raw.targetmix.forEach(o => { const dt = String(o.dt), t = o.tgt || '未知'; (agg[dt] = agg[dt] || {})[t] = { imp: N(o.imp), cv: N(o.cv), scan: N(o.scan), wx: N(o.wx), erev: N(o.erev), cust: N(o.客户数) }; });
+    const D = String(ctx.D), P = String(ctx.P);
+    if (!agg[D] || !agg[P]) return null;
+    const share = (a, t) => { const tot = Object.values(a).reduce((s, x) => s + x.imp, 0); return tot ? (a[t] ? a[t].imp : 0) / tot * 100 : 0; };
+    const scanD = share(agg[D], '扫码'), scanP = share(agg[P], '扫码');
+    const wxKey = Object.keys(agg[D]).find(k => k.includes('加')) || '加企业微信';
+    const wxD = share(agg[D], wxKey), wxP = share(agg[P], wxKey);
+    const shift = Math.abs(scanD - scanP);
+    if (shift < 8) return null; // 占比变化<8pp 不触发
+    const rows = [P, D].map(dt => Object.entries(agg[dt]).filter(([t]) => t === '扫码' || t.includes('加')).map(([t, x]) => ({ dt, 目标: t, 客户数: x.cust, 曝光: x.imp, CTCVR: x.imp ? R(x.cv / x.imp * 100, 3) : 0, CPA出价: x.cv ? R(x.erev / x.cv, 1) : 0, 扫码加微率: x.scan ? R(x.wx / x.scan * 100, 1) : null }))).flat();
+    return { scanP: R(scanP, 1), scanD: R(scanD, 1), wxP: R(wxP, 1), wxD: R(wxD, 1), shift: R(shift, 1), rows };
+  }
+
+  // ---------- 指标计算 ----------
+  const M = (o, p) => ({ imp: N(o['imp_' + p]), clk: N(o['clk_' + p]), cv: N(o['cv_' + p]), rr: N(o['rrev_' + p]), er: N(o['erev_' + p]), wx: N(o['wx_' + p] || 0), scan: N(o['scan_' + p] || 0) });
+  const met = (m, days = 1) => ({ imp: m.imp / days, er: m.er / days, rr: m.rr / days, cv: m.cv / days,
+    cpm: m.imp ? m.er / m.imp * 1000 : 0, over: m.er ? (m.rr / m.er - 1) * 100 : 0,
+    ctcvr: m.imp ? m.cv / m.imp * 100 : 0, cpa: m.cv ? m.er / m.cv : 0,
+    ctr: m.imp ? m.clk / m.imp * 100 : 0, cvr: m.clk ? m.cv / m.clk * 100 : 0,
+    wxc: m.wx ? m.er / m.wx : 0, scanwx: m.scan ? m.wx / m.scan * 100 : null });
+
+  function analyze(raw, ctx) {
+    const out = { date: dash(ctx.D), summary: [], todo: [] };
+    // 大盘
+    const dly = raw.daily.map(o => ({ dt: String(o.dt), max_hh: N(o.max_hh), dau: N(o.dau), imp: N(o.imp), cv: N(o.cv), rrev: N(o.rrev), erev: N(o.erev), algo: N(o.algo), req: N(o.req), boom: N(o.boom), wool: N(o.wool), dupf: N(o.dupf) }));
+    dly.forEach(r => { r.cpm = r.imp ? r.erev / r.imp * 1000 : 0; r.over = r.erev ? (r.rrev / r.erev - 1) * 100 : 0; r.ctcvr = r.imp ? r.cv / r.imp * 100 : 0; r.pvdau = r.dau ? r.imp / r.dau * 100 : 0; r.fill = r.req ? r.imp / r.req * 100 : 0; r.boomr = r.cv ? r.boom / r.cv * 100 : 0; });
+    const cur = dly.find(r => r.dt == ctx.D), prev = dly.find(r => r.dt == ctx.P);
+    if (!cur) throw new Error(`${dash(ctx.D)} 无数据（ODPS T+1，当日数据可能未产出）`);
+    out.rt = ctx.RT; out.maxHh = ctx.maxHh;
+    out.incomplete = (ctx.RT || cur.max_hh < 23) ? cur.max_hh : null;
+    out.migration = detectTargetMigration(raw, ctx);
+    const wRows = dly.filter(r => r.dt != ctx.D);
+    const wavg = {}; ['erev', 'rrev', 'imp', 'dau', 'cv'].forEach(k => wavg[k] = wRows.reduce((s, r) => s + r[k], 0) / (wRows.length || 1));
+    wavg.cpm = wavg.imp ? wavg.erev / wavg.imp * 1000 : 0;
+    out.daily = dly; out.cur = cur; out.prev = prev; out.wavg = wavg;
+    out.mkt = { erev_chg_p: prev ? pct(cur.erev, prev.erev) : null, erev_chg_w: pct(cur.erev, wavg.erev), cpm_chg_p: prev ? pct(cur.cpm, prev.cpm) : null, cpm_chg_w: pct(cur.cpm, wavg.cpm), dau_chg_w: pct(cur.dau, wavg.dau) };
+    // 行业
+    out.industry = raw.industry.map(o => { const d = met(M(o, 'd')), p = met(M(o, 'p')), w = met(M(o, 'w'), 7);
+      return { 行业: o['行业'], erev: R(d.er, 0), cpm_d: R(d.cpm), cpm_p: R(p.cpm), cpm_w: R(w.cpm), cpm_chg_p: pct(d.cpm, p.cpm), cpm_chg_w: pct(d.cpm, w.cpm), over_d: R(d.over, 1), ctcvr_d: R(d.ctcvr, 3), ctcvr_p: R(p.ctcvr, 3), cpa_d: R(d.cpa, 1), cpa_p: R(p.cpa, 1), erev_chg_p: pct(d.er, p.er), erev_chg_w: pct(d.er, w.er) };
+    }).filter(i => i.erev > 0 || i.cpm_p > 0).sort((a, b) => b.erev - a.erev);
+    // 分层分解（CPM 异常的行业）
+    out.layer = {};
+    out.industry.filter(i => i.行业 && i.行业 !== 'null' && i.erev > 10000 && i.cpm_chg_p !== null && Math.abs(i.cpm_chg_p) > 10).forEach(I => {
+      const ls = raw.layer.filter(o => o['行业'] === I.行业);
+      const tD = ls.reduce((s, o) => s + N(o.imp_d), 0), tP = ls.reduce((s, o) => s + N(o.imp_p), 0);
+      if (!tD || !tP) return;
+      const rows = ls.map(o => { const d = M(o, 'd'), p = M(o, 'p'); return { 层: o['广告行为分层'], 占比_d: R(d.imp / tD * 100, 1), 占比_p: R(p.imp / tP * 100, 1), cpm_d: R(d.imp ? d.er / d.imp * 1000 : 0), cpm_p: R(p.imp ? p.er / p.imp * 1000 : 0) }; });
+      let st = 0, ef = 0; rows.forEach(r => { st += (r.占比_d - r.占比_p) / 100 * r.cpm_p; ef += r.占比_p / 100 * (r.cpm_d - r.cpm_p); });
+      const delta = R(I.cpm_d - I.cpm_p);
+      out.layer[I.行业] = { rows, delta, struct: R(st), eff: R(ef), main: Math.abs(ef) >= Math.abs(st) ? '效率效应（分层内CPM变化）' : '结构效应（分层占比变化）' };
+    });
+    // 代理商
+    let ag = raw.agent.map(o => { const d = met(M(o, 'd')), p = met(M(o, 'p')), w = met(M(o, 'w'), 7);
+      return { 代理商: o['代理商'], erev_d: R(d.er, 0), erev_p: R(p.er, 0), erev_w: R(w.er, 0), cpm_d: R(d.cpm), cpm_p: R(p.cpm), over_d: R(d.over, 1), ctcvr_d: R(d.ctcvr, 3), erev_chg_p: pct(d.er, p.er) }; }).sort((a, b) => b.erev_d - a.erev_d);
+    const agRankP = [...ag].sort((a, b) => b.erev_p - a.erev_p).map(x => x.代理商);
+    out.agents = ag.slice(0, 14).map((a, i) => ({ ...a, rank: i + 1, rank_chg: agRankP.indexOf(a.代理商) - i }));
+    // 客户
+    let cl = raw.client.map(o => { const d = met(M(o, 'd')), p = met(M(o, 'p')), w = met(M(o, 'w'), 7);
+      return { 客户: o['客户名称'], 行业: o['行业'], 代理商: o['代理商'], 落地页: o['落地页'], 目标: o['目标'], 企微: N(o['企微']), erev_d: R(d.er, 0), erev_p: R(p.er, 0), erev_w: R(w.er, 0), cpm_d: R(d.cpm), cpm_p: R(p.cpm), over_d: R(d.over, 1), ctcvr_d: R(d.ctcvr, 3), ctcvr_p: R(p.ctcvr, 3), cpa_d: R(d.cpa, 1), cpa_p: R(p.cpa, 1), wxc_d: R(d.wxc, 1), scanwx: d.scanwx === null ? null : R(d.scanwx, 1), wx_d: N(o.wx_d), eve_d: R(N(o.eve_d), 0), eve_p: R(N(o.eve_p), 0), ctr_d: R(d.ctr, 2), ctr_p: R(p.ctr, 2), cvr_d: R(d.cvr, 2), cvr_p: R(p.cvr, 2) }; }).sort((a, b) => b.erev_d - a.erev_d);
+    const clRankP = [...cl].sort((a, b) => b.erev_p - a.erev_p).map(x => x.客户);
+    out.clients = cl.slice(0, 22).map((c, i) => ({ ...c, rank: i + 1, rank_chg: clRankP.indexOf(c.客户) - i }));
+    out.xqjy = cl.filter(c => c.行业 === '兴趣教育');
+    out.allClients = cl;
+    out.newClients = cl.filter(c => c.erev_d > 500 && c.erev_w === 0 && c.erev_p === 0).map(c => ({ 客户: c.客户, 行业: c.行业, erev: c.erev_d, cpm: c.cpm_d, over: c.over_d }));
+    out.stopped = cl.filter(c => c.erev_p > 5000 && c.erev_d < c.erev_p * 0.2).map(c => ({ 客户: c.客户, 行业: c.行业, erev_p: c.erev_p, erev_d: c.erev_d }));
+    out.eveDrop = cl.filter(c => c.eve_p > 5000 && c.eve_d < c.eve_p * 0.5).map(c => ({ 客户: c.客户, eve_p: c.eve_p, eve_d: c.eve_d }));
+    // 流量类型
+    out.traffic = raw.traffic.map(o => { const d = met(M(o, 'd')), p = met(M(o, 'p')); return { 类型: o['流量类型'], erev_d: R(d.er, 0), cpm_d: R(d.cpm), cpm_p: R(p.cpm), over_d: R(d.over, 1), over_p: R(p.over, 1) }; }).sort((a, b) => b.erev_d - a.erev_d);
+    const tot = out.traffic.reduce((s, t) => s + t.erev_d, 0); out.traffic.forEach(t => t.占比 = R(t.erev_d / (tot || 1) * 100, 1));
+    // 分时
+    out.hourly = raw.hourly.map(o => { const d = met(M(o, 'd')), p = met(M(o, 'p')), w = met(M(o, 'w'), 7); return { hh: o.hh, erev_d: R(d.er, 0), erev_p: R(p.er, 0), erev_w: R(w.er, 0), cpm_d: R(d.cpm, 1), cpm_p: R(p.cpm, 1), cpm_w: R(w.cpm, 1) }; });
+    const hsum = (rows, k, lo, hi) => rows.filter(r => N(r.hh) >= lo && N(r.hh) <= hi).reduce((s, r) => s + r[k], 0);
+    out.daypart = { day_d: hsum(out.hourly, 'erev_d', 6, 18), day_p: hsum(out.hourly, 'erev_p', 6, 18), eve_d: hsum(out.hourly, 'erev_d', 19, 23), eve_p: hsum(out.hourly, 'erev_p', 19, 23) };
+    // 调价
+    const bids = raw.bids.map(o => ({ c: o.c, o: N(o.o), v: N(o.v), hh: o.hh })).filter(b => b.o > 0 && b.v > 0);
+    const by = {}; bids.forEach(b => { by[b.c] = by[b.c] || { up: 0, down: 0, sum: 0, n: 0 }; const d = b.v - b.o; if (d > 0) by[b.c].up++; else if (d < 0) by[b.c].down++; by[b.c].sum += d; by[b.c].n++; });
+    const judge = x => { const r = x.down ? x.up / x.down : (x.up ? 9 : 1); if (x.down / (x.n || 1) > 0.7) return '🔴 全面降价'; if (r > 1.5) return '🟢 加价抢量'; if (r < 0.67) return '🔴 竞争力下降'; return '🟡 中性'; };
+    out.bidsTotal = { n: bids.length, up: bids.filter(b => b.v > b.o).length, down: bids.filter(b => b.v < b.o).length };
+    out.bidsByClient = Object.entries(by).map(([c, v]) => ({ 客户: c, 调价: v.n, 提价: v.up, 降价: v.down, 均变: R(v.sum / v.n, 2), 判定: judge(v) })).sort((a, b) => b.调价 - a.调价).slice(0, 12);
+    const downs = bids.filter(b => b.v < b.o).map(b => ({ ...b, drop: R(b.o - b.v, 2) }));
+    out.bidDownDist = { '大幅(>10元)': downs.filter(d => d.drop > 10).length, '中幅(5-10元)': downs.filter(d => d.drop >= 5 && d.drop <= 10).length, '小幅(2-5元)': downs.filter(d => d.drop >= 2 && d.drop < 5).length, '微幅(<2元)': downs.filter(d => d.drop < 2).length };
+    out.bidExtremes = downs.sort((a, b) => b.drop - a.drop).slice(0, 8).map(d => ({ 客户: d.c, 前: d.o, 后: d.v, 降幅: d.drop, 时段: d.hh + 'h' }));
+    // 开停
+    const stBy = {}; raw.statusops.forEach(o => { const c = o.c, stop = String(o.v).includes('未投放'); stBy[c] = stBy[c] || { 停: 0, 恢复: 0, 晚停: 0 }; stBy[c][stop ? '停' : '恢复'] += N(o.n); if (stop && N(o.hh) >= 17) stBy[c].晚停 += N(o.n); });
+    out.statusByClient = Object.entries(stBy).map(([c, v]) => ({ 客户: c, ...v })).sort((a, b) => b.停 - a.停).slice(0, 15);
+    out.logsum = raw.logsum.slice(0, 20);
+    // ---------- 自动重点摘要 ----------
+    const sum = out.summary;
+    const mig = out.migration;
+    if (mig) sum.push({ t: `⚠️转化目标迁移：扫码占比 ${mig.scanP}%→${mig.scanD}%、加企业微信 ${mig.wxP}%→${mig.wxD}%（曝光占比变化 ${mig.shift}pp）`, r: `加微是扫码的下游动作（转化数约为扫码的1/4-1/5），混合 CTCVR/CPA/超成本因口径切换跨日不可同比——非效率恶化。需改"分目标"口径跟踪。`, a: '转化目标同比指标今日挂起；扫码客户看扫码CTCVR，加微客户看加微成本+扫码-加微率' });
+    const migNote = mig ? '；⚠️注意今日存在转化目标迁移，转化类指标含口径切换影响，勿单独判为效率问题' : '';
+    const mAbn = (out.mkt.cpm_chg_w !== null && Math.abs(out.mkt.cpm_chg_w) > 10) || (out.mkt.erev_chg_w !== null && Math.abs(out.mkt.erev_chg_w) > 10);
+    if (mAbn) {
+      const topInd = out.industry[0] || {};
+      const decl = cl.filter(c => c.erev_p - c.erev_d > 10000).sort((a, b) => (b.erev_p - b.erev_d) - (a.erev_p - a.erev_d)).slice(0, 3).map(c => `${c.客户}${W(c.erev_d - c.erev_p)}`).join('、');
+      const rise = cl.filter(c => c.erev_d - c.erev_p > 10000).sort((a, b) => (b.erev_d - b.erev_p) - (a.erev_d - a.erev_p)).slice(0, 3).map(c => `${c.客户}+${W(c.erev_d - c.erev_p)}`).join('、');
+      sum.push({ t: `大盘异常：效率收入 ${W(cur.erev)}（环比 ${fmtChg(out.mkt.erev_chg_p)}，vs 7日均 ${fmtChg(out.mkt.erev_chg_w)}），效率CPM ${R(cur.cpm)}（vs 7日均 ${fmtChg(out.mkt.cpm_chg_w)}）`, r: `主力行业 ${topInd.行业 || '—'} 收入环比 ${fmtChg(topInd.erev_chg_p)}；缩量客户：${decl || '无>1万级'}；放量客户：${rise || '无>1万级'}；广告DAU vs 7日均 ${fmtChg(out.mkt.dau_chg_w)}（${Math.abs(out.mkt.dau_chg_w || 0) < 5 ? '流量端平稳，问题在变现端' : '流量端亦有波动'}）`, a: '按下方分层分解判断结构/效率效应，跟进缩量客户的调价/停投记录' });
+    }
+    out.industry.filter(i => i.行业 && i.行业 !== 'null' && i.erev > 10000).forEach(i => {
+      if (i.cpm_chg_p !== null && Math.abs(i.cpm_chg_p) > 10) {
+        const L = out.layer[i.行业];
+        sum.push({ t: `${i.行业} 效率CPM ${i.cpm_chg_p > 0 ? '上行' : '下行'} ${fmtChg(i.cpm_chg_p)}（${i.cpm_p}→${i.cpm_d}）`, r: (L ? `分解：结构效应 ${L.struct}、效率效应 ${L.eff} → 主因${L.main}` : '量级有限未做分解') + migNote, a: i.cpm_chg_p < 0 ? '核对头部客户调价方向与停投记录（见调价/开停板块）' : '确认是否客户主动提价抢量，关注超成本' });
+      }
+      if (i.erev_chg_p !== null && Math.abs(i.erev_chg_p) > 30) sum.push({ t: `${i.行业} 效率收入 ${fmtChg(i.erev_chg_p)}（当日 ${W(i.erev)}）`, r: '行业级放/缩量，需客户维度归因', a: '查该行业 Top 客户增减量与变更日志' });
+    });
+    cl.filter(c => c.erev_d > 5000).forEach(c => {
+      if (c.over_d > 15) sum.push({ t: `${c.客户} 超成本 ${c.over_d}% ⚠️`, r: c.行业 === '兴趣教育' ? '兴趣教育无包装系数，超成本来自兜底CPM' : '超出包装系数预期(约5%)，关注客户成本反馈', a: '拉近7天趋势确认是否持续，必要时人工干预' });
+      const isWx = (c.行业 === '中医' || c.行业 === '大健康') && c.落地页 === '自建站';
+      if (isWx && c.企微 === 1 && c.wxc_d > 90 && c.wx_d > 50) { const root = (c.scanwx !== null && c.scanwx < 20) ? `扫码-加微率 ${c.scanwx}% <20% → 落地页扫码→加微链路断裂（非出价问题）` : (c.cpa_d > 22 ? `CPA出价 ${c.cpa_d} >22 → 出价偏高` : '出价与扫码加微率均临界，需人工判断'); sum.push({ t: `${c.客户} 加微成本 ${c.wxc_d} ⚠️（阈值90）`, r: root, a: 'push 代理商检查落地页/出价' }); }
+    });
+    if (out.stopped.length) sum.push({ t: `疑似停投：${out.stopped.map(s => `${s.客户}(${W(s.erev_p)}→${W(s.erev_d)})`).join('、')}`, r: '前日有量当日<20%，对照开停板块确认停投记录', a: '未恢复客户 push 运营跟进' });
+    out.summary = sum.slice(0, 6);
+    out.todo = sum.slice(0, 5).map(s => s.a);
+    if (!sum.length) out.summary = [{ t: '无明显异常', r: '核心指标均在阈值内（CPM±10%、超成本<15%、消耗环比±30%）', a: '—' }];
+    return out;
+  }
+
+  // ---------- 渲染（纯字符串，样式类由页面提供）----------
+  const flagCpm = (d, p) => { const c = pct(d, p); return c === null ? '' : (Math.abs(c) > 15 ? ' ⚠️' : ''); };
+  const fOver = v => v > 10 ? `<span class="warn">${v}%</span>` : v + '%';
+  const tbl = (heads, rows) => `<table><tr>${heads.map(h => `<th>${h}</th>`).join('')}</tr>${rows.map(r => `<tr>${r.map(c => `<td>${c ?? '—'}</td>`).join('')}</tr>`).join('')}</table>`;
+  const chgCell = v => v === null ? '—' : `<span class="${v > 0 ? 'up' : 'down'}">${fmtChg(v)}</span>`;
+
+  function render(o) {
+    const cur = o.cur;
+    let h = '';
+    if (o.rt) h += `<div class="sumcard">🟡 实时口径：当日数据截至 ${o.incomplete}h，前一日/7日均已自动按 hh≤${o.incomplete} 同口径对比。小客户阈值降至1000。转化（扫码/加微）回传可能尚未完整，转化类指标偏低属正常。</div>`;
+    else if (o.incomplete) h += `<div class="sumcard">⚠️ 当日数据仅到 ${o.incomplete}h，非全天口径，对比结论仅供参考</div>`;
+    if (o.migration) {
+      const m = o.migration;
+      h += `<div class="sumcard">🔴 <b>转化目标迁移检测</b>：扫码曝光占比 ${m.scanP}%→${m.scanD}%、加企业微信 ${m.wxP}%→${m.wxD}%（变化 ${m.shift}pp）。混合 CTCVR/CPA/超成本跨口径不可同比，下方转化类指标含此影响。</div>`;
+      h += tbl(['日期', '转化目标', '客户数', '曝光', 'CTCVR', 'CPA出价', '扫码-加微率'], m.rows.map(r => [r.dt, r.目标, r.客户数, W(r.曝光), r.CTCVR, r.CPA出价, r.扫码加微率 === null ? '—' : r.扫码加微率 + '%']));
+    }
+    h += `<h2>一、重点摘要</h2>` + o.summary.map(s => `<div class="sumcard"><b>${s.t}</b><br>根因：${s.r}<br>建议：${s.a}</div>`).join('');
+    h += `<h2>二、大盘总览（8天趋势）</h2>` + tbl(['日期', '效率收入', '业务收入', '效率CPM', '超成本', '广告DAU', 'PV/DAU', 'CTCVR', '填充率', '炸群占比'],
+      o.daily.map(r => [r.dt == o.daily[o.daily.length - 1].dt ? `<b>${r.dt}</b>` : r.dt, W(r.erev), W(r.rrev), R(r.cpm, 1), fOver(R(r.over, 1)), W(r.dau), R(r.pvdau, 1) + '%', R(r.ctcvr, 3), R(r.fill, 1) + '%', R(r.boomr, 1) + '%']));
+    h += `<p>当日 vs 前一日：效率收入 ${chgCell(o.mkt.erev_chg_p)}｜效率CPM ${chgCell(o.mkt.cpm_chg_p)}；vs 7日均值：效率收入 ${chgCell(o.mkt.erev_chg_w)}｜效率CPM ${chgCell(o.mkt.cpm_chg_w)}｜DAU ${chgCell(o.mkt.dau_chg_w)}。<span class="note">阈值：>10% 即异常需下钻；炸群 15-21% 属正常区间。</span></p>`;
+    h += tbl(['流量类型', '效率收入', '占比', '效率CPM', 'CPM前日', '超成本', '超成本前日'], o.traffic.map(t => [t.类型, W(t.erev_d), t.占比 + '%', t.cpm_d, t.cpm_p, fOver(t.over_d), t.over_p + '%']));
+    h += `<h2>三、分行业分析</h2>` + tbl(['行业', '效率收入', '收入环比', '收入vs7日均', '效率CPM', 'CPM环比', 'CPMvs7日均', '超成本', 'CTCVR', 'CPA'],
+      o.industry.map(i => [i.行业, W(i.erev), chgCell(i.erev_chg_p), chgCell(i.erev_chg_w), i.cpm_d, chgCell(i.cpm_chg_p), chgCell(i.cpm_chg_w), fOver(i.over_d), i.ctcvr_d, i.cpa_d]));
+    Object.entries(o.layer).forEach(([ind, L]) => {
+      h += `<p><b>${ind} 分层分解</b>：ΔCPM ${L.delta}，结构效应 ${L.struct}，效率效应 ${L.eff} → <b>主因${L.main}</b></p>` + tbl(['分层', '曝光占比(当日)', '占比(前日)', 'CPM(当日)', 'CPM(前日)'], L.rows.map(r => [r.层, r.占比_d + '%', r.占比_p + '%', r.cpm_d, r.cpm_p]));
+    });
+    h += `<h2>四、代理商分析</h2>` + tbl(['#', '代理商', '效率收入', '环比', '7日均', '效率CPM', '超成本', 'CTCVR', '变化'],
+      o.agents.map(a => [a.rank, a.代理商, W(a.erev_d), chgCell(a.erev_chg_p), W(a.erev_w), a.cpm_d + flagCpm(a.cpm_d, a.cpm_p), fOver(a.over_d), a.ctcvr_d, a.rank_chg > 0 ? '↑' + a.rank_chg : a.rank_chg < 0 ? '↓' + (-a.rank_chg) : '=']));
+    h += `<p class="note">效率收入<5000 的代理商不做归因判断。</p>`;
+    h += `<h2>五、客户分析</h2>` + tbl(['#', '客户', '行业', '代理商', '效率收入', '环比', '效率CPM', '超成本', 'CTCVR', '成本监控', '晚间(当/前)', '变化'],
+      o.clients.map(c => { const cost = c.行业 === '兴趣教育' ? `转化成本${c.cpa_d}` : (c.企微 === 0 ? '企微未接入' : (c.wx_d ? `加微${c.wxc_d}${c.wxc_d > 90 ? ' ⚠️' : ''}` : '加微0⚠️'));
+        return [c.rank, c.客户, c.行业, (c.代理商 || '').slice(0, 8), W(c.erev_d), chgCell(pct(c.erev_d, c.erev_p)), c.cpm_d + flagCpm(c.cpm_d, c.cpm_p), fOver(c.over_d), c.ctcvr_d, cost, `${W(c.eve_d)}/${W(c.eve_p)}`, c.rank_chg > 0 ? '↑' + c.rank_chg : c.rank_chg < 0 ? '↓' + (-c.rank_chg) : '=']; }));
+    h += `<p><b>兴趣教育全量</b>（量小也展示）：${o.xqjy.map(c => `${c.客户} ${W(c.erev_d)}(${fmtChg(pct(c.erev_d, c.erev_p))}${c.erev_d < 5000 ? '，量小仅供参考' : ''})`).join('｜') || '无'}</p>`;
+    if (o.newClients.length) h += `<p><b>新增客户</b>：${o.newClients.map(c => `${c.客户}(${c.行业}) ${W(c.erev)} CPM${c.cpm} 超成本${c.over}%`).join('；')}</p>`;
+    if (o.stopped.length) h += `<p><b>疑似停投</b>：${o.stopped.map(s => `${s.客户} ${W(s.erev_p)}→${W(s.erev_d)}`).join('；')}</p>`;
+    if (o.eveDrop.length) h += `<p><b>晚间异常收缩</b>（晚间消耗<前日50%）：${o.eveDrop.map(s => `${s.客户} ${W(s.eve_p)}→${W(s.eve_d)}`).join('；')}</p>`;
+    h += `<h2>六、异常深度分析</h2>`;
+    h += `<p><b>6-1 分时</b>：白天(6-18h) ${W(o.daypart.day_d)} vs 前日 ${W(o.daypart.day_p)}（${fmtChg(pct(o.daypart.day_d, o.daypart.day_p))}）；晚间(19-23h) ${W(o.daypart.eve_d)} vs ${W(o.daypart.eve_p)}（${fmtChg(pct(o.daypart.eve_d, o.daypart.eve_p))}）</p>`;
+    h += tbl(['时段', '效率收入', '前日', '7日均', 'CPM', 'CPM前日', 'CPM7日均'], o.hourly.filter(r => N(r.hh) >= 6).map(r => [r.hh + 'h', W(r.erev_d), W(r.erev_p), W(r.erev_w), r.cpm_d, r.cpm_p, r.cpm_w]));
+    h += `<p><b>6-2 调价方向</b>：总调价 ${o.bidsTotal.n} 次｜提价 ${o.bidsTotal.up}｜降价 ${o.bidsTotal.down}｜提降比 ${o.bidsTotal.down ? R(o.bidsTotal.up / o.bidsTotal.down, 2) : '—'}</p>`;
+    h += tbl(['降价幅度', '次数'], Object.entries(o.bidDownDist));
+    h += tbl(['客户', '总调价', '提价', '降价', '均变(元)', '竞争力判定'], o.bidsByClient.map(b => [b.客户, b.调价, b.提价, b.降价, b.均变, b.判定]));
+    h += `<p>极端降价：</p>` + tbl(['客户', '操作前', '操作后', '降幅', '时段'], o.bidExtremes.map(e => [e.客户, e.前, e.后, e.降幅, e.时段]));
+    h += `<p class="note">提降比仅反映操作频率不代表影响面；优先看 Top 客户与其头部广告。</p>`;
+    h += `<p><b>6-3 开停操作</b>（晚停 = 17h后停投次数）：</p>` + tbl(['客户', '停投', '恢复', '晚间停'], o.statusByClient.map(s => [s.客户, s.停, s.恢复, s.晚停]));
+    h += `<p><b>6-4 操作量 Top</b>：${o.logsum.map(l => `${l.c}·${l.k}×${l.n}`).join('；')}</p>`;
+    h += `<h2>TODO</h2><ol>${o.todo.map(t => `<li>${t}</li>`).join('')}</ol>`;
+    h += `<p class="note">规则引擎自动结论（阈值：CPM±10%、超成本10/15%、消耗环比30/50%、加微成本90、炸群15-21%正常）。深度叙事归因请点「复制给Claude」。</p>`;
+    return h;
+  }
+
+  const api = { analyze, render, detectTargetMigration, _internals: { N, R, W, pct, fmtChg, dash, M, met } };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  root.GLDaily = api;
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>const SAMPLE={"raw": {"daily": [{"dt": 20260709, "max_hh": 23, "dau": 5866133, "imp": 6804714, "clk": 408283, "cv": 54438, "rrev": 2238486, "erev": 1998649, "algo": 9006239, "req": 10006932, "boom": 12521, "wool": 544, "dupf": 1089}, {"dt": 20260710, "max_hh": 23, "dau": 6011379, "imp": 6973200, "clk": 418392, "cv": 55786, "rrev": 2282888, "erev": 2038293, "algo": 9229235, "req": 10254706, "boom": 12831, "wool": 558, "dupf": 1116}, {"dt": 20260711, "max_hh": 23, "dau": 5864353, "imp": 6802650, "clk": 408159, "cv": 54421, "rrev": 2267271, "erev": 2024349, "algo": 9003507, "req": 10003897, "boom": 12517, "wool": 544, "dupf": 1088}, {"dt": 20260712, "max_hh": 23, "dau": 5648140, "imp": 6551842, "clk": 393111, "cv": 52415, "rrev": 2202401, "erev": 1966429, "algo": 8671555, "req": 9635062, "boom": 12055, "wool": 524, "dupf": 1048}, {"dt": 20260713, "max_hh": 23, "dau": 5666077, "imp": 6572649, "clk": 394359, "cv": 52581, "rrev": 2199618, "erev": 1963944, "algo": 8699094, "req": 9665660, "boom": 12094, "wool": 526, "dupf": 1052}, {"dt": 20260714, "max_hh": 23, "dau": 5797151, "imp": 6724695, "clk": 403482, "cv": 53798, "rrev": 2204010, "erev": 1967866, "algo": 8900331, "req": 9889257, "boom": 12373, "wool": 538, "dupf": 1076}, {"dt": 20260715, "max_hh": 23, "dau": 5667170, "imp": 6573917, "clk": 394435, "cv": 52591, "rrev": 2252154, "erev": 2010852, "algo": 8700773, "req": 9667525, "boom": 12096, "wool": 526, "dupf": 1052}, {"dt": 20260716, "max_hh": 23, "dau": 5468348, "imp": 6343284, "clk": 380597, "cv": 50746, "rrev": 1904000, "erev": 1700000, "algo": 8395522, "req": 9328358, "boom": 11672, "wool": 507, "dupf": 1015}], "industry": [{"行业": "中医", "imp_d": 2770270, "clk_d": 166216, "cv_d": 22162, "rrev_d": 885600, "erev_d": 820000, "wx_d": 0, "scan_d": 0, "imp_p": 2396562, "clk_p": 143794, "cv_p": 19172, "rrev_p": 903312, "erev_p": 836400, "wx_p": 0, "scan_p": 0, "imp_w": 17979901, "clk_w": 1106155, "cv_w": 143265, "rrev_w": 6147960, "erev_w": 5958696, "wx_w": 0, "scan_w": 0}, {"行业": "大健康", "imp_d": 2727273, "clk_d": 163636, "cv_d": 21818, "rrev_d": 567000, "erev_d": 540000, "wx_d": 0, "scan_d": 0, "imp_p": 2686829, "clk_p": 161210, "cv_p": 21495, "rrev_p": 578340, "erev_p": 550800, "wx_p": 0, "scan_p": 0, "imp_w": 18443564, "clk_w": 1093525, "cv_w": 145484, "rrev_w": 3908189, "erev_w": 3875597, "wx_w": 0, "scan_w": 0}, {"行业": "兴趣教育", "imp_d": 828571, "clk_d": 49714, "cv_d": 13257, "rrev_d": 87000, "erev_d": 87000, "wx_d": 0, "scan_d": 0, "imp_p": 861553, "clk_p": 51693, "cv_p": 13785, "rrev_p": 88740, "erev_p": 88740, "wx_p": 0, "scan_p": 0, "imp_w": 5920842, "clk_w": 347757, "cv_w": 94053, "rrev_w": 587699, "erev_w": 587544, "wx_w": 0, "scan_w": 0}, {"行业": "电商", "imp_d": 1771429, "clk_d": 106286, "cv_d": 53143, "rrev_d": 69440, "erev_d": 62000, "wx_d": 0, "scan_d": 0, "imp_p": 1860000, "clk_p": 111600, "cv_p": 55800, "rrev_p": 70829, "erev_p": 63240, "wx_p": 0, "scan_p": 0, "imp_w": 12506838, "clk_w": 743560, "cv_w": 379974, "rrev_w": 484260, "erev_w": 427048, "wx_w": 0, "scan_w": 0}, {"行业": "金融", "imp_d": 1009615, "clk_d": 60577, "cv_d": 5048, "rrev_d": 216300, "erev_d": 210000, "wx_d": 0, "scan_d": 0, "imp_p": 1020000, "clk_p": 61200, "cv_p": 5100, "rrev_p": 220626, "erev_p": 214200, "wx_p": 0, "scan_p": 0, "imp_w": 6889503, "clk_w": 424522, "cv_w": 35239, "rrev_w": 1559540, "erev_w": 1496983, "wx_w": 0, "scan_w": 0}], "layer": [{"行业": "中医", "广告行为分层": "有转化", "imp_d": 900000, "clk_d": 0, "cv_d": 0, "rrev_d": 486000, "erev_d": 486000, "wx_d": 0, "scan_d": 0, "imp_p": 1050000, "clk_p": 0, "cv_p": 0, "rrev_p": 567000, "erev_p": 567000, "wx_p": 0, "scan_p": 0, "imp_w": 6107505, "clk_w": 0, "cv_w": 0, "rrev_w": 3307284, "erev_w": 3398996, "wx_w": 0, "scan_w": 0}, {"行业": "中医", "广告行为分层": "有点击无转化", "imp_d": 400000, "clk_d": 0, "cv_d": 0, "rrev_d": 235000, "erev_d": 235000, "wx_d": 0, "scan_d": 0, "imp_p": 430000, "clk_p": 0, "cv_p": 0, "rrev_p": 253000, "erev_p": 253000, "wx_p": 0, "scan_p": 0, "imp_w": 2859264, "clk_w": 0, "cv_w": 0, "rrev_w": 1620489, "erev_w": 1670701, "wx_w": 0, "scan_w": 0}, {"行业": "中医", "广告行为分层": "有曝光无点击", "imp_d": 1200000, "clk_d": 0, "cv_d": 0, "rrev_d": 360000, "erev_d": 360000, "wx_d": 0, "scan_d": 0, "imp_p": 980000, "clk_p": 0, "cv_p": 0, "rrev_p": 314000, "erev_p": 314000, "wx_p": 0, "scan_p": 0, "imp_w": 8370570, "clk_w": 0, "cv_w": 0, "rrev_w": 2514778, "erev_w": 2553093, "wx_w": 0, "scan_w": 0}, {"行业": "中医", "广告行为分层": "无曝光", "imp_d": 1300000, "clk_d": 0, "cv_d": 0, "rrev_d": 100000, "erev_d": 100000, "wx_d": 0, "scan_d": 0, "imp_p": 900000, "clk_p": 0, "cv_p": 0, "rrev_p": 70000, "erev_p": 70000, "wx_p": 0, "scan_p": 0, "imp_w": 9207110, "clk_w": 0, "cv_w": 0, "rrev_w": 687937, "erev_w": 693604, "wx_w": 0, "scan_w": 0}], "client": [{"客户名称": "客户A", "行业": "兴趣教育", "代理商": "代理商甲", "落地页": "半屏小程序", "目标": "扫码", "企微": 0, "imp_d": 1000000, "clk_d": 60000, "cv_d": 16000, "rrev_d": 127440, "erev_d": 118000, "wx_d": 0, "scan_d": 0, "imp_p": 1009804, "clk_p": 60588, "cv_p": 16157, "rrev_p": 131263, "erev_p": 121540, "wx_p": 0, "scan_p": 0, "imp_w": 6978549, "clk_w": 408846, "cv_w": 108569, "rrev_w": 860604, "erev_w": 843725, "wx_w": 0, "scan_w": 0, "eve_d": 59000, "eve_p": 60770}, {"客户名称": "客户B", "行业": "中医", "代理商": "代理商乙", "落地页": "自建站", "目标": "加企业微信", "企微": 1, "imp_d": 535714, "clk_d": 32143, "cv_d": 4821, "rrev_d": 266700, "erev_d": 210000, "wx_d": 9500, "scan_d": 52000, "imp_p": 540966, "clk_p": 32458, "cv_p": 4869, "rrev_p": 274701, "erev_p": 216300, "wx_p": 8550, "scan_p": 52000, "imp_w": 3717283, "clk_w": 231687, "cv_w": 32615, "rrev_w": 1859311, "erev_w": 1475814, "wx_w": 68540, "scan_w": 373297, "eve_d": 105000, "eve_p": 108150}, {"客户名称": "客户C", "行业": "大健康", "代理商": "代理商甲", "落地页": "自建站", "目标": "加企业微信", "企微": 1, "imp_d": 785714, "clk_d": 47143, "cv_d": 9429, "rrev_d": 173250, "erev_d": 165000, "wx_d": 7200, "scan_d": 41000, "imp_p": 793417, "clk_p": 47605, "cv_p": 9521, "rrev_p": 178448, "erev_p": 169950, "wx_p": 6480, "scan_p": 41000, "imp_w": 5660151, "clk_w": 324151, "cv_w": 65556, "rrev_w": 1199048, "erev_w": 1190499, "wx_w": 52246, "scan_w": 278985, "eve_d": 82500, "eve_p": 84975}, {"客户名称": "客户D", "行业": "中医", "代理商": "代理商丙", "落地页": "自建站", "目标": "加企业微信", "企微": 1, "imp_d": 320000, "clk_d": 19200, "cv_d": 3200, "rrev_d": 101760, "erev_d": 96000, "wx_d": 980, "scan_d": 8600, "imp_p": 323137, "clk_p": 19388, "cv_p": 3231, "rrev_p": 104813, "erev_p": 98880, "wx_p": 882, "scan_p": 8600, "imp_w": 2181978, "clk_w": 131518, "cv_w": 21922, "rrev_w": 711463, "erev_w": 676791, "wx_w": 6730, "scan_w": 57812, "eve_d": 48000, "eve_p": 49440}, {"客户名称": "客户E", "行业": "中医", "代理商": "代理商乙", "落地页": "自建站", "目标": "加企业微信", "企微": 1, "imp_d": 195122, "clk_d": 11707, "cv_d": 1366, "rrev_d": 117040, "erev_d": 88000, "wx_d": 4200, "scan_d": 22000, "imp_p": 197035, "clk_p": 11822, "cv_p": 1379, "rrev_p": 120551, "erev_p": 90640, "wx_p": 3780, "scan_p": 22000, "imp_w": 1356997, "clk_w": 81092, "cv_w": 9613, "rrev_w": 848977, "erev_w": 625388, "wx_w": 29436, "scan_w": 155449, "eve_d": 44000, "eve_p": 45320}, {"客户名称": "客户F", "行业": "大健康", "代理商": "代理商丁", "落地页": "自建站", "目标": "加企业微信", "企微": 1, "imp_d": 404494, "clk_d": 24270, "cv_d": 4449, "rrev_d": 76320, "erev_d": 72000, "wx_d": 5100, "scan_d": 29000, "imp_p": 408460, "clk_p": 24508, "cv_p": 4493, "rrev_p": 78610, "erev_p": 74160, "wx_p": 4590, "scan_p": 29000, "imp_w": 2871370, "clk_w": 163828, "cv_w": 32138, "rrev_w": 546206, "erev_w": 519100, "wx_w": 36551, "scan_w": 201252, "eve_d": 36000, "eve_p": 37080}, {"客户名称": "客户G", "行业": "金融", "代理商": "代理商甲", "落地页": "H5", "目标": "下单", "企微": 0, "imp_d": 576923, "clk_d": 34615, "cv_d": 2885, "rrev_d": 123600, "erev_d": 120000, "wx_d": 0, "scan_d": 0, "imp_p": 582579, "clk_p": 34955, "cv_p": 2913, "rrev_p": 127308, "erev_p": 123600, "wx_p": 0, "scan_p": 0, "imp_w": 4005823, "clk_w": 234620, "cv_w": 20412, "rrev_w": 834901, "erev_w": 810926, "wx_w": 0, "scan_w": 0, "eve_d": 60000, "eve_p": 61800}, {"客户名称": "客户H", "行业": "电商", "代理商": "代理商丙", "落地页": "H5", "目标": "下单", "企微": 0, "imp_d": 1285714, "clk_d": 77143, "cv_d": 38571, "rrev_d": 50400, "erev_d": 45000, "wx_d": 0, "scan_d": 0, "imp_p": 1298319, "clk_p": 77899, "cv_p": 38950, "rrev_p": 51912, "erev_p": 46350, "wx_p": 0, "scan_p": 0, "imp_w": 8884837, "clk_w": 520672, "cv_w": 259202, "rrev_w": 342957, "erev_w": 304957, "wx_w": 0, "scan_w": 0, "eve_d": 22500, "eve_p": 23175}, {"客户名称": "客户I", "行业": "中医", "代理商": "代理商丁", "落地页": "自建站", "目标": "加企业微信", "企微": 1, "imp_d": 18750, "clk_d": 1125, "cv_d": 188, "rrev_d": 6540, "erev_d": 6000, "wx_d": 300, "scan_d": 2600, "imp_p": 159314, "clk_p": 9559, "cv_p": 1593, "rrev_p": 56680, "erev_p": 52000, "wx_p": 270, "scan_p": 2600, "imp_w": 135180, "clk_w": 7947, "cv_w": 1279, "rrev_w": 44873, "erev_w": 41487, "wx_w": 2077, "scan_w": 17651, "eve_d": 800, "eve_p": 26000}, {"客户名称": "客户J", "行业": "兴趣教育", "代理商": "代理商乙", "落地页": "半屏小程序", "目标": "扫码", "企微": 0, "imp_d": 326531, "clk_d": 19592, "cv_d": 5551, "rrev_d": 31360, "erev_d": 32000, "wx_d": 0, "scan_d": 0, "imp_p": 329732, "clk_p": 19784, "cv_p": 5605, "rrev_p": 32301, "erev_p": 32960, "wx_p": 0, "scan_p": 0, "imp_w": 2349523, "clk_w": 142554, "cv_w": 38751, "rrev_w": 219236, "erev_w": 216579, "wx_w": 0, "scan_w": 0, "eve_d": 16000, "eve_p": 16480}], "agent": [{"代理商": "代理商甲", "imp_d": 2333333, "clk_d": 140000, "cv_d": 18667, "rrev_d": 593600, "erev_d": 560000, "wx_d": 0, "scan_d": 0, "imp_p": 2378641, "clk_p": 142718, "cv_p": 19029, "rrev_p": 623280, "erev_p": 588000, "wx_p": 0, "scan_p": 0, "imp_w": 16025947, "clk_w": 1005782, "cv_w": 127130, "rrev_w": 3996669, "erev_w": 4061429, "wx_w": 0, "scan_w": 0}, {"代理商": "代理商乙", "imp_d": 2033333, "clk_d": 122000, "cv_d": 16267, "rrev_d": 646600, "erev_d": 610000, "wx_d": 0, "scan_d": 0, "imp_p": 2072816, "clk_p": 124369, "cv_p": 16583, "rrev_p": 678930, "erev_p": 640500, "wx_p": 0, "scan_p": 0, "imp_w": 14282490, "clk_w": 821688, "cv_w": 114125, "rrev_w": 4699463, "erev_w": 4394112, "wx_w": 0, "scan_w": 0}, {"代理商": "代理商丙", "imp_d": 1666667, "clk_d": 100000, "cv_d": 13333, "rrev_d": 318000, "erev_d": 300000, "wx_d": 0, "scan_d": 0, "imp_p": 1699029, "clk_p": 101942, "cv_p": 13592, "rrev_p": 333900, "erev_p": 315000, "wx_p": 0, "scan_p": 0, "imp_w": 11542255, "clk_w": 681354, "cv_w": 95361, "rrev_w": 2231804, "erev_w": 2146881, "wx_w": 0, "scan_w": 0}, {"代理商": "代理商丁", "imp_d": 1400000, "clk_d": 84000, "cv_d": 11200, "rrev_d": 222600, "erev_d": 210000, "wx_d": 0, "scan_d": 0, "imp_p": 1427184, "clk_p": 85631, "cv_p": 11417, "rrev_p": 233730, "erev_p": 220500, "wx_p": 0, "scan_p": 0, "imp_w": 10044225, "clk_w": 610811, "cv_w": 80612, "rrev_w": 1596355, "erev_w": 1507436, "wx_w": 0, "scan_w": 0}], "traffic": [{"流量类型": "算法模型流量", "imp_d": 3750000, "clk_d": 225000, "cv_d": 30000, "rrev_d": 1284000, "erev_d": 1200000, "wx_d": 0, "scan_d": 0, "imp_p": 3600000, "clk_p": 216000, "cv_p": 28800, "rrev_p": 1297440, "erev_p": 1224000, "wx_p": 0, "scan_p": 0, "imp_w": 26287041, "clk_w": 1556801, "cv_w": 202087, "rrev_w": 8648568, "erev_w": 8251769, "wx_w": 0, "scan_w": 0}, {"流量类型": "保量流量", "imp_d": 2240000, "clk_d": 134400, "cv_d": 17920, "rrev_d": 582400, "erev_d": 560000, "wx_d": 0, "scan_d": 0, "imp_p": 2240000, "clk_p": 134400, "cv_p": 17920, "rrev_p": 599760, "erev_p": 571200, "wx_p": 0, "scan_p": 0, "imp_w": 16252653, "clk_w": 936828, "cv_w": 129826, "rrev_w": 4235971, "erev_w": 4062688, "wx_w": 0, "scan_w": 0}, {"流量类型": "冷启动流量", "imp_d": 777778, "clk_d": 46667, "cv_d": 6222, "rrev_d": 170800, "erev_d": 140000, "wx_d": 0, "scan_d": 0, "imp_p": 816000, "clk_p": 48960, "cv_p": 6528, "rrev_p": 171360, "erev_p": 142800, "wx_p": 0, "scan_p": 0, "imp_w": 5325472, "clk_w": 318743, "cv_w": 42524, "rrev_w": 1207467, "erev_w": 1011384, "wx_w": 0, "scan_w": 0}], "hourly": [{"hh": 0, "imp_d": 26667, "clk_d": 1600, "cv_d": 213, "rrev_d": 8480, "erev_d": 8000, "wx_d": 0, "scan_d": 0, "imp_p": 27541, "clk_p": 1652, "cv_p": 220, "rrev_p": 8904, "erev_p": 8400, "wx_p": 0, "scan_p": 0, "imp_w": 187699, "clk_w": 11390, "cv_w": 1435, "rrev_w": 60123, "erev_w": 57836, "wx_w": 0, "scan_w": 0}, {"hh": 1, "imp_d": 26667, "clk_d": 1600, "cv_d": 213, "rrev_d": 8480, "erev_d": 8000, "wx_d": 0, "scan_d": 0, "imp_p": 27541, "clk_p": 1652, "cv_p": 220, "rrev_p": 8904, "erev_p": 8400, "wx_p": 0, "scan_p": 0, "imp_w": 185104, "clk_w": 10837, "cv_w": 1518, "rrev_w": 58565, "erev_w": 57348, "wx_w": 0, "scan_w": 0}, {"hh": 2, "imp_d": 26667, "clk_d": 1600, "cv_d": 213, "rrev_d": 8480, "erev_d": 8000, "wx_d": 0, "scan_d": 0, "imp_p": 27541, "clk_p": 1652, "cv_p": 220, "rrev_p": 8904, "erev_p": 8400, "wx_p": 0, "scan_p": 0, "imp_w": 183967, "clk_w": 11521, "cv_w": 1511, "rrev_w": 57793, "erev_w": 54329, "wx_w": 0, "scan_w": 0}, {"hh": 3, "imp_d": 26667, "clk_d": 1600, "cv_d": 213, "rrev_d": 8480, "erev_d": 8000, "wx_d": 0, "scan_d": 0, "imp_p": 27541, "clk_p": 1652, "cv_p": 220, "rrev_p": 8904, "erev_p": 8400, "wx_p": 0, "scan_p": 0, "imp_w": 189977, "clk_w": 10808, "cv_w": 1523, "rrev_w": 61641, "erev_w": 56705, "wx_w": 0, "scan_w": 0}, {"hh": 4, "imp_d": 26667, "clk_d": 1600, "cv_d": 213, "rrev_d": 8480, "erev_d": 8000, "wx_d": 0, "scan_d": 0, "imp_p": 27541, "clk_p": 1652, "cv_p": 220, "rrev_p": 8904, "erev_p": 8400, "wx_p": 0, "scan_p": 0, "imp_w": 179956, "clk_w": 10691, "cv_w": 1540, "rrev_w": 60071, "erev_w": 56119, "wx_w": 0, "scan_w": 0}, {"hh": 5, "imp_d": 26667, "clk_d": 1600, "cv_d": 213, "rrev_d": 8480, "erev_d": 8000, "wx_d": 0, "scan_d": 0, "imp_p": 27541, "clk_p": 1652, "cv_p": 220, "rrev_p": 8904, "erev_p": 8400, "wx_p": 0, "scan_p": 0, "imp_w": 190945, "clk_w": 11413, "cv_w": 1450, "rrev_w": 58182, "erev_w": 55072, "wx_w": 0, "scan_w": 0}, {"hh": 6, "imp_d": 100000, "clk_d": 6000, "cv_d": 800, "rrev_d": 31800, "erev_d": 30000, "wx_d": 0, "scan_d": 0, "imp_p": 103279, "clk_p": 6197, "cv_p": 826, "rrev_p": 33390, "erev_p": 31500, "wx_p": 0, "scan_p": 0, "imp_w": 681980, "clk_w": 41450, "cv_w": 5401, "rrev_w": 229902, "erev_w": 207544, "wx_w": 0, "scan_w": 0}, {"hh": 7, "imp_d": 100000, "clk_d": 6000, "cv_d": 800, "rrev_d": 31800, "erev_d": 30000, "wx_d": 0, "scan_d": 0, "imp_p": 103279, "clk_p": 6197, "cv_p": 826, "rrev_p": 33390, "erev_p": 31500, "wx_p": 0, "scan_p": 0, "imp_w": 717857, "clk_w": 41455, "cv_w": 5751, "rrev_w": 222629, "erev_w": 210535, "wx_w": 0, "scan_w": 0}, {"hh": 8, "imp_d": 100000, "clk_d": 6000, "cv_d": 800, "rrev_d": 31800, "erev_d": 30000, "wx_d": 0, "scan_d": 0, "imp_p": 103279, "clk_p": 6197, "cv_p": 826, "rrev_p": 33390, "erev_p": 31500, "wx_p": 0, "scan_p": 0, "imp_w": 692035, "clk_w": 40662, "cv_w": 5344, "rrev_w": 227928, "erev_w": 204495, "wx_w": 0, "scan_w": 0}, {"hh": 9, "imp_d": 100000, "clk_d": 6000, "cv_d": 800, "rrev_d": 31800, "erev_d": 30000, "wx_d": 0, "scan_d": 0, "imp_p": 103279, "clk_p": 6197, "cv_p": 826, "rrev_p": 33390, "erev_p": 31500, "wx_p": 0, "scan_p": 0, "imp_w": 698508, "clk_w": 41139, "cv_w": 5573, "rrev_w": 223587, "erev_w": 214776, "wx_w": 0, "scan_w": 0}, {"hh": 10, "imp_d": 100000, "clk_d": 6000, "cv_d": 800, "rrev_d": 31800, "erev_d": 30000, "wx_d": 0, "scan_d": 0, "imp_p": 103279, "clk_p": 6197, "cv_p": 826, "rrev_p": 33390, "erev_p": 31500, "wx_p": 0, "scan_p": 0, "imp_w": 681375, "clk_w": 40975, "cv_w": 5686, "rrev_w": 222737, "erev_w": 211037, "wx_w": 0, "scan_w": 0}, {"hh": 11, "imp_d": 100000, "clk_d": 6000, "cv_d": 800, "rrev_d": 31800, "erev_d": 30000, "wx_d": 0, "scan_d": 0, "imp_p": 103279, "clk_p": 6197, "cv_p": 826, "rrev_p": 33390, "erev_p": 31500, "wx_p": 0, "scan_p": 0, "imp_w": 692209, "clk_w": 42096, "cv_w": 5567, "rrev_w": 222817, "erev_w": 213238, "wx_w": 0, "scan_w": 0}, {"hh": 12, "imp_d": 100000, "clk_d": 6000, "cv_d": 800, "rrev_d": 31800, "erev_d": 30000, "wx_d": 0, "scan_d": 0, "imp_p": 103279, "clk_p": 6197, "cv_p": 826, "rrev_p": 33390, "erev_p": 31500, "wx_p": 0, "scan_p": 0, "imp_w": 694144, "clk_w": 43194, "cv_w": 5654, "rrev_w": 229305, "erev_w": 217429, "wx_w": 0, "scan_w": 0}, {"hh": 13, "imp_d": 100000, "clk_d": 6000, "cv_d": 800, "rrev_d": 31800, "erev_d": 30000, "wx_d": 0, "scan_d": 0, "imp_p": 103279, "clk_p": 6197, "cv_p": 826, "rrev_p": 33390, "erev_p": 31500, "wx_p": 0, "scan_p": 0, "imp_w": 720025, "clk_w": 42855, "cv_w": 5403, "rrev_w": 215862, "erev_w": 209028, "wx_w": 0, "scan_w": 0}, {"hh": 14, "imp_d": 100000, "clk_d": 6000, "cv_d": 800, "rrev_d": 31800, "erev_d": 30000, "wx_d": 0, "scan_d": 0, "imp_p": 103279, "clk_p": 6197, "cv_p": 826, "rrev_p": 33390, "erev_p": 31500, "wx_p": 0, "scan_p": 0, "imp_w": 671619, "clk_w": 42286, "cv_w": 5691, "rrev_w": 229670, "erev_w": 204195, "wx_w": 0, "scan_w": 0}, {"hh": 15, "imp_d": 100000, "clk_d": 6000, "cv_d": 800, "rrev_d": 31800, "erev_d": 30000, "wx_d": 0, "scan_d": 0, "imp_p": 103279, "clk_p": 6197, "cv_p": 826, "rrev_p": 33390, "erev_p": 31500, "wx_p": 0, "scan_p": 0, "imp_w": 675505, "clk_w": 42998, "cv_w": 5773, "rrev_w": 217606, "erev_w": 217602, "wx_w": 0, "scan_w": 0}, {"hh": 16, "imp_d": 100000, "clk_d": 6000, "cv_d": 800, "rrev_d": 31800, "erev_d": 30000, "wx_d": 0, "scan_d": 0, "imp_p": 103279, "clk_p": 6197, "cv_p": 826, "rrev_p": 33390, "erev_p": 31500, "wx_p": 0, "scan_p": 0, "imp_w": 722617, "clk_w": 42830, "cv_w": 5414, "rrev_w": 221381, "erev_w": 210262, "wx_w": 0, "scan_w": 0}, {"hh": 17, "imp_d": 100000, "clk_d": 6000, "cv_d": 800, "rrev_d": 31800, "erev_d": 30000, "wx_d": 0, "scan_d": 0, "imp_p": 103279, "clk_p": 6197, "cv_p": 826, "rrev_p": 33390, "erev_p": 31500, "wx_p": 0, "scan_p": 0, "imp_w": 685271, "clk_w": 42461, "cv_w": 5351, "rrev_w": 223563, "erev_w": 209000, "wx_w": 0, "scan_w": 0}, {"hh": 18, "imp_d": 100000, "clk_d": 6000, "cv_d": 800, "rrev_d": 31800, "erev_d": 30000, "wx_d": 0, "scan_d": 0, "imp_p": 103279, "clk_p": 6197, "cv_p": 826, "rrev_p": 33390, "erev_p": 31500, "wx_p": 0, "scan_p": 0, "imp_w": 702260, "clk_w": 41761, "cv_w": 5371, "rrev_w": 231238, "erev_w": 214844, "wx_w": 0, "scan_w": 0}, {"hh": 19, "imp_d": 316667, "clk_d": 19000, "cv_d": 2533, "rrev_d": 100700, "erev_d": 95000, "wx_d": 0, "scan_d": 0, "imp_p": 327049, "clk_p": 19623, "cv_p": 2616, "rrev_p": 105735, "erev_p": 99750, "wx_p": 0, "scan_p": 0, "imp_w": 2160692, "clk_w": 127252, "cv_w": 18012, "rrev_w": 691955, "erev_w": 645292, "wx_w": 0, "scan_w": 0}, {"hh": 20, "imp_d": 316667, "clk_d": 19000, "cv_d": 2533, "rrev_d": 100700, "erev_d": 95000, "wx_d": 0, "scan_d": 0, "imp_p": 327049, "clk_p": 19623, "cv_p": 2616, "rrev_p": 105735, "erev_p": 99750, "wx_p": 0, "scan_p": 0, "imp_w": 2258181, "clk_w": 129567, "cv_w": 17125, "rrev_w": 728538, "erev_w": 668756, "wx_w": 0, "scan_w": 0}, {"hh": 21, "imp_d": 316667, "clk_d": 19000, "cv_d": 2533, "rrev_d": 100700, "erev_d": 95000, "wx_d": 0, "scan_d": 0, "imp_p": 327049, "clk_p": 19623, "cv_p": 2616, "rrev_p": 105735, "erev_p": 99750, "wx_p": 0, "scan_p": 0, "imp_w": 2124044, "clk_w": 134107, "cv_w": 17514, "rrev_w": 680788, "erev_w": 688320, "wx_w": 0, "scan_w": 0}, {"hh": 22, "imp_d": 316667, "clk_d": 19000, "cv_d": 2533, "rrev_d": 100700, "erev_d": 95000, "wx_d": 0, "scan_d": 0, "imp_p": 327049, "clk_p": 19623, "cv_p": 2616, "rrev_p": 105735, "erev_p": 99750, "wx_p": 0, "scan_p": 0, "imp_w": 2128662, "clk_w": 135883, "cv_w": 17008, "rrev_w": 725358, "erev_w": 662541, "wx_w": 0, "scan_w": 0}, {"hh": 23, "imp_d": 316667, "clk_d": 19000, "cv_d": 2533, "rrev_d": 100700, "erev_d": 95000, "wx_d": 0, "scan_d": 0, "imp_p": 327049, "clk_p": 19623, "cv_p": 2616, "rrev_p": 105735, "erev_p": 99750, "wx_p": 0, "scan_p": 0, "imp_w": 2277152, "clk_w": 129664, "cv_w": 17096, "rrev_w": 706418, "erev_w": 651085, "wx_w": 0, "scan_w": 0}], "targetmix": [{"dt": 20260715, "tgt": "扫码", "客户数": 6, "imp": 4100000, "cv": 52000, "scan": 210000, "wx": 9500, "erev": 1350000}, {"dt": 20260715, "tgt": "加企业微信", "客户数": 3, "imp": 1900000, "cv": 11000, "scan": 0, "wx": 9500, "erev": 520000}, {"dt": 20260716, "tgt": "扫码", "客户数": 5, "imp": 3100000, "cv": 38000, "scan": 150000, "wx": 7200, "erev": 980000}, {"dt": 20260716, "tgt": "加企业微信", "客户数": 4, "imp": 2500000, "cv": 14000, "scan": 0, "wx": 11000, "erev": 760000}], "bids": [{"c": "客户E", "o": 22.0, "v": 1.0, "hh": "17"}, {"c": "客户B", "o": 18.5, "v": 6.0, "hh": "17"}, {"c": "客户D", "o": 15.0, "v": 8.0, "hh": "18"}, {"c": "客户C", "o": 12.0, "v": 7.5, "hh": "16"}, {"c": "客户F", "o": 10.0, "v": 13.0, "hh": "10"}, {"c": "客户A", "o": 8.0, "v": 9.5, "hh": "11"}, {"c": "客户G", "o": 20.0, "v": 18.0, "hh": "14"}, {"c": "客户H", "o": 6.0, "v": 5.0, "hh": "15"}, {"c": "客户A", "o": 7.7, "v": 11.0, "hh": "19"}, {"c": "客户C", "o": 13.0, "v": 9.1, "hh": "16"}, {"c": "客户G", "o": 15.1, "v": 11.8, "hh": "21"}, {"c": "客户A", "o": 19.9, "v": 14.3, "hh": "09"}, {"c": "客户G", "o": 13.3, "v": 9.2, "hh": "16"}, {"c": "客户B", "o": 19.0, "v": 14.1, "hh": "22"}, {"c": "客户F", "o": 14.8, "v": 14.3, "hh": "15"}, {"c": "客户G", "o": 9.6, "v": 5.8, "hh": "12"}, {"c": "客户C", "o": 8.0, "v": 10.8, "hh": "20"}, {"c": "客户B", "o": 11.1, "v": 8.6, "hh": "09"}, {"c": "客户B", "o": 5.2, "v": 5.5, "hh": "13"}, {"c": "客户F", "o": 7.4, "v": 2.2, "hh": "22"}, {"c": "客户F", "o": 18.1, "v": 18.8, "hh": "13"}, {"c": "客户G", "o": 8.6, "v": 5.5, "hh": "16"}, {"c": "客户B", "o": 7.4, "v": 5.9, "hh": "13"}, {"c": "客户C", "o": 19.4, "v": 23.1, "hh": "17"}, {"c": "客户C", "o": 8.7, "v": 12.4, "hh": "13"}, {"c": "客户B", "o": 10.3, "v": 4.3, "hh": "15"}], "statusops": [{"c": "客户I", "hh": "17", "v": "未投放", "n": 4}, {"c": "客户E", "hh": "18", "v": "未投放", "n": 3}, {"c": "客户B", "hh": "21", "v": "未投放", "n": 2}, {"c": "客户I", "hh": "09", "v": "投放中", "n": 1}, {"c": "客户C", "hh": "13", "v": "未投放", "n": 2}, {"c": "客户A", "hh": "22", "v": "未投放", "n": 1}], "logsum": [{"c": "客户B", "k": "newBidPrice", "n": 42}, {"c": "客户E", "k": "status", "n": 31}, {"c": "客户C", "k": "dayAmountLimit", "n": 22}, {"c": "客户A", "k": "newBidPrice", "n": 18}, {"c": "客户D", "k": "updateTarget-7", "n": 15}, {"c": "客户F", "k": "status", "n": 12}]}, "ctx": {"D": 20260716, "P": 20260715, "W1": 20260709, "W2": 20260715, "RT": false, "maxHh": 23}};</script>
+<script>
+const $=s=>document.querySelector(s); let lastOut=null;
+function gen(){const st=$('#status'),body=$('#body');
+  try{lastOut=GLDaily.analyze(SAMPLE.raw,SAMPLE.ctx);body.innerHTML=GLDaily.render(lastOut);
+    st.textContent='完成（'+lastOut.date+' · 规则引擎自动结论）';$('#copy-claude').disabled=false;$('#copy-md').disabled=false;}
+  catch(e){body.innerHTML='<div class="sumcard">❌ '+e.message+'</div>';}}
+$('#run').onclick=gen;
+$('#copy-claude').onclick=()=>{const p='请基于以下广告日报中间数据（'+lastOut.date+'，规则引擎已算好各维度指标与自动结论），按 ad-daily-report-analysis 的六段结构输出叙事式深度日报：\n\n'+JSON.stringify(lastOut);navigator.clipboard&&navigator.clipboard.writeText(p);$('#status').textContent='已复制，去粘贴给 Claude';};
+$('#copy-md').onclick=()=>{const t=document.createElement('div');t.innerHTML=GLDaily.render(lastOut);navigator.clipboard&&navigator.clipboard.writeText('# 广告日报 '+lastOut.date+String.fromCharCode(10,10)+t.innerText);$('#status').textContent='已复制纯文本';};
+gen();
+</script></body></html>
