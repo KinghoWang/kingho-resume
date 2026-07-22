@@ -47,7 +47,7 @@
     <h1>王钧灏</h1>
     <p class="tagline">AI 商业化产品 · 数据驱动增长 · 5 年商业化操盘</p>
     <div class="contact-row">
-      <span>kinghowang@foxmail.com</span><span>17512006748</span><span>27岁 · 男 · 工科学士</span>
+      <span>kinghowang@foxmail.com</span><span>17512006748</span><span>29岁 · 男 · 工科学士</span>
     </div>
     <span class="intent">求职意向：AI 商业化产品经理 / AI 增长产品经理 · 北京</span>
     <div class="hero-links">
@@ -65,10 +65,10 @@
 <div class="statwall">
   <div class="stat"><div class="s-num">5 年</div><div class="s-lab">商业化操盘</div></div>
   <div class="stat"><div class="s-num">3 亿+</div><div class="s-lab">年消耗规模</div></div>
-  <div class="stat"><div class="s-num">+287%</div><div class="s-lab">客户收入（同比）</div></div>
-  <div class="stat"><div class="s-num">5%→90%</div><div class="s-lab">大健康行业 0-1</div></div>
-  <div class="stat"><div class="s-num">3 个</div><div class="s-lab">自建数据 / AI 工具</div></div>
-  <div class="stat"><div class="s-num">30min→分钟级</div><div class="s-lab">日报提效（团队 3 人）</div></div>
+  <div class="stat"><div class="s-num">0→90%</div><div class="s-lab">大健康行业 0-1</div></div>
+  <div class="stat"><div class="s-num">3 个</div><div class="s-lab">自建 AI / 数据工具</div></div>
+  <div class="stat"><div class="s-num">3 模型</div><div class="s-lab">Eval 覆盖（22 例）</div></div>
+  <div class="stat"><div class="s-num">60min→分钟级</div><div class="s-lab">日报提效（团队 3 人）</div></div>
 </div>
 
 <!-- 1. AI / 数据产品实践（唯一讲“能造”） -->
@@ -80,31 +80,30 @@
   <div class="ai-grid">
     <div class="ai-card feat">
       <h3>数分机器人 · 广告数据日报分析（规则引擎 + LLM 归因）</h3>
-      <div class="role">自建 · 设计 + 实现 · 团队 3 人日常使用 · 迭代 2 个月 · human-in-the-loop</div>
+      <div class="role">自建 · 设计 + 实现 · 团队 3 人日常使用 · 迭代 3 个月 · human-in-the-loop</div>
       <ul class="tl-list">
-        <li><strong>问题</strong>：每天人工撰写广告异常归因日报约 <strong>30 分钟</strong>，重度依赖个人经验，难规模化、难传承</li>
+        <li><strong>问题</strong>：每天人工撰写广告异常归因日报约 <strong>30-60 分钟</strong>，重度依赖个人经验，难规模化、难传承</li>
         <li><strong>方案</strong>：脚本自数仓抓取 8 天大盘 / 行业 / 客户数据 → 按规则做<strong>阈值异常检出</strong>与<strong>结构 / 效率效应分解</strong> → 拼装含「现象 → 根因 → 建议」三段式与归因红线的 prompt → 交 LLM 做深度归因</li>
         <li><strong>防幻觉设计</strong>：<strong>所有数值均由数仓计算后输入、模型不做算术</strong>，只负责归因叙述，从架构上规避数值幻觉</li>
-        <li><strong>成果</strong>：<strong>1 周</strong>产出、迭代近 <strong>2 个月</strong>；<strong>团队 3 人</strong>日常使用；日报从人工 30 分钟压缩为<strong>分钟级复核</strong></li>
-        <li><strong>已知边界</strong>：异常检出可靠、明显异常即时发现；<strong>归因质量尚未量化</strong>，当前作人工复核的辅助</li>
-      </ul>
-      <div class="nextstep"><strong>配套 Eval 评测（已建）</strong>：为它建了一套自动化评测 —— 22 例历史日报黄金集，代码型指标校验数值忠实率与异常召回 / 精确，LLM-as-judge 评归因质量与机制编造率，并作 prompt 改动的回归门禁（含 with / without skill A/B）。<a href="demo-eval.html" style="color:var(--accent);font-weight:600">▶ 查看 Eval Demo</a></div>
-    </div>
-    <div class="ai-card">
-      <h3>广告财务对账系统（数据侧主导）</h3>
-      <div class="role">主导 · 跨财务 / 工程协作</div>
-      <ul class="tl-list">
-        <li><strong>定义口径</strong>：梳理对账所需字段与业务口径，对齐对账逻辑与计算逻辑</li>
-        <li><strong>打通链路 + 可运营</strong>：将对账字段与数仓 / 看板打通，实现数据<strong>可监控、可上报、可排查</strong>，把一次性核账变为常态化机制</li>
+        <li><strong>成果</strong>：<strong>1 周</strong>产出；<strong>团队 3 人</strong>日常使用；日报从人工 30-60 分钟压缩为<strong>分钟级复核</strong>；归因质量已由配套 Eval 量化（见 ③）</li>
       </ul>
     </div>
     <div class="ai-card">
-      <h3>adquery-lite 自建取数工具</h3>
-      <div class="role">净室个人版 · 可迁移 · 开源风格</div>
+      <h3>adquery-lite · 自建取数 &amp; 财务对账工具</h3>
+      <div class="role">净室可迁移版 · 替代通用 BI</div>
       <ul class="tl-list">
-        <li><strong>设计</strong>：<strong>可插拔数据源</strong>（零依赖、随处可跑，换库只改一个适配器）、catalog 驱动指标口径</li>
-        <li><strong>产品度</strong>：合计行总量加权而非简单平均、SQL 白名单防注入、截断如实标注；多维下钻 / 图表 / 导出 / p50·p95 延迟监控</li>
+        <li><strong>取数</strong>：<strong>可插拔数据源</strong>（零依赖、随处可跑，换库只改一个适配器）、catalog 驱动指标口径；合计行总量加权、SQL 白名单防注入、截断如实标注；多维下钻 / 图表 / 导出 / p50·p95 监控</li>
+        <li><strong>对账</strong>：切出财务对账子模块，梳理对账字段与业务口径、打通数仓 / 看板，实现数据<strong>可监控、可上报、可排查</strong>，把一次性核账变常态化机制</li>
       </ul>
+    </div>
+    <div class="ai-card" style="border-left:3px solid var(--accent)">
+      <h3>广告归因质量 Eval 评测体系</h3>
+      <div class="role">自建 · prompt 回归门禁 · 跨模型可比</div>
+      <ul class="tl-list">
+        <li><strong>评测集</strong>：22 例带标注答案的历史日报为<strong>黄金集</strong>，代码型指标（数值忠实 / 异常召回·精确）+ LLM-as-judge（归因质量 / 机制编造率）量化，作 prompt 改动的回归门禁</li>
+        <li><strong>三模型 6 轮排行榜</strong>：给 DeepSeek / GLM / Kimi 各跑带 / 不带方法论两轮、裁判恒为 DeepSeek 跨家打分 —— <strong>Kimi K3 带方法论 judge 4.50、机制编造率 4.5% 双料第一</strong>，成本 ¥0.45/次可对账</li>
+      </ul>
+      <p style="margin:10px 0 0;font-size:.86rem"><a href="demo-eval.html" style="color:var(--accent);font-weight:700">▶ 打开 Eval 排行榜 Demo</a></p>
     </div>
   </div>
 </section>
@@ -118,7 +117,7 @@
         <div class="tl-header"><div><h3>北京太字流动科技有限公司 · 商业化广告运营</h3><span class="company-tag">票圈视频</span></div><span class="date-tag">2023.11 - 至今</span></div>
         <div class="tags"><span class="tag tag-ind">大健康</span><span class="tag tag-ind">兴趣教育</span><span class="tag tag-role">商业化 / 增长</span><span class="tag tag-met">日耗200-300万</span></div>
         <ul class="tl-list">
-          <li><strong>行业变现操盘</strong>：主导中医大健康行业 0→规模化，预算占比 5% → <strong>90%+</strong>，参与行业商业化策略制定</li>
+          <li><strong>行业变现操盘</strong>：主导中医 &amp; 大健康行业 0 → 规模化，参与行业商业化策略制定</li>
           <li><strong>商业化规模</strong>：服务 <strong>60+ 客户</strong>（老年教育 + 中医大健康），年消耗规模 <strong>3 亿+</strong>，对行业趋势、消耗与预算稳定性负责</li>
           <li><strong>数据驱动决策</strong>：数据分析占工作 <strong>70-80%</strong>，以归因 / 实验 / 复盘驱动策略迭代（相关自建工具见上「AI / 数据产品实践」）</li>
         </ul>
@@ -152,7 +151,7 @@
   <div class="info-grid">
     <div class="info-card">
       <h4>AI 产品 &amp; 协作</h4>
-      <ul class="info-list"><li>LLM 应用设计 · Prompt 工程（方法论编码）</li><li>防幻觉设计（数值代码化 / grounding）</li><li>Eval（黄金集 / LLM-as-judge，建设中）</li><li>AI 协作开发：Claude Code · Cowork · Codex</li></ul>
+      <ul class="info-list"><li>LLM 应用设计 · Prompt 工程（方法论编码）</li><li>防幻觉设计（数值代码化 / grounding）</li><li>Eval（黄金集 / LLM-as-judge · 3 模型跑分）</li><li>AI 协作开发：Claude cowork · Codex</li></ul>
     </div>
     <div class="info-card">
       <h4>产品 &amp; 增长</h4>
@@ -164,7 +163,7 @@
     </div>
     <div class="info-card">
       <h4>投放 &amp; 证书</h4>
-      <ul class="info-list"><li>腾讯 / 巨量 / 百度 / 微众多平台投放</li><li>腾讯广告认证营销顾问</li><li>巨量引擎资深信息流广告营销师</li></ul>
+      <ul class="info-list"><li>腾讯广告 / 抖音 / 百度 多平台投放</li><li>腾讯广告认证营销顾问</li><li>巨量引擎资深信息流广告营销师</li></ul>
     </div>
   </div>
 </section>

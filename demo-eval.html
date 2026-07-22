@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Eval 报告 · 数分机器人归因质量（脱敏 Demo）</title><style>
-:root{--bg:#eceff3;--card:#fff;--ink:#19222e;--mut:#67707d;--acc:#c0392b;--rule:#dde3ea;--moss:#2f7d4f;--soft:#f5f7fa}
+<title>Eval 报告 · 数分机器人归因质量 · 3 模型排行榜（脱敏 Demo）</title><style>
+:root{--bg:#eceff3;--card:#fff;--ink:#19222e;--mut:#67707d;--acc:#c0392b;--rule:#dde3ea;--moss:#2f7d4f;--amber:#b9770e;--soft:#f5f7fa}
 *{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--ink);line-height:1.65;padding:28px 16px}
 .wrap{max-width:960px;margin:auto}a.back{color:var(--acc);font-size:13px;text-decoration:none;font-weight:600}
 h1{font-size:22px;margin:12px 0 4px}.meta{color:var(--mut);font-size:12.5px}
@@ -8,42 +8,82 @@ h1{font-size:22px;margin:12px 0 4px}.meta{color:var(--mut);font-size:12.5px}
 .lead{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:16px 20px;margin:16px 0;font-size:13.5px;color:#3a4350}
 .four{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
 .four .c{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:14px;text-align:center}
-.four .v{font-size:26px;font-weight:800;color:var(--acc)}.four .l{font-size:11.5px;color:var(--mut);margin-top:4px}
+.four .v{font-size:24px;font-weight:800;color:var(--acc)}.four .l{font-size:11.5px;color:var(--mut);margin-top:4px}
 h2{font-size:15px;margin:26px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--acc)}
 table{width:100%;border-collapse:collapse;font-size:12.5px;background:var(--card);border:1px solid var(--rule);border-radius:8px;overflow:hidden}
-th,td{padding:7px 11px;border-bottom:1px solid var(--rule);text-align:center}th{background:var(--soft);color:var(--mut);font-weight:600}
+th,td{padding:7px 11px;border-bottom:1px solid var(--rule);text-align:center}th{background:var(--soft);color:var(--mut);font-weight:600;font-size:11.5px;line-height:1.35}
 td.sc{text-align:left;color:#3a4350}td.up{color:var(--moss);font-weight:700}td.down{color:var(--acc);font-weight:700}td.w{color:var(--acc);font-weight:600}
+.mdl{text-align:left;font-weight:700}.cfg{color:var(--mut);font-weight:400;font-size:11.5px}
+tr.bare td{border-bottom:2px solid var(--rule)}
+tr.king td{background:#fff6ec}tr.king .mdl{color:var(--amber)}td.win{color:var(--amber);font-weight:800}
+.dpair{color:var(--amber);font-weight:800}
 .mrow{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .mcard{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:14px 16px}
 .mcard h3{font-size:13px;margin-bottom:6px;color:var(--acc)}.mcard p{font-size:12.5px;color:#3a4350}
+.find{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:6px 0;margin:14px 0}
+.find .f{padding:9px 16px;border-left:3px solid var(--moss);margin:8px 12px;font-size:12.8px;color:#3a4350}
+.find .f.f2{border-color:var(--amber)}.find .f.f3{border-color:#3d7ab5}.find .f b{color:var(--ink)}
+.cost{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;background:var(--ink);color:#fff;border-radius:10px;padding:16px 20px;margin:14px 0}
+.cost .big{font-size:34px;font-weight:800;color:#f0a850;line-height:1;white-space:nowrap}.cost .big small{font-size:12px;color:#c7cfd8;font-weight:400}
+.cost .d{font-size:12px;color:#c7cfd8;line-height:1.6}.cost .d b{color:#fff}
 .honest{background:#fdf3e7;border:1px solid #f0d9b5;border-left:3px solid #b9770e;border-radius:8px;padding:12px 16px;font-size:12.5px;color:#7a5a16;margin-top:14px}
 .note{color:var(--mut);font-size:11.5px;margin-top:6px}
-@media(max-width:640px){.four{grid-template-columns:1fr 1fr}.mrow{grid-template-columns:1fr}}
+@media(max-width:640px){.four{grid-template-columns:1fr 1fr}.mrow{grid-template-columns:1fr}.cost{grid-template-columns:1fr}}
 </style></head><body><div class="wrap">
 <a class="back" href="cases.html">← 返回作品集</a>
 <h1>Eval 报告 · 数分机器人「归因质量」评测</h1>
-<div class="meta">被测：广告数分机器人（规则引擎 + LLM 归因）· 22 例黄金集 · 模型 deepseek-v4-flash · 带方法论 skill</div>
+<div class="meta">被测：广告数分机器人（规则引擎 + LLM 归因）· 22 例黄金集 · <b>3 家国产旗舰 × 带 / 不带方法论 = 6 轮</b> · 裁判恒为 DeepSeek 系（跨家打分）</div>
 <span class="badge">真实跑分 · 客户名/表名已脱敏 · 示例数据</span>
-<div class="lead">为「数分机器人」建的一套自动化评测：22 例带标注答案的历史日报为<b>黄金集</b>，每次改 prompt / 换模型就跑一遍，用<b>代码型指标</b>（数值是否忠实、异常是否检出）+ <b>LLM-as-judge</b>（归因质量、是否编造机制）量化质量，并作<b>回归门禁</b>。核心目的：把"AI 归因到底靠不靠谱"从感觉变成可测的数。</div>
-<h2>核心指标（带方法论 skill）</h2>
+<div class="lead">为「数分机器人」建的一套自动化评测：22 例带标注答案的历史日报为<b>黄金集</b>，用<b>代码型指标</b>（数值是否忠实、异常是否检出）+ <b>LLM-as-judge</b>（归因质量、是否编造机制）量化质量，并作 prompt 改动的<b>回归门禁</b>。这次把三家国产旗舰各跑两轮：<b>带方法论 skill</b> 和 <b>裸模型</b>，看"同一套方法论换到不同模型上值多少分"。核心目的：把"AI 归因到底靠不靠谱"从感觉变成可测、可对比、可对账的数。</div>
+
 <div class="four">
-  <div class="c"><div class="v">90%</div><div class="l">数值忠实率<br>（防幻觉）</div></div>
-  <div class="c"><div class="v">29%</div><div class="l">异常召回<br>精确 48%</div></div>
-  <div class="c"><div class="v">3.0<span style="font-size:14px">/5</span></div><div class="l">归因质量<br>(LLM-judge)</div></div>
-  <div class="c"><div class="v">23%</div><div class="l">机制编造率<br>（越低越好）</div></div>
+  <div class="c"><div class="v">6 轮</div><div class="l">3 模型 × 2 配置<br>同一黄金集</div></div>
+  <div class="c"><div class="v">4.50<span style="font-size:13px">/5</span></div><div class="l">Kimi K3 归因质量<br>（冠军 · 别家裁判打分）</div></div>
+  <div class="c"><div class="v">4.5%</div><div class="l">Kimi K3 机制编造率<br>（全场最低）</div></div>
+  <div class="c"><div class="v">¥0.45</div><div class="l">每次归因成本<br>（Kimi K3 实测）</div></div>
 </div>
-<h2>带 skill vs 不带 skill（方法论的可测价值）</h2>
-<table><tr><th class="sc" style="text-align:left">指标</th><th>带 skill</th><th>不带 skill</th><th>差值</th></tr><tr><td class="sc">数值忠实率（防幻觉）</td><td>89.8%</td><td>86.5%</td><td class="up">+3.3pt</td></tr><tr><td class="sc">异常召回</td><td>29.2%</td><td>25.0%</td><td class="up">+4.2pt</td></tr><tr><td class="sc">异常精确</td><td>47.6%</td><td>22.2%</td><td class="up">+25.4pt</td></tr><tr><td class="sc">归因质量 judge /5</td><td>3.05</td><td>2.50</td><td class="up">+0.55</td></tr><tr><td class="sc">机制编造率</td><td>22.7%</td><td>31.8%</td><td class="up">-9.1pt</td></tr></table>
-<div class="note">同一 22 例黄金集、同模型，唯一变量是有没有加载方法论 skill。结论：方法论让<b>异常精确 +25pt、机制编造率 −9pt</b>，每一项都改善——"方法论产品化"的实证。</div>
+
+<h2>六轮排行榜 · 三家旗舰 × 带/不带方法论</h2>
+<table>
+  <tr>
+    <th class="sc" style="text-align:left">被测模型 × 配置</th>
+    <th>归因质量<br>judge 1–5</th><th>方法论增益<br>Δjudge</th>
+    <th>机制编造率<br>越低越好</th><th>异常定位<br>精确率</th><th>正常日<br>假阳性</th>
+  </tr>
+  <tr><td class="mdl">DeepSeek V4 Flash <span class="cfg">＋方法论</span></td><td>3.05</td><td class="up" rowspan="2">+0.55</td><td>22.7%</td><td>47.6%</td><td>1/10</td></tr>
+  <tr class="bare"><td class="mdl cfg" style="padding-left:22px">裸模型</td><td>2.50</td><td>31.8%</td><td>22.2%</td><td>3/10</td></tr>
+  <tr><td class="mdl">GLM-5.2 <span class="cfg">＋方法论</span></td><td>3.82</td><td class="up" rowspan="2">+0.68</td><td>13.6%</td><td>39.5%</td><td>2/10</td></tr>
+  <tr class="bare"><td class="mdl cfg" style="padding-left:22px">裸模型</td><td>3.14</td><td>22.7%</td><td>40.3%</td><td>4/10</td></tr>
+  <tr class="king"><td class="mdl">Kimi K3 <span class="cfg">＋方法论</span></td><td class="win">4.50</td><td class="dpair" rowspan="2">+1.09 ▲</td><td class="win">4.5%</td><td class="win">47.7%</td><td>3/10</td></tr>
+  <tr class="king bare"><td class="mdl cfg" style="padding-left:22px">裸模型</td><td>3.41</td><td>18.2%</td><td>40.2%</td><td>3/10</td></tr>
+</table>
+<p class="note"><b>口径：</b>裁判恒为 DeepSeek 系（温度 0），对 Kimi K3 / GLM 属<b>跨家打分</b>——K3 拿冠军是"别人家模型给它打的分"，比自评更硬。DeepSeek / GLM 走免费量化通道，K3 走官方付费 API。n=22，单轮有波动，看趋势不看单点。</p>
+
+<h2>三个发现</h2>
+<div class="find">
+  <div class="f"><b>① 模型越强，分越高。</b> Kimi K3 &gt; GLM-5.2 &gt; DeepSeek，且 K3 的分是<b>别家模型（DeepSeek）</b>打的，不是自己给自己打。</div>
+  <div class="f f2"><b>② 模型越强，加方法论涨得越多。</b> 同一套方法论 skill，三家 judge 分别 <b>+1.09 / +0.68 / +0.55</b>——强模型更"吃"好方法论。</div>
+  <div class="f f3"><b>③ 加了方法论，三家编造机制的比例都降了。</b> 意思是：模型越强，配一套好方法论越划算——<b>把模型能力变成客户能用的东西，正是商业化要做的事</b>。</div>
+</div>
+
+<h2>跑一次归因，实测多少钱</h2>
+<div class="cost">
+  <div class="big">¥0.45<br><small>/ 次（Kimi K3，带方法论）</small></div>
+  <div class="d">这个数<b>能对账</b>：评测里裁判走的是免费通道，充值花掉的钱全是被测模型自己的。官方账单 <b>¥7.72 ÷ 17 个跑通场景 ＝ 一次 ¥0.45</b>（该轮 in 78K / out 119K tokens）。<br>想更便宜：调低推理力度，或简单场景用免费模型、难的才上 K3——这就是"成本/质量"的产品权衡。</div>
+</div>
+
 <h2>评测方法论</h2>
 <div class="mrow">
   <div class="mcard"><h3>黄金集（22 例）</h3><p>历史日报 + 人工标注的"该报哪些异常、正确的根因"。含 A 类（该检出异常）与 B 类（正常日不该误报）。</p></div>
-  <div class="mcard"><h3>代码型指标（确定性）</h3><p><b>数值忠实率</b>：模型复述的每个数是否与源数据一致（直接测数值幻觉）；<b>异常召回/精确</b>：检出 vs 真值；格式合格率。</p></div>
-  <div class="mcard"><h3>LLM-as-judge（主观质量）</h3><p>按 rubric 给归因质量 1–5 分，并单独检测<b>是否编造不存在的机制</b>（机制编造率）。</p></div>
-  <div class="mcard"><h3>回归门禁 + 成本</h3><p>每次改动跑一遍，召回/忠实退步 >2pt 或 judge 退步 >0.2 即报警。本轮 22 例 in 60,722 / out 38,646 tokens（约 2760/1756 每例）。</p></div>
+  <div class="mcard"><h3>代码型指标（确定性）</h3><p><b>数值忠实率</b>：模型复述的每个数是否与源数据一致（测数值幻觉）；<b>异常召回/精确</b>：检出 vs 真值；格式合格率。跨模型可比。</p></div>
+  <div class="mcard"><h3>LLM-as-judge（主观质量）</h3><p>按 rubric 给归因质量 1–5 分，并单独检测<b>是否编造不存在的机制</b>（机制编造率）。裁判固定为 DeepSeek 以保证跨模型公平。</p></div>
+  <div class="mcard"><h3>回归门禁 + 成本核算</h3><p>每次改 prompt / 换模型跑一遍，召回 / 忠实退步 &gt;2pt 或 judge 退步 &gt;0.2 即报警；逐轮记 token 与真实 API 花费，成本可对账。</p></div>
 </div>
-<div class="honest"><b>诚实注记（懂 eval 局限本身是成熟度）：</b>① 用的是便宜的 <b>flash 模型</b>，绝对分数不代表强模型上限；② judge 为<b>同模自评</b>，已用 golden 锚定 + 金丝雀校准约束偏置；③ 召回 29%、judge 3/5、编造 23% —— 分数不完美，正说明这套 eval <b>真的在测出问题</b>（满分的 eval 才可疑）。</div>
-<h2>逐案明细（22 例 · 已脱敏）</h2>
+
+<div class="honest"><b>诚实注记（懂 eval 局限本身是成熟度）：</b>① <b>n=22、单轮跑</b>，绝对分有波动，结论看趋势不看单点；② judge 有偏置风险，已固定为 <b>DeepSeek 跨家裁判 + 金丝雀校准</b>约束（对 K3/GLM 是"别家打分"）；③ <b>数值忠实率未进排行榜</b>——该指标会惩罚"复述/派生更多数字"的强模型（Kimi/GLM 带方法论时忠实率反降），是已知度量局限、待改进，故排行榜聚焦 judge/编造/精确；④ 分数不完美，正说明这套 eval <b>真的在测出差异</b>（满分的 eval 才可疑）。</div>
+
+<h2>逐案明细 · DeepSeek V4 Flash 带方法论（22 例 · 已脱敏）</h2>
+<p class="note">下表为其中一轮（DeepSeek 带方法论）的逐用例明细，示意黄金集的真实构成；换模型/配置即产出上面排行榜里的其余各轮。</p>
 <table><tr><th>用例</th><th>标签</th><th class="sc" style="text-align:left">场景</th><th>忠实</th><th>召回</th><th>精确</th><th>judge</th><th>编造</th></tr><tr><td>case_001</td><td>A类/归因/指标口径切换</td><td class="sc">示例客户A（中医自建站）转化目标从扫码切换为加企业微信，导致CTCVR、CPA表观骤变</td><td>100%</td><td class="w">0%</td><td>—</td><td>4</td><td>—</td></tr><tr><td>case_002</td><td>A类/归因/落地页故障</td><td class="sc">示例客户B（兴趣教育）效率CPM较前一日大幅下跌，误判为效率崩盘，实为该产品落地页发版故障</td><td>100%</td><td>100%</td><td>100%</td><td>4</td><td>—</td></tr><tr><td>case_003</td><td>A类/归因/地域调拨/客户级口径/客户甲</td><td class="sc">客户甲城市定向调拨复盘：若只拿两个调整后日期互比，会误判调拨未生效</td><td>100%</td><td class="w">0%</td><td>0%</td><td>5</td><td>—</td></tr><tr><td>case_004</td><td>A类/归因/超成本反推/兜底CPM</td><td class="sc">示例客户D（兴趣教育）超成本长期在35-40%区间波动，需反推是否由兜底CPM机制主导</td><td>67%</td><td>100%</td><td>100%</td><td>4</td><td>—</td></tr><tr><td>case_005</td><td>A类/归因/客户级口径</td><td class="sc">客户甲（兴趣教育）6/15-17三天后转下降，业务反馈到客率降约10%；千次到客率0.406→0.374</td><td>79%</td><td>50%</td><td>50%</td><td>4</td><td>—</td></tr><tr><td>case_006</td><td>A类/口径</td><td class="sc">业务方/日报把兴趣教育四大客户到客率聚合成&#x27;行业到客率0.577&#x27;对外汇报，该数字能否代表兴趣教育行业真</td><td>100%</td><td class="w">0%</td><td>—</td><td>1</td><td>是</td></tr><tr><td>case_007</td><td>A类/竞价</td><td class="sc">兴趣教育算法模型流量到客率比保量低19.5%（剔除炸群后仍差19.9%），业务方怀疑是算法bug或炸群/</td><td>100%</td><td class="w">0%</td><td>—</td><td>2</td><td>—</td></tr><tr><td>case_008</td><td>A类/覆盖率</td><td class="sc">analysis.md结论&#x27;外部首层正价课率0.31% vs 非外部首层0.83%&#x27;被当作兴趣教育行业规</td><td>100%</td><td class="w">0%</td><td>—</td><td>1</td><td>是</td></tr><tr><td>case_009</td><td>A类/成熟窗口</td><td class="sc">2026-06-03起兴趣教育正价课大盘出现断崖(6/3=1→6/4=2→6/5-6/9=0)，若用T-</td><td>100%</td><td>—</td><td>—</td><td>4</td><td>—</td></tr><tr><td>case_010</td><td>A类/数据管道</td><td class="sc">排查2026年5月billing实际扣费与日报业务收入总差异时，发现数仓主表</td><td>100%</td><td class="w">0%</td><td>—</td><td>1</td><td>—</td></tr><tr><td>case_011</td><td>C类/维度混淆</td><td class="sc">客户甲（兴趣教育）6/15-17期间东三省曝光占比合计18.79%→13.09%(−5.71pp)，四川</td><td>100%</td><td>50%</td><td>33%</td><td>3</td><td>—</td></tr><tr><td>case_012</td><td>C类/代理变量</td><td class="sc">客户甲（兴趣教育）6/15-17期间WiFi流量（占比约85%）内部千次到客率从0.437跌至0.347</td><td>100%</td><td>50%</td><td>50%</td><td>1</td><td>是</td></tr><tr><td>case_013</td><td>C类/相关性陷阱/归因主导</td><td class="sc">兴趣教育分日大盘&#x27;首层占比 vs 到客率&#x27;Pearson相关+0.601（看似首层越高到客越好），但客户</td><td>100%</td><td>—</td><td>—</td><td>1</td><td>是</td></tr><tr><td>case_014</td><td>C类/口径边界/归因主导</td><td class="sc">用兴趣教育到客/正价课数据反推&#x27;首层流量整体质量&#x27;结论，被质疑方法论是否成立</td><td>100%</td><td>—</td><td>—</td><td>1</td><td>是</td></tr><tr><td>case_015</td><td>C类/技术陷阱</td><td class="sc">客户甲变更日志（Grafana REST API导出）经pandas默认解析后，全部记录的解析时间都落在</td><td>80%</td><td class="w">0%</td><td>0%</td><td>2</td><td>—</td></tr><tr><td>case_016</td><td>B类/正常日</td><td class="sc">例行日报巡检：广告大盘2026-04-07近7天分日核心指标，判断当日是否存在需要上报的重大异常</td><td>100%</td><td>—</td><td>—</td><td>5</td><td>—</td></tr><tr><td>case_017</td><td>B类/正常日</td><td class="sc">例行日报巡检：广告大盘2026-04-14近7天分日核心指标，判断当日是否存在需要上报的重大异常</td><td>100%</td><td>—</td><td>—</td><td>5</td><td>—</td></tr><tr><td>case_018</td><td>B类/正常日</td><td class="sc">例行日报巡检：广告大盘2026-05-03近7天分日核心指标，判断当日是否存在需要上报的重大异常</td><td>100%</td><td>—</td><td>—</td><td>4</td><td>—</td></tr><tr><td>case_019</td><td>B类/正常日</td><td class="sc">例行日报巡检：广告大盘2026-05-07近7天分日核心指标，判断当日是否存在需要上报的重大异常</td><td>100%</td><td>—</td><td>—</td><td>4</td><td>—</td></tr><tr><td>case_020</td><td>B类/正常日</td><td class="sc">例行日报巡检：广告大盘2026-05-14近7天分日核心指标，判断当日是否存在需要上报的重大异常</td><td>50%</td><td>—</td><td>—</td><td>3</td><td>—</td></tr><tr><td>case_021</td><td>B类/正常日</td><td class="sc">例行日报巡检：广告大盘2026-05-19近7天分日核心指标，判断当日是否存在需要上报的重大异常</td><td>100%</td><td>—</td><td>—</td><td>5</td><td>—</td></tr><tr><td>case_022</td><td>B类/正常日</td><td class="sc">例行日报巡检：广告大盘2026-06-12近7天分日核心指标，判断当日是否存在需要上报的重大异常</td><td>0%</td><td>—</td><td>—</td><td>3</td><td>—</td></tr></table>
 <p class="note">A 类为"该检出异常"用例（看召回/精确）；忠实率 100% = 模型没编数（数值由规则引擎算好喂入的设计使然）。</p>
 </div></body></html>
