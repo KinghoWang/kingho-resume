@@ -6,6 +6,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:13px}
 .top{display:flex;align-items:center;gap:14px;padding:11px 20px;background:var(--card);border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:5}
+.top .back{color:var(--acc);font-size:18px;line-height:1;text-decoration:none;font-weight:800}
 .top .b{font-weight:800;font-size:15px}.top .b span{color:var(--acc)}
 .top .badge{font-size:10.5px;background:#fef5e7;color:#8a6a18;border:1px solid #f3d9a8;border-radius:12px;padding:2px 9px}
 .search{flex:1;max-width:520px;display:flex}
@@ -58,14 +59,15 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:13p
 .gender{display:flex;height:16px;border-radius:4px;overflow:hidden;font-size:10px;color:#fff}
 .gender .mn{background:var(--blue);display:flex;align-items:center;padding:0 6px}.gender .fn{background:#c0507a;display:flex;align-items:center;justify-content:flex-end;padding:0 6px;flex:1}
 svg{display:block}
-@media(max-width:720px){.wrap{grid-template-columns:1fr}.side{display:none}}
+@media(max-width:720px){.top{flex-wrap:wrap;padding:10px 12px;gap:10px}.top .badge{display:none}.search{order:2;flex-basis:100%;max-width:none}.wrap{grid-template-columns:1fr}.side{display:none}.main{height:auto;min-height:calc(100vh - 95px)}}
 </style></head><body>
-<div class="top">
-  <div class="b">Ad<span>Video</span> · 竞品广告情报</div>
+<header class="top">
+  <a class="back" href="cases.html" aria-label="返回作品集">←</a>
+  <h1 class="b">Ad<span>Video</span> · 竞品广告情报</h1>
   <span class="badge">合成脱敏 Demo · 结构仿真真实采集库（巨量 + 妙思）</span>
   <div class="search"><input id="q" placeholder="搜标题 / 品牌 / 卖点…（如：低价、护肤、逆袭）"></div>
   <span class="cnt" id="cnt"></span>
-</div>
+</header>
 <div class="wrap">
   <aside class="side" id="facets"></aside>
   <main class="main">
