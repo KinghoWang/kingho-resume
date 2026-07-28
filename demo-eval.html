@@ -11,6 +11,7 @@ h1{font-size:22px;margin:12px 0 4px}.meta{color:var(--mut);font-size:12.5px}
 .four .v{font-size:24px;font-weight:800;color:var(--acc)}.four .l{font-size:11.5px;color:var(--mut);margin-top:4px}
 h2{font-size:15px;margin:26px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--acc)}
 table{width:100%;border-collapse:collapse;font-size:12.5px;background:var(--card);border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.table-scroll{max-width:100%;overflow-x:auto;border-radius:8px;-webkit-overflow-scrolling:touch}
 th,td{padding:7px 11px;border-bottom:1px solid var(--rule);text-align:center}th{background:var(--soft);color:var(--mut);font-weight:600;font-size:11.5px;line-height:1.35}
 td.sc{text-align:left;color:#3a4350}td.up{color:var(--moss);font-weight:700}td.down{color:var(--acc);font-weight:700}td.w{color:var(--acc);font-weight:600}
 .mdl{text-align:left;font-weight:700}.cfg{color:var(--mut);font-weight:400;font-size:11.5px}
@@ -28,7 +29,7 @@ tr.king td{background:#fff6ec}tr.king .mdl{color:var(--amber)}td.win{color:var(-
 .cost .d{font-size:12px;color:#c7cfd8;line-height:1.6}.cost .d b{color:#fff}
 .honest{background:#fdf3e7;border:1px solid #f0d9b5;border-left:3px solid #b9770e;border-radius:8px;padding:12px 16px;font-size:12.5px;color:#7a5a16;margin-top:14px}
 .note{color:var(--mut);font-size:11.5px;margin-top:6px}
-@media(max-width:640px){.four{grid-template-columns:1fr 1fr}.mrow{grid-template-columns:1fr}.cost{grid-template-columns:1fr}}
+@media(max-width:640px){.four{grid-template-columns:1fr 1fr}.mrow{grid-template-columns:1fr}.cost{grid-template-columns:1fr}.table-scroll table{min-width:720px}.table-scroll.detail table{min-width:980px}}
 </style></head><body><div class="wrap">
 <a class="back" href="cases.html">← 返回作品集</a>
 <h1>Eval 报告 · 数分机器人「归因质量」评测</h1>
@@ -44,6 +45,7 @@ tr.king td{background:#fff6ec}tr.king .mdl{color:var(--amber)}td.win{color:var(-
 </div>
 
 <h2>六轮排行榜 · 三家旗舰 × 带/不带方法论</h2>
+<div class="table-scroll" role="region" aria-label="六轮排行榜" tabindex="0">
 <table>
   <tr>
     <th class="sc" style="text-align:left">被测模型 × 配置</th>
@@ -57,6 +59,7 @@ tr.king td{background:#fff6ec}tr.king .mdl{color:var(--amber)}td.win{color:var(-
   <tr class="king"><td class="mdl">Kimi K3 <span class="cfg">＋方法论</span></td><td class="win">4.50</td><td class="dpair" rowspan="2">+1.09 ▲</td><td class="win">4.5%</td><td class="win">47.7%</td><td>3/10</td></tr>
   <tr class="king bare"><td class="mdl cfg" style="padding-left:22px">裸模型</td><td>3.41</td><td>18.2%</td><td>40.2%</td><td>3/10</td></tr>
 </table>
+</div>
 <p class="note"><b>口径：</b>裁判恒为 DeepSeek 系（温度 0），对 Kimi K3 / GLM 属<b>跨家打分</b>——K3 拿冠军是"别人家模型给它打的分"，比自评更硬。DeepSeek / GLM 走免费量化通道，K3 走官方付费 API。n=22，单轮有波动，看趋势不看单点。</p>
 
 <h2>三个发现</h2>
@@ -84,6 +87,8 @@ tr.king td{background:#fff6ec}tr.king .mdl{color:var(--amber)}td.win{color:var(-
 
 <h2>逐案明细 · DeepSeek V4 Flash 带方法论（22 例 · 已脱敏）</h2>
 <p class="note">下表为其中一轮（DeepSeek 带方法论）的逐用例明细，示意黄金集的真实构成；换模型/配置即产出上面排行榜里的其余各轮。</p>
+<div class="table-scroll detail" role="region" aria-label="逐案明细" tabindex="0">
 <table><tr><th>用例</th><th>标签</th><th class="sc" style="text-align:left">场景</th><th>忠实</th><th>召回</th><th>精确</th><th>judge</th><th>编造</th></tr><tr><td>case_001</td><td>A类/归因/指标口径切换</td><td class="sc">示例客户A（中医自建站）转化目标从扫码切换为加企业微信，导致CTCVR、CPA表观骤变</td><td>100%</td><td class="w">0%</td><td>—</td><td>4</td><td>—</td></tr><tr><td>case_002</td><td>A类/归因/落地页故障</td><td class="sc">示例客户B（兴趣教育）效率CPM较前一日大幅下跌，误判为效率崩盘，实为该产品落地页发版故障</td><td>100%</td><td>100%</td><td>100%</td><td>4</td><td>—</td></tr><tr><td>case_003</td><td>A类/归因/地域调拨/客户级口径/客户甲</td><td class="sc">客户甲城市定向调拨复盘：若只拿两个调整后日期互比，会误判调拨未生效</td><td>100%</td><td class="w">0%</td><td>0%</td><td>5</td><td>—</td></tr><tr><td>case_004</td><td>A类/归因/超成本反推/兜底CPM</td><td class="sc">示例客户D（兴趣教育）超成本长期在35-40%区间波动，需反推是否由兜底CPM机制主导</td><td>67%</td><td>100%</td><td>100%</td><td>4</td><td>—</td></tr><tr><td>case_005</td><td>A类/归因/客户级口径</td><td class="sc">客户甲（兴趣教育）6/15-17三天后转下降，业务反馈到客率降约10%；千次到客率0.406→0.374</td><td>79%</td><td>50%</td><td>50%</td><td>4</td><td>—</td></tr><tr><td>case_006</td><td>A类/口径</td><td class="sc">业务方/日报把兴趣教育四大客户到客率聚合成&#x27;行业到客率0.577&#x27;对外汇报，该数字能否代表兴趣教育行业真</td><td>100%</td><td class="w">0%</td><td>—</td><td>1</td><td>是</td></tr><tr><td>case_007</td><td>A类/竞价</td><td class="sc">兴趣教育算法模型流量到客率比保量低19.5%（剔除炸群后仍差19.9%），业务方怀疑是算法bug或炸群/</td><td>100%</td><td class="w">0%</td><td>—</td><td>2</td><td>—</td></tr><tr><td>case_008</td><td>A类/覆盖率</td><td class="sc">analysis.md结论&#x27;外部首层正价课率0.31% vs 非外部首层0.83%&#x27;被当作兴趣教育行业规</td><td>100%</td><td class="w">0%</td><td>—</td><td>1</td><td>是</td></tr><tr><td>case_009</td><td>A类/成熟窗口</td><td class="sc">2026-06-03起兴趣教育正价课大盘出现断崖(6/3=1→6/4=2→6/5-6/9=0)，若用T-</td><td>100%</td><td>—</td><td>—</td><td>4</td><td>—</td></tr><tr><td>case_010</td><td>A类/数据管道</td><td class="sc">排查2026年5月billing实际扣费与日报业务收入总差异时，发现数仓主表</td><td>100%</td><td class="w">0%</td><td>—</td><td>1</td><td>—</td></tr><tr><td>case_011</td><td>C类/维度混淆</td><td class="sc">客户甲（兴趣教育）6/15-17期间东三省曝光占比合计18.79%→13.09%(−5.71pp)，四川</td><td>100%</td><td>50%</td><td>33%</td><td>3</td><td>—</td></tr><tr><td>case_012</td><td>C类/代理变量</td><td class="sc">客户甲（兴趣教育）6/15-17期间WiFi流量（占比约85%）内部千次到客率从0.437跌至0.347</td><td>100%</td><td>50%</td><td>50%</td><td>1</td><td>是</td></tr><tr><td>case_013</td><td>C类/相关性陷阱/归因主导</td><td class="sc">兴趣教育分日大盘&#x27;首层占比 vs 到客率&#x27;Pearson相关+0.601（看似首层越高到客越好），但客户</td><td>100%</td><td>—</td><td>—</td><td>1</td><td>是</td></tr><tr><td>case_014</td><td>C类/口径边界/归因主导</td><td class="sc">用兴趣教育到客/正价课数据反推&#x27;首层流量整体质量&#x27;结论，被质疑方法论是否成立</td><td>100%</td><td>—</td><td>—</td><td>1</td><td>是</td></tr><tr><td>case_015</td><td>C类/技术陷阱</td><td class="sc">客户甲变更日志（Grafana REST API导出）经pandas默认解析后，全部记录的解析时间都落在</td><td>80%</td><td class="w">0%</td><td>0%</td><td>2</td><td>—</td></tr><tr><td>case_016</td><td>B类/正常日</td><td class="sc">例行日报巡检：广告大盘2026-04-07近7天分日核心指标，判断当日是否存在需要上报的重大异常</td><td>100%</td><td>—</td><td>—</td><td>5</td><td>—</td></tr><tr><td>case_017</td><td>B类/正常日</td><td class="sc">例行日报巡检：广告大盘2026-04-14近7天分日核心指标，判断当日是否存在需要上报的重大异常</td><td>100%</td><td>—</td><td>—</td><td>5</td><td>—</td></tr><tr><td>case_018</td><td>B类/正常日</td><td class="sc">例行日报巡检：广告大盘2026-05-03近7天分日核心指标，判断当日是否存在需要上报的重大异常</td><td>100%</td><td>—</td><td>—</td><td>4</td><td>—</td></tr><tr><td>case_019</td><td>B类/正常日</td><td class="sc">例行日报巡检：广告大盘2026-05-07近7天分日核心指标，判断当日是否存在需要上报的重大异常</td><td>100%</td><td>—</td><td>—</td><td>4</td><td>—</td></tr><tr><td>case_020</td><td>B类/正常日</td><td class="sc">例行日报巡检：广告大盘2026-05-14近7天分日核心指标，判断当日是否存在需要上报的重大异常</td><td>50%</td><td>—</td><td>—</td><td>3</td><td>—</td></tr><tr><td>case_021</td><td>B类/正常日</td><td class="sc">例行日报巡检：广告大盘2026-05-19近7天分日核心指标，判断当日是否存在需要上报的重大异常</td><td>100%</td><td>—</td><td>—</td><td>5</td><td>—</td></tr><tr><td>case_022</td><td>B类/正常日</td><td class="sc">例行日报巡检：广告大盘2026-06-12近7天分日核心指标，判断当日是否存在需要上报的重大异常</td><td>0%</td><td>—</td><td>—</td><td>3</td><td>—</td></tr></table>
+</div>
 <p class="note">A 类为"该检出异常"用例（看召回/精确）；忠实率 100% = 模型没编数（数值由规则引擎算好喂入的设计使然）。</p>
 </div></body></html>
