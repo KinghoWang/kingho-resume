@@ -34,8 +34,8 @@ tr.king td{background:#fff6ec}tr.king .mdl{color:var(--amber)}td.win{color:var(-
 <a class="back" href="cases.html">← 返回作品集</a>
 <h1>Eval 报告 · 数分机器人「归因质量」评测</h1>
 <div class="meta">被测：广告数分机器人（规则引擎 + LLM 归因）· 22 例黄金集 · <b>3 家国产旗舰 × 带 / 不带方法论 = 6 轮</b> · 裁判恒为 DeepSeek 系（跨家打分）</div>
-<span class="badge">真实跑分 · 客户名/表名已脱敏 · 示例数据</span>
-<div class="lead">为「数分机器人」建的一套自动化评测：22 例带标注答案的历史日报为<b>黄金集</b>，用<b>代码型指标</b>（数值是否忠实、异常是否检出）+ <b>LLM-as-judge</b>（归因质量、是否编造机制）量化质量，并作 prompt 改动的<b>回归门禁</b>。这次把三家国产旗舰各跑两轮：<b>带方法论 skill</b> 和 <b>裸模型</b>，看"同一套方法论换到不同模型上值多少分"。核心目的：把"AI 归因到底靠不靠谱"从感觉变成可测、可对比、可对账的数。</div>
+<span class="badge">真实流程跑分 · 客户名/表名/数值已脱敏扰动</span>
+<div class="lead">为「数分机器人」建的一套自动化评测：22 例基于历史日报场景脱敏改写、带标注答案的用例为<b>黄金集</b>，用<b>代码型指标</b>（数值是否忠实、异常是否检出）+ <b>LLM-as-judge</b>（归因质量、是否编造机制）量化质量，并作 prompt 改动的<b>回归门禁</b>。这次把三家国产旗舰各跑两轮：<b>带方法论 skill</b> 和 <b>裸模型</b>，看"同一套方法论换到不同模型上值多少分"。核心目的：把"AI 归因到底靠不靠谱"从感觉变成可测、可对比、可对账的数。</div>
 
 <div class="four">
   <div class="c"><div class="v">6 轮</div><div class="l">3 模型 × 2 配置<br>同一黄金集</div></div>
@@ -77,7 +77,7 @@ tr.king td{background:#fff6ec}tr.king .mdl{color:var(--amber)}td.win{color:var(-
 
 <h2>评测方法论</h2>
 <div class="mrow">
-  <div class="mcard"><h3>黄金集（22 例）</h3><p>历史日报 + 人工标注的"该报哪些异常、正确的根因"。含 A 类（该检出异常）与 B 类（正常日不该误报）。</p></div>
+  <div class="mcard"><h3>黄金集（22 例）</h3><p>基于历史日报场景脱敏改写的用例 + 人工标注的"该报哪些异常、正确的根因"。含 A 类（该检出异常）与 B 类（正常日不该误报）。</p></div>
   <div class="mcard"><h3>代码型指标（确定性）</h3><p><b>数值忠实率</b>：模型复述的每个数是否与源数据一致（测数值幻觉）；<b>异常召回/精确</b>：检出 vs 真值；格式合格率。跨模型可比。</p></div>
   <div class="mcard"><h3>LLM-as-judge（主观质量）</h3><p>按 rubric 给归因质量 1–5 分，并单独检测<b>是否编造不存在的机制</b>（机制编造率）。裁判固定为 DeepSeek 以保证跨模型公平。</p></div>
   <div class="mcard"><h3>回归门禁 + 成本核算</h3><p>每次改 prompt / 换模型跑一遍，召回 / 忠实退步 &gt;2pt 或 judge 退步 &gt;0.2 即报警；逐轮记 token 与真实 API 花费，成本可对账。</p></div>
