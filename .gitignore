@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+
+# 环境与密钥（永不入库）
+.env
+.env.*
+*.log
+
+# 依赖与构建
+node_modules/
+dist/
+
+# 编辑器
+.vscode/
+.idea/
