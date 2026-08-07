@@ -180,7 +180,7 @@
 </header>
 
 <div class="disclaimer" data-reveal>
-  <strong>脱敏说明：</strong>本页所有客户 / 代理商名称、内部数据表名、看板地址与具体数值均已做<strong>脱敏或示意化</strong>处理（客户以 A–L / 甲乙丙代称、数值为代表性示意值），Demo 跑的是真实工具的引擎与看板本体、仅替换数据，不代表任何企业真实经营数据。
+  <strong>脱敏说明：</strong>本页案例结构与分析方法为真实工作沉淀，所有客户 / 代理商名称、内部数据表名、看板地址与具体数值均已做<strong>脱敏与扰动</strong>处理（客户以 A–L / 甲乙丙代称），Demo 跑的是真实工具的引擎与看板本体、仅替换数据，不代表任何企业真实经营数据。
 </div>
 
 <!-- ============ ① 在线 DEMO 画廊 ============ -->
@@ -212,7 +212,7 @@
     <a class="dc-open" href="demo-creative.html">▶ 打开在线 Demo</a>
   </div>
   <div class="demo-card" data-reveal>
-    <span class="dc-badge">真实跑分</span>
+    <span class="dc-badge">真实流程跑分</span>
     <h3>归因质量 Eval 评测</h3>
     <div class="dc-kind">评测体系 ｜ 3 模型 × 2 配置 · 黄金集 + LLM-as-judge</div>
     <p class="dc-desc">给数分机器人建的自动化评测：22 例黄金集，代码型指标 + LLM-as-judge 量化<strong>归因质量与机制编造率</strong>，作 prompt 回归门禁。这次给<strong>三家国产旗舰（DeepSeek / GLM / Kimi K3）各跑两轮</strong>（带 / 不带方法论），<strong>裁判恒为 DeepSeek 跨家打分</strong> —— 一张能对比、能对账的模型排行榜。</p>
@@ -316,7 +316,7 @@
 
   <div class="story">
     <div class="story-card bg"><div class="lab">背景</div><p>通用 BI 表格面板渲染 20+ 列 × 数千行经常卡崩，维度 / 指标靠链式下拉迭代极慢；月度财务对账长期靠人工 Excel，易错且耗时。</p></div>
-    <div class="story-card act"><div class="lab">动作</div><p>独立开发<strong>键盘流取数工具</strong>：复用浏览器登录态走 BI 代理查询数仓，<strong>55 维度 + 32 指标 + 33 衍生比率</strong>口径与原面板 1:1 对齐；并切出<strong>财务对账子模块</strong>，资金流水自动对账并对齐 Excel 模板。</p></div>
+    <div class="story-card act"><div class="lab">动作</div><p>独立开发<strong>键盘流取数工具</strong>：经授权复用既有登录态访问公司数仓查询通道，<strong>55 维度 + 32 指标 + 33 衍生比率</strong>口径与原面板 1:1 对齐；并切出<strong>财务对账子模块</strong>，资金流水自动对账并对齐 Excel 模板。</p></div>
     <div class="story-card res"><div class="lab">成果</div><p>取数从「点选下拉」变为「敲快捷键」，端到端体验显著提速；财务对账月度结果与人工模板<strong>完全吻合</strong>；沉淀多条业务铁律（审批状态过滤、映射去重防 25× 放大）。</p></div>
   </div>
 
@@ -340,15 +340,15 @@
           <text x="285" y="112" font-size="10" fill="#7f8c8d" text-anchor="middle">SQL 拼装 · 白名单校验</text>
 
           <rect x="410" y="40" width="150" height="48" rx="8" fill="#fff" stroke="#b9770e" stroke-width="1.5"/>
-          <text x="485" y="62" font-size="12" font-weight="700" fill="#b9770e" text-anchor="middle">浏览器登录态</text>
-          <text x="485" y="78" font-size="10" fill="#7f8c8d" text-anchor="middle">CDP 复用 Cookie</text>
+          <text x="485" y="62" font-size="12" font-weight="700" fill="#b9770e" text-anchor="middle">既有登录态</text>
+          <text x="485" y="78" font-size="10" fill="#7f8c8d" text-anchor="middle">复用授权登录态</text>
 
           <rect x="410" y="108" width="150" height="48" rx="8" fill="#fff" stroke="#7d3c98" stroke-width="1.5"/>
           <text x="485" y="130" font-size="12" font-weight="700" fill="#7d3c98" text-anchor="middle">字段口径目录</text>
           <text x="485" y="146" font-size="10" fill="#7f8c8d" text-anchor="middle">维度/指标/衍生 catalog</text>
 
           <rect x="610" y="70" width="150" height="58" rx="8" fill="#fff" stroke="#c0392b" stroke-width="1.5"/>
-          <text x="685" y="94" font-size="13" font-weight="700" fill="#c0392b" text-anchor="middle">企业 BI 代理</text>
+          <text x="685" y="94" font-size="13" font-weight="700" fill="#c0392b" text-anchor="middle">公司查询通道</text>
           <text x="685" y="112" font-size="10" fill="#7f8c8d" text-anchor="middle">复用已配数据源鉴权</text>
 
           <rect x="800" y="58" width="92" height="34" rx="6" fill="#f6f4f0" stroke="#888"/>
@@ -368,7 +368,7 @@
         <text x="183" y="92" font-size="9" fill="#7f8c8d" text-anchor="middle">JSON</text>
       </svg>
       <div class="stack-tags">
-        <span class="t">Python</span><span class="t">Flask</span><span class="t">单文件 HTML/JS</span><span class="t">Chrome DevTools Protocol</span>
+        <span class="t">Python</span><span class="t">Flask</span><span class="t">单文件 HTML/JS</span>
         <span class="t">ODPS / 数仓 SQL</span><span class="t">MySQL</span><span class="t">localStorage 持久化</span>
       </div>
     </div>
