@@ -1,47 +1,41 @@
-# Kingho Wang — AI Commercialization PM · Resume & Portfolio
+# 王钧灏 · AI 商业化产品 / 数据驱动增长 — 简历 & 作品集
 
-**English** | [中文](./README.zh-CN.md)
+**中文** | [English](./README.en.md)
 
-> 5 years in ad monetization (hundreds of millions RMB budget, industry 0→1) + self-built AI / data products. Understands monetization, understands data, builds tools with AI.
+> 5 年商业化广告操盘（亿级预算、行业 0→1）+ 自建 AI / 数据产品。懂变现 · 懂数据 · 能用 AI 造工具。
 
-**Live site 👉 https://kinghowang.github.io/kingho-resume/**
-
-*Note: the site content is currently in Chinese (targeting domestic roles). This README provides the English overview.*
+**在线访问 👉 https://kinghowang.github.io/kingho-resume/**
 
 ---
 
-## 📄 Resume
+## 📄 简历
 
-| Version | Positioning | Link |
+| 版本 | 定位 | 链接 |
 |---|---|---|
-| Home (default) | **AI Commercialization Product Manager** | [index.html](https://kinghowang.github.io/kingho-resume/) |
-| Ad-ops version | For ad operations / growth roles | [resume-adops.html](https://kinghowang.github.io/kingho-resume/resume-adops.html) |
+| 主页（默认） | **AI 商业化产品经理** | [index.html](https://kinghowang.github.io/kingho-resume/) |
+| 商业化广告运营版 | 面向广告运营 / 增长岗 | [resume-adops.html](https://kinghowang.github.io/kingho-resume/resume-adops.html) |
 
-## 🚀 Portfolio
+## 🚀 作品集
 
-**① Self-built AI / data products — live demos** (real engines & dashboards running on synthetic desensitized data, not simplified replicas)
+**① 自建 AI / 数据产品 · 在线 Demo**（跑真实工具引擎 / 看板本体 + 合成脱敏数据，而非简化复刻）
 
-| Demo | One-liner | Open |
+| Demo | 一句话 | 打开 |
 |---|---|---|
-| Analytics Agent | Ad daily report with rule engine + LLM attribution; all numbers computed by code, model only narrates — anti-hallucination by architecture | [demo-shufen.html](https://kinghowang.github.io/kingho-resume/demo-shufen.html) |
-| Competitor Ad Intelligence | Multi-source competitor ad collection + structured retrieval: second-level timelines, multimodal tags, audience drill-down | [demo-advideo.html](https://kinghowang.github.io/kingho-resume/demo-advideo.html) |
-| Creative Segment Diagnostics | Second-by-second video breakdown to locate drop-off points and conversion hooks; dual-creative A/B compare | [demo-creative.html](https://kinghowang.github.io/kingho-resume/demo-creative.html) |
-| Attribution Quality Eval | Golden set + code metrics + LLM-as-judge; quantifies numeric fidelity and mechanism-hallucination rate as a regression gate | [demo-eval.html](https://kinghowang.github.io/kingho-resume/demo-eval.html) |
+| 数分机器人 | 规则引擎 + LLM 归因的广告日报，数值全由代码算、模型只做叙述以防幻觉 | [demo-shufen.html](https://kinghowang.github.io/kingho-resume/demo-shufen.html) |
+| 竞品广告情报引擎 | 多源竞品广告采集 + 结构化检索，秒级时序 / 多模态标签 / 受众下钻 | [demo-advideo.html](https://kinghowang.github.io/kingho-resume/demo-advideo.html) |
+| 创意分段诊断中台 | 素材逐秒拆解，定位流失点与转化话术，支持双素材 A/B 对比 | [demo-creative.html](https://kinghowang.github.io/kingho-resume/demo-creative.html) |
+| 归因质量 Eval 评测 | 黄金集 + 代码指标 + LLM-as-judge，量化数值忠实率与机制编造率，作回归门禁 | [demo-eval.html](https://kinghowang.github.io/kingho-resume/demo-eval.html) |
 
-**② Data analysis & engineering case studies** (desensitized): multi-level drill-down framework, algorithmic vs guaranteed-traffic CPM inversion insight, self-built query tool + financial reconciliation, cross-industry traffic-quality attribution — see [cases.html](https://kinghowang.github.io/kingho-resume/cases.html).
+**② 数据分析 & 工程化案例**（脱敏复刻）：多维下钻分析框架 · 算法vs保量 CPM 倒挂洞察、自建取数工具 + 财务对账、跨行业流量质量归因方法论 —— 见 [cases.html](https://kinghowang.github.io/kingho-resume/cases.html)。
 
-**③ Methodology write-ups**:
-- [Ad Ops Analysis Playbook](https://github.com/KinghoWang/ad-ops-analysis-playbook) — the rule base behind the analytics agent
-- [Agent Collab Playbook](https://github.com/KinghoWang/agent-collab-playbook) — task contracts & framework pitfalls for reliable agents
+## 🔒 脱敏声明
 
-## 🔒 Desensitization
+所有客户 / 代理商名称、内部数据表名、看板地址与具体数值均已**脱敏或示意化**处理。Demo 跑的是真实工具的引擎与看板本体、仅替换数据，不代表任何企业真实经营数据。
 
-All client / agency names, internal table names, dashboard URLs, and figures are **desensitized or illustrative**. Demos run real engines on synthetic data and do not represent any company's real operating data.
+## 🛠 技术
 
-## 🛠 Tech
+纯静态 `HTML / CSS / JS`，零框架零依赖，GitHub Pages 托管；Demo 为单文件自包含（内联真实规则引擎 / Chart.js / 检索逻辑）。系统字体栈，国内加载快。
 
-Pure static `HTML / CSS / JS`, zero framework, zero dependencies, hosted on GitHub Pages; demos are single self-contained files (inlined rule engine / Chart.js / retrieval logic). System font stack for fast loading.
-
-## 📮 Contact
+## 📮 联系
 
 kinghowang@foxmail.com
