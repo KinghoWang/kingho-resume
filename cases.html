@@ -161,6 +161,19 @@
     .demo-pointer a:hover{text-decoration:underline}
     .demo-pointer strong{color:var(--accent);font-weight:600}
 
+    /* ===== 链路对比示意 ===== */
+    .flowgrp{margin-bottom:16px}
+    .flow-label{font-size:.8rem;font-weight:700;margin:2px 0 8px}
+    .flow-label.old{color:var(--accent)} .flow-label.new{color:var(--c-green)}
+    .flowrow{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+    .fnode{background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 13px;font-size:.8rem;font-weight:600;color:#333;display:flex;flex-direction:column;justify-content:center}
+    .fnode small{display:block;font-weight:400;font-size:.66rem;color:var(--muted);margin-top:2px}
+    .fnode.bad{border-color:#e74c3c;background:#fdecea;color:var(--accent)}
+    .fnode.bad small{color:#c0716a}
+    .fnode.ok{border-color:#a8d5bc;background:#e8f8f0;color:var(--c-green)}
+    .fnode.ok small{color:#5d9a78}
+    .farr{align-self:center;color:var(--muted);font-weight:700}
+
     @media(max-width:640px){
       .page-head,.case{padding-left:20px;padding-right:20px}
       .story,.kpi-row,.feat-grid,.twocol{grid-template-columns:1fr}
@@ -222,12 +235,68 @@
 </div>
 
 <!-- ============ ② 数据分析 & 工程化案例 ============ -->
-<div class="section-divider" data-reveal style="margin-top:44px"><h2>② 数据分析 &amp; 工程化案例 <span class="sd-tag">脱敏复刻 · 呈现分析框架与方法论</span></h2></div>
+<div class="section-divider" data-reveal style="margin-top:44px"><h2>② 策略产品 &amp; 数据分析案例 <span class="sd-tag">脱敏复刻 · 链路改造 + 分析框架与方法论</span></h2></div>
 
-<!-- ============ CASE 1 ============ -->
-<section class="case" id="case1" data-reveal>
+<!-- ============ CASE 01 · 企微获客链路改造 ============ -->
+<section class="case" id="case-lianlu" data-reveal>
   <div class="case-head">
     <div class="case-no">01</div>
+    <div>
+      <h2>企微获客链路改造 · 绕开小程序环境限制</h2>
+      <span class="kind">产品案例 ｜ 链路设计 · 已上线 · 回收数据验证 ｜ 场景：小程序广告 → 企微私域获客</span>
+    </div>
+  </div>
+
+  <div class="story">
+    <div class="story-card bg"><div class="lab">背景</div><p>小程序环境<strong>无法调起企业微信「获客助手」一键加微</strong>，原链路只能跳 H5 落地页让用户「长按识别二维码」——对中老年主力用户是跨 App、多步操作的<strong>高摩擦断点</strong>，加微/留资流失严重。</p></div>
+    <div class="story-card act"><div class="lab">动作</div><p>发现小程序<strong>可以原生唤起「企微客服会话」</strong> → 以会话为桥：广告点击直接拉起客服会话，会话内<strong>自动下发获客助手链接</strong>，把「长按识别」替换为<strong>两次点击</strong>，一键加微 + 留资闭环，全程不出微信生态。</p></div>
+    <div class="story-card res"><div class="lab">成果</div><p>回收数据：<strong>曝光-加微率 +50%+</strong>、<strong>曝光-地址率 +40%+</strong>；广告主<strong>后转无损</strong>（前端放量不稀释后端质量），效率 CPM 提升。</p></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-bar"><span class="dot"></span><span class="ttl">链路对比 · 原链路 vs 客服会话桥</span><span class="src">示意重绘 · 已脱敏</span></div>
+    <div class="panel-body">
+      <div class="flowgrp">
+        <div class="flow-label old">原链路 ｜ 高摩擦断点</div>
+        <div class="flowrow">
+          <span class="fnode">小程序内广告</span><span class="farr">→</span>
+          <span class="fnode">跳转 H5 落地页</span><span class="farr">→</span>
+          <span class="fnode bad">长按识别二维码<small>跨 App · 多步操作 · 断点</small></span><span class="farr">→</span>
+          <span class="fnode">加微 / 留资</span>
+        </div>
+        <p class="note">🔒 <b>环境限制</b>：小程序内调不起企业微信「获客助手」一键加微，只能退回「长按识别二维码」——识别成功率低，中老年用户流失集中在这一步。</p>
+      </div>
+      <div class="flowgrp">
+        <div class="flow-label new">新链路 ｜ 客服会话为桥（已上线）</div>
+        <div class="flowrow">
+          <span class="fnode">小程序内广告</span><span class="farr">→</span>
+          <span class="fnode ok">唤起企微客服会话<small>小程序原生支持</small></span><span class="farr">→</span>
+          <span class="fnode ok">会话内自动下发获客链接</span><span class="farr">→</span>
+          <span class="fnode ok">一键加微 + 留资</span>
+        </div>
+        <p class="note">💡 <b>机制</b>：获客助手调不起，但客服会话<b>调得起</b>——把获客助手链接放进会话消息下发，高摩擦动作变两次点击。<b>用平台开放能力绕开平台限制，而非硬闯。</b></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-bar"><span class="dot"></span><span class="ttl">回收数据 · 上线后 vs 原链路</span><span class="src">相对提升 · 绝对值脱敏</span></div>
+    <div class="panel-body">
+      <div class="kpi-row">
+        <div class="kpi"><div class="k-lab">曝光-加微率</div><div class="k-val">+50%+</div><span class="k-delta up">▲ 端到端转化</span></div>
+        <div class="kpi"><div class="k-lab">曝光-地址率</div><div class="k-val">+40%+</div><span class="k-delta up">▲ 留资闭环</span></div>
+        <div class="kpi"><div class="k-lab">广告主后转</div><div class="k-val">无损</div><span class="k-delta up">质量不稀释</span></div>
+        <div class="kpi"><div class="k-lab">效率 CPM</div><div class="k-val">提升</div><span class="k-delta up">同量曝光产出更多</span></div>
+      </div>
+      <p class="note"><b>口径：</b>曝光-加微率 = 广告曝光 → 成功添加企微 的端到端转化；曝光-地址率 = 曝光 → 留下收货地址。后转按成熟窗口口径对照验证无损——<b>放大前端漏斗的同时守住了后端质量，这是链路改造能落地的关键。</b></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CASE 2 ============ -->
+<section class="case" id="case1" data-reveal>
+  <div class="case-head">
+    <div class="case-no">02</div>
     <div>
       <h2>多维下钻分析框架 · 算法 vs 保量流量洞察</h2>
       <span class="kind">分析框架 ｜ 大盘 → 行业 → 代理商 → 客户 四级下钻 · 统一口径 ｜ 数据源：广告投放主表</span>
@@ -304,10 +373,10 @@
   </div>
 </section>
 
-<!-- ============ CASE 02 · 取数工具+对账 ============ -->
+<!-- ============ CASE 03 · 取数工具+对账 ============ -->
 <section class="case" id="case2" data-reveal>
   <div class="case-head">
-    <div class="case-no">02</div>
+    <div class="case-no">03</div>
     <div>
       <h2>自建广告数据取数工具 &amp; 财务对账模块</h2>
       <span class="kind">自建工具 ｜ Python(Flask) + 单文件前端 ｜ 替代通用 BI 面板的 ad-hoc 取数 REPL</span>
@@ -405,10 +474,10 @@
   </div>
 </section>
 
-<!-- ============ CASE 03 · 跨行业归因 ============ -->
+<!-- ============ CASE 04 · 跨行业归因 ============ -->
 <section class="case" id="case3" data-reveal>
   <div class="case-head">
-    <div class="case-no">03</div>
+    <div class="case-no">04</div>
     <div>
       <h2>跨行业流量质量归因 · 分析方法论</h2>
       <span class="kind">深度分析 ｜ 混淆变量控制 · 因果方向验证 · 结构效应分解</span>
