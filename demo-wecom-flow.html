@@ -3,26 +3,697 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="企微获客链路改造交互模拟：对照体验原链路长按识别与新链路客服会话双入口。">
   <title>企微获客链路交互模拟</title>
+  <style>
+    :root {
+      --page: #eef2f3;
+      --surface: #ffffff;
+      --surface-soft: #f5f7f8;
+      --ink: #20282d;
+      --muted: #68757b;
+      --line: #d9dfe3;
+      --old: #b6463c;
+      --old-soft: #fff2ef;
+      --new: #267052;
+      --new-soft: #edf7f1;
+      --link: #286e9b;
+      --phone: #15191c;
+      --shadow: 0 16px 34px rgba(32, 40, 45, .12);
+      font-family: "Avenir Next", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--page); }
+    body { margin: 0; min-width: 320px; background: var(--page); }
+    button, a { font: inherit; }
+    button { color: inherit; }
+    button:focus-visible, a:focus-visible, [tabindex]:focus-visible {
+      outline: 3px solid rgba(40, 110, 155, .38);
+      outline-offset: 3px;
+    }
+    .demo-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: center;
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 18px 28px;
+      border-bottom: 1px solid var(--line);
+    }
+    .back-link { color: var(--link); text-decoration: none; font-size: 14px; font-weight: 700; }
+    .privacy-note { margin: 0; color: var(--muted); font-size: 12px; }
+    .shell { max-width: 1380px; margin: 0 auto; padding: 22px 28px 48px; }
+    .intro { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 18px; }
+    .eyebrow { margin: 0 0 6px; color: var(--link); font-size: 12px; font-weight: 800; }
+    h1 { margin: 0; font-size: 30px; line-height: 1.16; letter-spacing: 0; }
+    .lede { max-width: 680px; margin: 8px 0 0; color: var(--muted); line-height: 1.65; }
+    .controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+    .segment { display: inline-flex; padding: 3px; border: 1px solid var(--line); background: var(--surface); border-radius: 7px; }
+    .segment button, .reset-button {
+      border: 0;
+      border-radius: 5px;
+      background: transparent;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .segment button[aria-pressed="true"] { color: #fff; background: var(--ink); }
+    .reset-button { border: 1px solid var(--line); background: var(--surface); }
+    .mode-readout {
+      min-width: 118px;
+      min-height: 34px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .countdown { color: var(--ink); font-size: 20px; }
+    .stage { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
+    .lane { min-width: 0; }
+    .lane-heading { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+    .lane-heading h2 { margin: 0; font-size: 18px; }
+    .lane-heading p { margin: 0; color: var(--muted); font-size: 12px; }
+    .lane.old .lane-heading h2 { color: var(--old); }
+    .lane.new .lane-heading h2 { color: var(--new); }
+    .lane-workspace { display: grid; grid-template-columns: minmax(240px, 300px) minmax(150px, 1fr); gap: 16px; align-items: center; }
+    .phone {
+      width: 100%;
+      aspect-ratio: 9 / 18.4;
+      border: 8px solid var(--phone);
+      border-radius: 34px;
+      background: #fff;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      position: relative;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .phone-screen { height: 100%; display: flex; flex-direction: column; background: #f2f3f4; }
+    .statusbar {
+      height: 29px;
+      flex: 0 0 29px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      color: #3c4448;
+      background: #fff;
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .status-icons { letter-spacing: 2px; }
+    .appbar {
+      min-height: 45px;
+      display: grid;
+      grid-template-columns: 28px 1fr 28px;
+      align-items: center;
+      padding: 0 10px;
+      background: #fff;
+      border-bottom: 1px solid #e7eaec;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .appbar-side { color: #7b858a; font-size: 16px; }
+    .screen-body { flex: 1; min-height: 0; overflow: hidden; position: relative; }
+    .ad-screen { height: 100%; padding: 14px; background: #f7f8f8; }
+    .ad-label { color: #8b959a; font-size: 10px; margin-bottom: 8px; }
+    .ad-visual {
+      height: 48%;
+      min-height: 150px;
+      display: grid;
+      place-items: center;
+      background: #dceae5;
+      border: 1px solid #ccddd6;
+      overflow: hidden;
+      position: relative;
+    }
+    .booklet {
+      width: 118px;
+      height: 145px;
+      padding: 18px 14px;
+      background: #fff;
+      border: 1px solid #ccd4d1;
+      box-shadow: 8px 10px 0 #b8d0c6;
+      transform: rotate(-4deg);
+    }
+    .booklet b { display: block; color: #245d49; font-size: 18px; line-height: 1.25; }
+    .booklet i { display: block; width: 34px; height: 5px; margin: 13px 0; background: #e7a958; }
+    .booklet small { color: #6c7772; line-height: 1.5; }
+    .ad-copy h3 { margin: 14px 0 7px; font-size: 17px; line-height: 1.35; }
+    .ad-copy p { margin: 0; color: #667176; font-size: 12px; line-height: 1.55; }
+    .primary-action {
+      width: 100%;
+      margin-top: 14px;
+      border: 0;
+      border-radius: 6px;
+      padding: 11px 12px;
+      color: #fff;
+      background: var(--link);
+      cursor: pointer;
+      font-weight: 800;
+    }
+    .old .primary-action { background: var(--old); }
+    .new .primary-action { background: var(--new); }
+    .browserbar { display: flex; align-items: center; gap: 8px; padding: 7px 10px; background: #e9edef; color: #657177; font-size: 9px; }
+    .browser-address { flex: 1; border-radius: 12px; padding: 4px 8px; background: #fff; text-align: center; }
+    .h5-screen { height: calc(100% - 29px); padding: 16px 14px; background: #fff; text-align: center; }
+    .h5-screen h3 { margin: 5px 0 7px; font-size: 17px; }
+    .h5-screen p { margin: 0; color: #6e797e; font-size: 11px; line-height: 1.55; }
+    .qr-wrap { display: grid; place-items: center; margin: 18px auto 12px; }
+    .fake-qr {
+      width: 150px;
+      height: 150px;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      grid-template-rows: repeat(9, 1fr);
+      gap: 3px;
+      border: 1px solid #ccd2d5;
+      background: #fff;
+      cursor: pointer;
+      touch-action: none;
+      position: relative;
+    }
+    .qr-cell { background: transparent; }
+    .qr-cell.on { background: #263034; }
+    .hold-track { height: 5px; width: 150px; margin: 10px auto 0; overflow: hidden; background: #e5e8e9; border-radius: 4px; }
+    .hold-fill { width: 0; height: 100%; background: var(--old); }
+    .holding .hold-fill { animation: hold-progress .8s linear forwards; }
+    @keyframes hold-progress { to { width: 100%; } }
+    .hold-label { min-height: 18px; margin-top: 6px; color: var(--old); font-size: 10px; font-weight: 800; }
+    .menu-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; background: rgba(17, 22, 24, .34); }
+    .action-sheet { padding: 8px 10px 12px; background: #eef0f1; }
+    .sheet-group { overflow: hidden; border-radius: 9px; background: #fff; }
+    .sheet-title { padding: 10px 12px; color: #8a9499; border-bottom: 1px solid #edf0f1; font-size: 10px; text-align: center; }
+    .sheet-button {
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid #edf0f1;
+      padding: 11px;
+      background: #fff;
+      color: var(--link);
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .sheet-button:last-child { border-bottom: 0; }
+    .sheet-cancel { margin-top: 7px; border-radius: 9px; color: #30383c; font-weight: 800; }
+    .chat-screen { height: 100%; padding: 14px 11px; background: #eceff0; overflow-y: auto; }
+    .chat-time { margin: 2px 0 12px; color: #8d979c; text-align: center; font-size: 9px; }
+    .system-line { margin: 8px auto; color: #899399; text-align: center; font-size: 9px; }
+    .message-row { display: flex; gap: 7px; align-items: start; margin-bottom: 10px; }
+    .avatar { width: 30px; height: 30px; flex: 0 0 30px; display: grid; place-items: center; color: #fff; background: #4e806d; border-radius: 4px; font-size: 10px; font-weight: 800; }
+    .message-stack { min-width: 0; flex: 1; }
+    .sender { margin: 0 0 4px; color: #7d888d; font-size: 9px; }
+    .message-entry, .card-entry { width: 100%; border: 1px solid #d9dfe1; background: #fff; cursor: pointer; text-align: left; }
+    .message-entry { border-radius: 3px 8px 8px 8px; padding: 10px; color: #343d41; font-size: 11px; line-height: 1.65; }
+    .message-entry strong { color: var(--link); overflow-wrap: anywhere; }
+    .card-entry { border-radius: 7px; padding: 0; overflow: hidden; }
+    .card-cover { height: 74px; padding: 12px; color: #174c3a; background: #d9eee5; }
+    .card-cover b { display: block; font-size: 14px; }
+    .card-cover small { display: block; margin-top: 5px; color: #557368; }
+    .card-footer { padding: 8px 10px; color: var(--link); font-size: 10px; font-weight: 800; }
+    .typing { display: inline-flex; gap: 4px; padding: 12px; background: #fff; border-radius: 3px 8px 8px 8px; }
+    .typing i { width: 5px; height: 5px; border-radius: 50%; background: #9ca5a9; animation: typing 1s infinite alternate; }
+    .typing i:nth-child(2) { animation-delay: .2s; }
+    .typing i:nth-child(3) { animation-delay: .4s; }
+    @keyframes typing { to { opacity: .25; } }
+    .contact-screen { height: 100%; background: #f2f3f4; }
+    .contact-profile { padding: 28px 18px 20px; background: #fff; text-align: center; }
+    .contact-avatar { width: 70px; height: 70px; margin: 0 auto 12px; display: grid; place-items: center; border-radius: 10px; color: #fff; background: #4e806d; font-size: 23px; font-weight: 900; }
+    .contact-profile h3 { margin: 0; font-size: 18px; }
+    .contact-profile p { margin: 6px 0 0; color: #748086; font-size: 11px; }
+    .verified { display: inline-block; margin-top: 10px; padding: 4px 8px; color: #396c58; background: #e7f3ed; border-radius: 3px; font-size: 9px; }
+    .contact-details { margin: 12px 0; padding: 0 14px; background: #fff; }
+    .detail-row { display: flex; justify-content: space-between; gap: 14px; padding: 13px 0; border-bottom: 1px solid #eceff0; font-size: 11px; }
+    .detail-row span { color: #7a858a; }
+    .contact-action { padding: 4px 14px; }
+    .added-state { color: var(--new); background: #e5f1eb; }
+    .steps { display: flex; flex-direction: column; gap: 8px; }
+    .step { display: grid; grid-template-columns: 25px 1fr; gap: 9px; align-items: start; padding: 9px 0; border-bottom: 1px solid var(--line); }
+    .step-index { width: 25px; height: 25px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; color: var(--muted); background: var(--surface); font-size: 10px; font-weight: 900; }
+    .step b { display: block; font-size: 12px; line-height: 1.35; }
+    .step small { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; line-height: 1.45; }
+    .step.done .step-index { color: #fff; border-color: var(--ink); background: var(--ink); }
+    .old .step.active .step-index { color: #fff; border-color: var(--old); background: var(--old); }
+    .new .step.active .step-index { color: #fff; border-color: var(--new); background: var(--new); }
+    .step.active b { color: var(--ink); }
+    .feedback {
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-width: 760px;
+      margin: 18px auto;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+    .comparison { border-top: 1px solid var(--line); padding-top: 18px; }
+    .comparison h2 { margin: 0 0 12px; font-size: 17px; }
+    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .metric-table { width: 100%; border-collapse: collapse; background: var(--surface); }
+    .metric-table caption { padding: 10px 12px; text-align: left; color: #fff; font-weight: 800; }
+    .metric-table.old caption { background: var(--old); }
+    .metric-table.new caption { background: var(--new); }
+    .metric-table th, .metric-table td { padding: 10px 12px; border-bottom: 1px solid var(--line); font-size: 12px; text-align: left; }
+    .metric-table td { text-align: right; font-weight: 900; }
+    .metric-note { margin: 10px 0 0; color: var(--muted); font-size: 11px; line-height: 1.55; }
+  </style>
 </head>
 <body>
   <header class="demo-header">
-    <a href="cases.html#case-lianlu">返回企微获客案例</a>
-    <p data-testid="privacy-note">虚构重绘 · 无真实素材 · 无真实链接</p>
+    <a class="back-link" href="cases.html#case-lianlu">← 返回企微获客案例</a>
+    <p class="privacy-note" data-testid="privacy-note">虚构重绘 · 无真实素材 · 无真实链接</p>
   </header>
-  <main>
-    <section aria-labelledby="old-title">
-      <h2 id="old-title">原链路</h2>
-      <div data-testid="old-phone" data-state="OLD_AD">
-        <button data-testid="old-claim" type="button">立即领取</button>
+
+  <main class="shell">
+    <section class="intro" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">企微获客链路改造 · 交互模拟</p>
+        <h1 id="page-title">同一起点，走完两条加微路径</h1>
+        <p class="lede">从同一条虚构广告出发，分别体验原链路的长按识别与新链路的客服会话双入口。</p>
+      </div>
+      <div class="controls" aria-label="演示控制">
+        <div class="segment" aria-label="操作模式">
+          <button type="button" data-testid="manual-mode" aria-pressed="true">手动操作</button>
+          <button type="button" data-testid="auto-mode" aria-pressed="false">自动演示</button>
+        </div>
+        <div class="mode-readout" data-testid="mode-status" aria-live="polite">
+          <span>手动操作</span>
+          <strong class="countdown" data-testid="countdown"></strong>
+        </div>
+        <button class="reset-button" type="button" data-testid="reset-all">↻ 重置两条链路</button>
       </div>
     </section>
-    <section aria-labelledby="new-title">
-      <h2 id="new-title">新链路</h2>
-      <div data-testid="new-phone" data-state="NEW_AD">
-        <button data-testid="new-claim" type="button">立即领取</button>
+
+    <section class="stage" aria-label="新旧获客链路对照">
+      <article class="lane old" aria-labelledby="old-lane-title">
+        <div class="lane-heading">
+          <h2 id="old-lane-title">原链路</h2>
+          <p>长按与系统菜单形成高摩擦断点</p>
+        </div>
+        <div class="lane-workspace">
+          <div class="phone" data-testid="old-phone" data-state="OLD_AD" aria-label="原链路手机模拟"></div>
+          <div class="steps" data-testid="old-steps" aria-label="原链路步骤"></div>
+        </div>
+      </article>
+
+      <article class="lane new" aria-labelledby="new-lane-title">
+        <div class="lane-heading">
+          <h2 id="new-lane-title">新链路</h2>
+          <p>客服会话自动下发文案与卡片双入口</p>
+        </div>
+        <div class="lane-workspace">
+          <div class="phone" data-testid="new-phone" data-state="NEW_AD" aria-label="新链路手机模拟"></div>
+          <div class="steps" data-testid="new-steps" aria-label="新链路步骤"></div>
+        </div>
+      </article>
+    </section>
+
+    <div class="feedback" data-testid="feedback" role="status" aria-live="polite">两条链路可独立操作。</div>
+
+    <section class="comparison" aria-labelledby="comparison-title">
+      <h2 id="comparison-title">从广告到已添加 · 标准路径对比</h2>
+      <div class="metrics">
+        <table class="metric-table old">
+          <caption>原链路</caption>
+          <tbody>
+            <tr><th scope="row">必需用户操作</th><td data-testid="old-standard-actions"></td></tr>
+            <tr><th scope="row">高摩擦动作</th><td data-testid="old-friction-actions"></td></tr>
+            <tr><th scope="row">获客入口</th><td>二维码</td></tr>
+            <tr><th scope="row">当前状态</th><td data-testid="old-completion"></td></tr>
+          </tbody>
+        </table>
+        <table class="metric-table new">
+          <caption>新链路</caption>
+          <tbody>
+            <tr><th scope="row">必需用户操作</th><td data-testid="new-standard-actions"></td></tr>
+            <tr><th scope="row">高摩擦动作</th><td data-testid="new-friction-actions"></td></tr>
+            <tr><th scope="row">获客入口</th><td>文案 + 卡片</td></tr>
+            <tr><th scope="row">当前状态</th><td data-testid="new-completion"></td></tr>
+          </tbody>
+        </table>
       </div>
+      <p class="metric-note">操作数按标准成功路径计算；短按失败、取消菜单等尝试不计入。页面不连接真实企业微信，也不提交任何信息。</p>
     </section>
   </main>
+
+  <script>
+    const INITIAL = Object.freeze({
+      mode: 'manual',
+      countdown: null,
+      oldLane: 'OLD_AD',
+      newLane: 'NEW_AD',
+      feedback: '两条链路可独立操作。'
+    });
+
+    const TRANSITIONS = Object.freeze({
+      old: {
+        OLD_AD: { CLAIM_CLICK: { to: 'OLD_H5', userAction: 1, highFriction: 0 } },
+        OLD_H5: { HOLD_START: { to: 'OLD_HOLDING', userAction: 0, highFriction: 0 } },
+        OLD_HOLDING: {
+          HOLD_COMPLETE: { to: 'OLD_MENU', userAction: 1, highFriction: 1 },
+          HOLD_ABORT: { to: 'OLD_H5', userAction: 0, highFriction: 0 }
+        },
+        OLD_MENU: {
+          MENU_OPEN_CONTACT: { to: 'OLD_CONTACT', userAction: 1, highFriction: 1 },
+          MENU_CANCEL: { to: 'OLD_H5', userAction: 0, highFriction: 0 },
+          MENU_SHARE: { to: 'OLD_MENU', userAction: 0, highFriction: 0 },
+          MENU_SAVE: { to: 'OLD_MENU', userAction: 0, highFriction: 0 }
+        },
+        OLD_CONTACT: { ADD_CONTACT: { to: 'OLD_ADDED', userAction: 1, highFriction: 0 } }
+      },
+      new: {
+        NEW_AD: { CLAIM_CLICK: { to: 'NEW_CHAT', userAction: 1, highFriction: 0 } },
+        NEW_CHAT: { SEND_TEXT: { to: 'NEW_TEXT_SENT', userAction: 0, highFriction: 0 } },
+        NEW_TEXT_SENT: {
+          SEND_CARD: { to: 'NEW_BOTH_SENT', userAction: 0, highFriction: 0 },
+          ACQUISITION_CLICK: { to: 'NEW_CONTACT', userAction: 1, highFriction: 0 }
+        },
+        NEW_BOTH_SENT: { ACQUISITION_CLICK: { to: 'NEW_CONTACT', userAction: 1, highFriction: 0 } },
+        NEW_CONTACT: { ADD_CONTACT: { to: 'NEW_ADDED', userAction: 1, highFriction: 0 } }
+      }
+    });
+
+    const STANDARD_PATHS = Object.freeze({
+      old: [
+        ['OLD_AD', 'CLAIM_CLICK'],
+        ['OLD_HOLDING', 'HOLD_COMPLETE'],
+        ['OLD_MENU', 'MENU_OPEN_CONTACT'],
+        ['OLD_CONTACT', 'ADD_CONTACT']
+      ],
+      new: [
+        ['NEW_AD', 'CLAIM_CLICK'],
+        ['NEW_BOTH_SENT', 'ACQUISITION_CLICK'],
+        ['NEW_CONTACT', 'ADD_CONTACT']
+      ]
+    });
+
+    const OLD_STEPS = Object.freeze([
+      ['广告起点', '点击领取资料'],
+      ['H5 落地页', '离开原生页面'],
+      ['长按二维码', '持续按住 0.8 秒'],
+      ['系统菜单', '选择打开联系人'],
+      ['添加联系人', '完成加微']
+    ]);
+    const NEW_STEPS = Object.freeze([
+      ['广告起点', '点击领取资料'],
+      ['客服会话', '页面原生唤起'],
+      ['文案 + 卡片', '系统自动下发'],
+      ['添加联系人', '任一入口直达']
+    ]);
+    const OLD_RANK = Object.freeze({ OLD_AD: 0, OLD_H5: 1, OLD_HOLDING: 2, OLD_MENU: 3, OLD_CONTACT: 4, OLD_ADDED: 5 });
+    const NEW_RANK = Object.freeze({ NEW_AD: 0, NEW_CHAT: 1, NEW_TEXT_SENT: 2, NEW_BOTH_SENT: 2, NEW_CONTACT: 3, NEW_ADDED: 4 });
+    const QR_PATTERN = '111010111101110101111010111010101010111011101001010100111010111101101101111010111';
+
+    let state = { ...INITIAL };
+    const timers = new Map();
+    const hold = { active: false, timer: null, pointerId: null, input: null };
+
+    const oldPhone = document.querySelector('[data-testid="old-phone"]');
+    const newPhone = document.querySelector('[data-testid="new-phone"]');
+    const oldSteps = document.querySelector('[data-testid="old-steps"]');
+    const newSteps = document.querySelector('[data-testid="new-steps"]');
+    const feedback = document.querySelector('[data-testid="feedback"]');
+    const manualButton = document.querySelector('[data-testid="manual-mode"]');
+    const autoButton = document.querySelector('[data-testid="auto-mode"]');
+    const modeStatus = document.querySelector('[data-testid="mode-status"]');
+
+    function registerTimer(kind, delay, callback) {
+      const id = window.setTimeout(() => {
+        timers.delete(id);
+        callback();
+      }, delay);
+      timers.set(id, kind);
+      return id;
+    }
+
+    function clearTimer(id) {
+      if (id === null || !timers.has(id)) return;
+      window.clearTimeout(id);
+      timers.delete(id);
+    }
+
+    function clearTimers(kind) {
+      for (const [id, timerKind] of timers) {
+        if (!kind || timerKind === kind) {
+          window.clearTimeout(id);
+          timers.delete(id);
+        }
+      }
+    }
+
+    function dispatch(lane, event) {
+      const stateKey = lane === 'old' ? 'oldLane' : 'newLane';
+      const transition = TRANSITIONS[lane][state[stateKey]]?.[event];
+      if (!transition) return false;
+      if (lane === 'new' && event === 'ACQUISITION_CLICK') clearTimers('message');
+      state[stateKey] = transition.to;
+      render();
+      return true;
+    }
+
+    function sumPath(lane, field) {
+      return STANDARD_PATHS[lane].reduce((sum, [from, event]) => {
+        return sum + TRANSITIONS[lane][from][event][field];
+      }, 0);
+    }
+
+    function phoneFrame(title, content) {
+      return `
+        <div class="phone-screen">
+          <div class="statusbar"><span>9:41</span><span class="status-icons">● ◔ ▰</span></div>
+          <div class="appbar"><span class="appbar-side">‹</span><span>${title}</span><span class="appbar-side">•••</span></div>
+          <div class="screen-body">${content}</div>
+        </div>`;
+    }
+
+    function adView(lane) {
+      return phoneFrame('内容推荐', `
+        <div class="ad-screen">
+          <div class="ad-label">广告 · 虚构内容</div>
+          <div class="ad-visual" aria-hidden="true">
+            <div class="booklet"><b>控糖生活手册</b><i></i><small>饮食记录<br>生活建议<br>日常陪伴</small></div>
+          </div>
+          <div class="ad-copy">
+            <h3>领取控糖生活资料</h3>
+            <p>虚构健康资料示意，不构成医疗建议。</p>
+          </div>
+          <button class="primary-action" type="button" data-testid="${lane}-claim" data-event="CLAIM_CLICK">立即领取</button>
+        </div>`);
+    }
+
+    function qrMarkup() {
+      return QR_PATTERN.split('').map(bit => `<i class="qr-cell${bit === '1' ? ' on' : ''}"></i>`).join('');
+    }
+
+    function h5View(holding = false, withMenu = false) {
+      const page = `
+        <div class="browserbar"><span>‹</span><span class="browser-address">资料领取页 · 示例</span><span>⋯</span></div>
+        <div class="h5-screen${holding ? ' holding' : ''}">
+          <h3>添加顾问领取资料</h3>
+          <p>请长按下方二维码，在系统菜单中选择联系人。</p>
+          <div class="qr-wrap">
+            <div class="fake-qr" data-testid="old-qr" data-hold-target tabindex="0" role="button" aria-label="长按二维码 0.8 秒">${qrMarkup()}</div>
+            <div class="hold-track" aria-hidden="true"><div class="hold-fill"></div></div>
+            <div class="hold-label">${holding ? '请继续按住…' : '长按 0.8 秒识别'}</div>
+          </div>
+          <p>示意图案无法识别，不含真实二维码。</p>
+        </div>`;
+      const menu = withMenu ? `
+        <div class="menu-overlay" aria-label="模拟系统菜单">
+          <div class="action-sheet">
+            <div class="sheet-group">
+              <div class="sheet-title">模拟系统菜单 · 不调用设备权限</div>
+              <button class="sheet-button" type="button" data-testid="menu-open-contact" data-event="MENU_OPEN_CONTACT">打开企业联系人</button>
+              <button class="sheet-button" type="button" data-testid="menu-share" data-event="MENU_SHARE">转发给朋友</button>
+              <button class="sheet-button" type="button" data-testid="menu-save" data-event="MENU_SAVE">保存图片</button>
+            </div>
+            <button class="sheet-button sheet-cancel" type="button" data-testid="menu-cancel" data-event="MENU_CANCEL">取消</button>
+          </div>
+        </div>` : '';
+      return phoneFrame('资料领取页', page + menu);
+    }
+
+    function chatView(chatState) {
+      const hasText = chatState === 'NEW_TEXT_SENT' || chatState === 'NEW_BOTH_SENT';
+      const hasCard = chatState === 'NEW_BOTH_SENT';
+      return phoneFrame('暖心健康客服 · 虚构', `
+        <div class="chat-screen">
+          <div class="chat-time">今天 09:41</div>
+          <div class="system-line">已进入客服会话</div>
+          <div class="message-row">
+            <div class="avatar" aria-hidden="true">暖心</div>
+            <div class="message-stack">
+              <p class="sender">暖心健康客服 · 虚构</p>
+              ${hasText ? `
+                <button class="message-entry" type="button" data-testid="acquisition-text" data-event="ACQUISITION_CLICK">
+                  资料已为你准备好。点击本段任意位置即可添加顾问并领取：<strong>work.example/link</strong>
+                </button>` : '<span class="typing" aria-label="正在自动下发文案"><i></i><i></i><i></i></span>'}
+            </div>
+          </div>
+          ${hasCard ? `
+            <div class="message-row">
+              <div class="avatar" aria-hidden="true">暖心</div>
+              <div class="message-stack">
+                <p class="sender">同一获客链接卡片</p>
+                <button class="card-entry" type="button" data-testid="acquisition-card" data-event="ACQUISITION_CLICK">
+                  <span class="card-cover"><b>控糖生活资料包</b><small>点击卡片任意位置添加顾问</small></span>
+                  <span class="card-footer">work.example/link　›</span>
+                </button>
+              </div>
+            </div>` : ''}
+        </div>`);
+    }
+
+    function contactView(lane, added) {
+      return phoneFrame('企业联系人', `
+        <div class="contact-screen">
+          <div class="contact-profile">
+            <div class="contact-avatar" aria-hidden="true">程</div>
+            <h3>健康顾问 小程</h3>
+            <p>暖心健康服务 · 虚构联系人</p>
+            <span class="verified">示意企业身份 · 已脱敏</span>
+          </div>
+          <div class="contact-details">
+            <div class="detail-row"><span>服务内容</span><b>资料领取与日常陪伴</b></div>
+            <div class="detail-row"><span>隐私说明</span><b>不收集真实信息</b></div>
+          </div>
+          <div class="contact-action">
+            ${added
+              ? '<button class="primary-action added-state" type="button" disabled>✓ 已添加</button>'
+              : `<button class="primary-action" type="button" data-testid="${lane}-add-contact" data-event="ADD_CONTACT">添加到通讯录</button>`}
+          </div>
+        </div>`);
+    }
+
+    function renderOldLane() {
+      oldPhone.dataset.state = state.oldLane;
+      if (state.oldLane === 'OLD_AD') oldPhone.innerHTML = adView('old');
+      if (state.oldLane === 'OLD_H5') oldPhone.innerHTML = h5View();
+      if (state.oldLane === 'OLD_HOLDING') oldPhone.innerHTML = h5View(true);
+      if (state.oldLane === 'OLD_MENU') oldPhone.innerHTML = h5View(false, true);
+      if (state.oldLane === 'OLD_CONTACT') oldPhone.innerHTML = contactView('old', false);
+      if (state.oldLane === 'OLD_ADDED') oldPhone.innerHTML = contactView('old', true);
+    }
+
+    function renderNewLane() {
+      newPhone.dataset.state = state.newLane;
+      if (state.newLane === 'NEW_AD') newPhone.innerHTML = adView('new');
+      if (state.newLane === 'NEW_CHAT' || state.newLane === 'NEW_TEXT_SENT' || state.newLane === 'NEW_BOTH_SENT') {
+        newPhone.innerHTML = chatView(state.newLane);
+      }
+      if (state.newLane === 'NEW_CONTACT') newPhone.innerHTML = contactView('new', false);
+      if (state.newLane === 'NEW_ADDED') newPhone.innerHTML = contactView('new', true);
+    }
+
+    function renderSteps(container, definitions, rank, maxRank) {
+      container.innerHTML = definitions.map(([title, detail], index) => {
+        const stepRank = index + 1;
+        const status = rank > stepRank ? 'done' : (rank === stepRank ? 'active' : 'pending');
+        return `<div class="step ${status}"><span class="step-index">${index + 1}</span><span><b>${title}</b><small>${detail}</small></span></div>`;
+      }).join('');
+      if (rank === 0) container.firstElementChild?.classList.add('active');
+      if (rank >= maxRank) {
+        container.querySelectorAll('.step').forEach(step => step.classList.add('done'));
+      }
+    }
+
+    function completionLabel(laneState) {
+      if (laneState.endsWith('_AD')) return '未开始';
+      if (laneState.endsWith('_ADDED')) return '已添加';
+      return '进行中';
+    }
+
+    function renderMetrics() {
+      document.querySelector('[data-testid="old-standard-actions"]').textContent = sumPath('old', 'userAction');
+      document.querySelector('[data-testid="old-friction-actions"]').textContent = sumPath('old', 'highFriction');
+      document.querySelector('[data-testid="new-standard-actions"]').textContent = sumPath('new', 'userAction');
+      document.querySelector('[data-testid="new-friction-actions"]').textContent = sumPath('new', 'highFriction');
+      document.querySelector('[data-testid="old-completion"]').textContent = completionLabel(state.oldLane);
+      document.querySelector('[data-testid="new-completion"]').textContent = completionLabel(state.newLane);
+    }
+
+    function renderControls() {
+      const isAuto = state.mode === 'auto';
+      manualButton.setAttribute('aria-pressed', String(!isAuto));
+      autoButton.setAttribute('aria-pressed', String(isAuto));
+      const label = isAuto
+        ? (state.countdown === null ? (state.oldLane === 'OLD_ADDED' && state.newLane === 'NEW_ADDED' ? '演示完成' : '自动演示中') : '即将同时开始')
+        : '手动操作';
+      modeStatus.innerHTML = `<span>${label}</span><strong class="countdown" data-testid="countdown">${state.countdown ?? ''}</strong>`;
+    }
+
+    function render() {
+      renderOldLane();
+      renderNewLane();
+      renderSteps(oldSteps, OLD_STEPS, OLD_RANK[state.oldLane], 5);
+      renderSteps(newSteps, NEW_STEPS, NEW_RANK[state.newLane], 4);
+      renderMetrics();
+      renderControls();
+      feedback.textContent = state.feedback;
+    }
+
+    function showFeedback(message) {
+      state.feedback = message;
+      feedback.textContent = message;
+    }
+
+    function scheduleLaneMessages() {
+      if (document.hidden || state.mode !== 'manual') return;
+      clearTimers('message');
+      if (state.newLane === 'NEW_CHAT') {
+        registerTimer('message', 500, () => dispatch('new', 'SEND_TEXT'));
+        registerTimer('message', 1100, () => dispatch('new', 'SEND_CARD'));
+      } else if (state.newLane === 'NEW_TEXT_SENT') {
+        registerTimer('message', 500, () => dispatch('new', 'SEND_CARD'));
+      }
+    }
+
+    function handleLaneClick(lane, event) {
+      const control = event.target.closest('[data-event]');
+      if (!control) return;
+      const action = control.dataset.event;
+      const changed = dispatch(lane, action);
+      if (!changed) return;
+      if (lane === 'new' && action === 'CLAIM_CLICK') {
+        showFeedback('客服会话已打开，文案和卡片将自动下发。');
+        scheduleLaneMessages();
+      } else if (lane === 'new' && action === 'ACQUISITION_CLICK') {
+        showFeedback('已通过获客链接打开同一联系人页。');
+      } else if (action === 'ADD_CONTACT') {
+        showFeedback('模拟完成：联系人已添加。');
+      }
+    }
+
+    function resetAll(options = {}) {
+      clearTimers();
+      hold.active = false;
+      hold.timer = null;
+      hold.pointerId = null;
+      hold.input = null;
+      state = { ...INITIAL, mode: options.mode || 'manual' };
+      render();
+    }
+
+    oldPhone.addEventListener('click', event => handleLaneClick('old', event));
+    newPhone.addEventListener('click', event => handleLaneClick('new', event));
+    document.querySelector('[data-testid="reset-all"]').addEventListener('click', () => resetAll());
+    manualButton.addEventListener('click', () => {
+      state.mode = 'manual';
+      state.countdown = null;
+      clearTimers('demo');
+      renderControls();
+      scheduleLaneMessages();
+      showFeedback('已切换为手动操作，当前进度已保留。');
+    });
+
+    render();
+  </script>
 </body>
 </html>
