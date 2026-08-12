@@ -176,7 +176,7 @@ Expected: HTML 中无外链、绝对路径、视频引用和真实识别信息�
 
 将审核通过的 `demo-wecom-flow.html` 同步到权威目录，随后比较 SHA-256，两个文件必须一致。`cases.html` 本轮不修改。
 
-- [ ] **Step 5: 提交并推送**
+- [x] **Step 5: 提交并推送**
 
 Run:
 
@@ -188,6 +188,8 @@ git push origin main
 
 Expected: `main` 推送成功；提交不含本地视频、关键帧或真实素材。
 
-- [ ] **Step 6: 验收 GitHub Pages**
+- [x] **Step 6: 验收 GitHub Pages**
 
 等待 Pages 对新提交显示 `completed success`；使用 `?nc=<commit>` 下载线上 HTML，比对 SHA-256，并在线走通手动双入口、自动演示与 390px 手机布局。
+
+验收记录：首次 Pages 运行未分配 runner，`build` 无步骤即失败；同一运行第 2 次重跑后，build / deploy 均成功。线上 Demo 与本地 SHA-256 一致，线上 26 条 Playwright 回归全部通过。
