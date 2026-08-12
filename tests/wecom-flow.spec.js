@@ -16,6 +16,68 @@ test('loads two independent lanes at the shared ad start', async ({ page }) => {
   await expect(page.locator('a[href^="http"]')).toHaveCount(0);
 });
 
+test('video-faithful redraw exposes the required visual layers', async ({ page }) => {
+  await expect(page.getByTestId('old-phone').locator('.short-video-ad')).toBeVisible();
+  await expect(page.getByTestId('new-phone').locator('.short-video-ad')).toBeVisible();
+
+  await page.getByTestId('old-claim').click();
+  await expect(page.getByTestId('old-phone').locator('.h5-scroll')).toBeVisible();
+  await expect(page.getByTestId('old-phone').locator('.health-book-cover')).toBeVisible();
+  await expect(page.getByTestId('old-phone').locator('.claim-list')).toBeVisible();
+  await expect(page.getByTestId('old-phone').locator('.sticky-claim-bar')).toBeVisible();
+
+  await page.getByTestId('new-claim').click();
+  await expect(page.getByTestId('new-phone').locator('.chat-screen.dark')).toBeVisible();
+  await expect(page.getByTestId('chat-composer')).toBeVisible();
+  await expect(page.getByTestId('acquisition-card')).toBeVisible();
+});
+
+test('sanitized redraw keeps video-like density without real destinations or debug overlays', async ({ page }) => {
+  await page.getByTestId('new-claim').click();
+  await page.getByTestId('acquisition-card').waitFor({ state: 'visible' });
+
+  const newPhone = page.getByTestId('new-phone');
+  await expect(newPhone).toContainText('work.weixin.qq.com/ca/••••••••');
+  await expect(newPhone).not.toContainText('work.example/link');
+  await expect(newPhone.locator('a[href]')).toHaveCount(0);
+  await expect(newPhone.locator('img, video, iframe')).toHaveCount(0);
+
+  const debugOutlines = await newPhone.locator('button').evaluateAll(elements => elements.filter(element => {
+    const style = getComputedStyle(element);
+    return style.outlineStyle !== 'none' || style.borderColor === 'rgb(255, 0, 0)';
+  }).length);
+  expect(debugOutlines).toBe(0);
+});
+
+test('either acquisition entry shows the local loading screen before contact', async ({ page }) => {
+  await page.getByTestId('new-claim').click();
+  await page.getByTestId('acquisition-card').waitFor({ state: 'visible' });
+  await page.getByTestId('acquisition-card').click();
+  await expect(page.getByTestId('new-phone')).toHaveAttribute('data-state', 'NEW_LINK_LOADING');
+  await expect(page.getByTestId('link-loading')).toBeVisible();
+  await expect(page.getByTestId('new-phone')).toHaveAttribute('data-state', 'NEW_CONTACT', { timeout: 1500 });
+});
+
+test('backgrounding pauses link resolution until the page is visible again', async ({ page }) => {
+  await page.getByTestId('new-claim').click();
+  await page.getByTestId('acquisition-card').waitFor({ state: 'visible' });
+  await page.getByTestId('acquisition-card').click();
+  await expect(page.getByTestId('new-phone')).toHaveAttribute('data-state', 'NEW_LINK_LOADING');
+
+  await page.evaluate(() => {
+    Object.defineProperty(document, 'hidden', { configurable: true, get: () => true });
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
+  await page.waitForTimeout(800);
+  await expect(page.getByTestId('new-phone')).toHaveAttribute('data-state', 'NEW_LINK_LOADING');
+
+  await page.evaluate(() => {
+    Object.defineProperty(document, 'hidden', { configurable: true, get: () => false });
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
+  await expect(page.getByTestId('new-phone')).toHaveAttribute('data-state', 'NEW_CONTACT', { timeout: 1500 });
+});
+
 test('new flow accepts either message entry without advancing the old lane', async ({ page }) => {
   await page.getByTestId('new-claim').click();
   await expect(page.getByTestId('new-phone')).toHaveAttribute('data-state', 'NEW_CHAT');
@@ -24,7 +86,9 @@ test('new flow accepts either message entry without advancing the old lane', asy
   await expect(page.getByTestId('acquisition-text')).toBeVisible();
   await expect(page.getByTestId('acquisition-card')).toBeVisible();
   await page.getByTestId('acquisition-text').click();
-  await expect(page.getByTestId('new-phone')).toHaveAttribute('data-state', 'NEW_CONTACT');
+  await expect(page.getByTestId('new-phone')).toHaveAttribute('data-state', 'NEW_LINK_LOADING');
+  await expect(page.getByTestId('link-loading')).toBeVisible();
+  await expect(page.getByTestId('new-phone')).toHaveAttribute('data-state', 'NEW_CONTACT', { timeout: 1500 });
   await page.getByTestId('new-add-contact').click();
   await expect(page.getByTestId('new-phone')).toHaveAttribute('data-state', 'NEW_ADDED');
 
@@ -32,7 +96,25 @@ test('new flow accepts either message entry without advancing the old lane', asy
   await page.getByTestId('new-claim').click();
   await expect(page.getByTestId('acquisition-card')).toBeVisible();
   await page.getByTestId('acquisition-card').click();
-  await expect(page.getByTestId('new-phone')).toHaveAttribute('data-state', 'NEW_CONTACT');
+  await expect(page.getByTestId('new-phone')).toHaveAttribute('data-state', 'NEW_LINK_LOADING');
+  await expect(page.getByTestId('new-phone')).toHaveAttribute('data-state', 'NEW_CONTACT', { timeout: 1500 });
+});
+
+test('new contact redraw follows the compact dark profile shown in the reference flow', async ({ page }) => {
+  await page.getByTestId('new-claim').click();
+  await page.getByTestId('acquisition-card').waitFor({ state: 'visible' });
+  await page.getByTestId('acquisition-card').click();
+  await expect(page.getByTestId('new-phone')).toHaveAttribute('data-state', 'NEW_CONTACT', { timeout: 1500 });
+
+  const phone = page.getByTestId('new-phone');
+  await expect(phone.locator('.friend-summary')).toContainText('添加朋友的备注名');
+  await expect(phone).not.toContainText('朋友圈');
+  await expect(phone).not.toContainText('投诉建议');
+  await expect(phone.locator('.contact-section').last()).toContainText('实名');
+
+  const sectionBox = await phone.locator('.contact-section').last().boundingBox();
+  const actionBox = await page.getByTestId('new-add-contact').boundingBox();
+  expect(actionBox.y - (sectionBox.y + sectionBox.height)).toBeLessThanOrEqual(24);
 });
 
 test('transition metadata reports standard path counts from ad to added', async ({ page }) => {
@@ -157,7 +239,8 @@ test('new-flow clicks do not cancel an active old-flow hold', async ({ page }) =
   await page.waitForTimeout(300);
   await expect(page.getByTestId('acquisition-text')).toBeVisible();
   await page.getByTestId('acquisition-text').dispatchEvent('click');
-  await expect(page.getByTestId('new-phone')).toHaveAttribute('data-state', 'NEW_CONTACT');
+  await expect(page.getByTestId('new-phone')).toHaveAttribute('data-state', 'NEW_LINK_LOADING');
+  await expect(page.getByTestId('new-phone')).toHaveAttribute('data-state', 'NEW_CONTACT', { timeout: 1500 });
   await page.waitForTimeout(550);
   await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_MENU');
 });

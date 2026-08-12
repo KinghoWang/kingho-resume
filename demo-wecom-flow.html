@@ -267,6 +267,268 @@
     .metric-table td { text-align: right; font-weight: 900; }
     .metric-note { margin: 10px 0 0; color: var(--muted); font-size: 11px; line-height: 1.55; }
 
+    /* Clean-room redraw of the phone screens from the local reference videos. */
+    .phone { aspect-ratio: 540 / 1170; }
+    .phone-screen { color: #181b1d; }
+    .device-status {
+      height: 30px;
+      flex: 0 0 30px;
+      display: grid;
+      grid-template-columns: 1fr 94px 1fr;
+      align-items: center;
+      padding: 0 13px;
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .device-status.dark { color: #f8f8f8; background: #0d0d0e; }
+    .device-status.light { color: #111; background: #fff; }
+    .device-time { justify-self: start; }
+    .dynamic-island {
+      width: 86px;
+      height: 22px;
+      justify-self: center;
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+      border-radius: 14px;
+      background: #030303;
+      box-shadow: inset 0 0 0 1px rgba(255, 63, 63, .24);
+    }
+    .dynamic-island::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #e63b32; }
+    .device-signals { justify-self: end; display: inline-flex; align-items: center; gap: 4px; letter-spacing: 0; }
+    .signal-bars { display: inline-flex; align-items: end; gap: 1px; height: 9px; }
+    .signal-bars i { width: 2px; background: currentColor; border-radius: 1px; }
+    .signal-bars i:nth-child(1) { height: 3px; }
+    .signal-bars i:nth-child(2) { height: 5px; }
+    .signal-bars i:nth-child(3) { height: 7px; }
+    .signal-bars i:nth-child(4) { height: 9px; }
+    .battery { min-width: 22px; padding: 1px 3px; border-radius: 5px; color: #111; background: #f5f5f5; font-size: 8px; text-align: center; }
+
+    .native-appbar {
+      min-height: 45px;
+      flex: 0 0 45px;
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) 34px;
+      align-items: center;
+      padding: 0 8px;
+      border-bottom: 1px solid rgba(127, 127, 127, .15);
+    }
+    .native-appbar.light { color: #111; background: #fff; }
+    .native-appbar.dark { color: #f0f0f0; background: #111113; }
+    .native-back, .native-more { font-size: 22px; font-weight: 400; line-height: 1; }
+    .native-more { justify-self: end; font-size: 15px; }
+    .native-title { min-width: 0; text-align: center; line-height: 1.15; }
+    .native-title strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
+    .native-title small { display: block; margin-top: 1px; color: #8d8d90; font-size: 8px; font-weight: 500; }
+
+    .video-phone { background: #050505; }
+    .short-video-ad {
+      min-height: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+      background: #050505;
+    }
+    .video-back, .video-pill, .video-close { position: absolute; z-index: 4; display: grid; place-items: center; }
+    .video-back { top: 10px; left: 10px; width: 34px; height: 34px; border: 1px solid rgba(255,255,255,.7); border-radius: 50%; background: rgba(0,0,0,.5); font-size: 26px; }
+    .video-pill { top: 12px; right: 9px; width: 58px; height: 28px; grid-template-columns: 1fr 1fr; border-radius: 17px; color: #161616; background: rgba(255,255,255,.9); font-size: 13px; }
+    .video-close { top: 160px; right: 8px; width: 32px; height: 32px; border: 2px solid #fff; border-radius: 50%; font-size: 21px; background: rgba(0,0,0,.55); }
+    .ad-hero-banner {
+      height: 168px;
+      flex: 0 0 168px;
+      position: relative;
+      overflow: hidden;
+      background: #6d877b;
+    }
+    .ad-hero-banner::before,
+    .ad-hero-banner::after { content: ""; position: absolute; left: 0; right: 0; }
+    .ad-hero-banner::before { top: 0; height: 70px; background: #9cb0a7; }
+    .ad-hero-banner::after { bottom: 0; height: 60px; background: #557269; }
+    .coast-rail { position: absolute; left: 12px; right: 12px; bottom: 39px; height: 5px; background: rgba(255,255,255,.75); transform: rotate(-5deg); }
+    .coast-people { position: absolute; left: 18px; right: 16px; bottom: 49px; display: flex; justify-content: space-between; align-items: end; }
+    .coast-people i { width: 5px; height: 19px; border-radius: 4px 4px 1px 1px; background: #243b34; }
+    .coast-people i:nth-child(2n) { height: 14px; background: #f0d8b0; }
+    .coast-people i:nth-child(3n) { height: 22px; background: #6b2927; }
+    .video-play { position: absolute; z-index: 2; top: 49px; left: 50%; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 7px; padding: 10px 18px; border-radius: 8px; color: #fff; background: #07c160; font-size: 15px; font-weight: 800; box-shadow: 0 4px 10px rgba(0,0,0,.2); }
+    .play-triangle { width: 0; height: 0; border-top: 8px solid transparent; border-bottom: 8px solid transparent; border-left: 13px solid #fff; }
+    .video-headline { position: absolute; z-index: 2; left: 8px; right: 8px; bottom: 7px; margin: 0; font-size: 17px; line-height: 1.25; font-weight: 900; text-shadow: 0 1px 2px #000; }
+    .ad-vertical-creative {
+      min-height: 0;
+      flex: 1;
+      width: 72%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      color: #151515;
+      background: #f4f3ed;
+      box-shadow: 0 0 0 1px rgba(255,255,255,.12);
+    }
+    .creative-scene { min-height: 0; flex: 1; position: relative; overflow: hidden; background: #b9d5cd; }
+    .creative-window { position: absolute; inset: 18px 20px 52px; border: 8px solid #edf5f2; background: #7aa096; }
+    .creative-window::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 5px; background: #edf5f2; }
+    .creative-window::after { content: ""; position: absolute; left: 0; right: 0; top: 48%; height: 5px; background: #edf5f2; }
+    .creative-person { position: absolute; z-index: 2; left: 50%; bottom: 28px; width: 44px; height: 102px; transform: translateX(-50%); border-radius: 21px 21px 8px 8px; background: #263c36; }
+    .creative-person::before { content: ""; position: absolute; top: -19px; left: 10px; width: 25px; height: 25px; border-radius: 50%; background: #d8b395; }
+    .creative-person::after { content: ""; position: absolute; left: -28px; top: 29px; width: 96px; height: 12px; border-radius: 8px; background: #263c36; transform: rotate(-6deg); }
+    .creative-caption { flex: 0 0 35px; display: grid; place-items: center; color: #111; background: #ffd500; font-size: 14px; font-weight: 900; }
+    .creative-proof { flex: 0 0 66px; display: grid; grid-template-columns: 48px 1fr; align-items: center; gap: 6px; padding: 7px 9px; background: #f4f4f1; }
+    .mini-device { width: 42px; height: 42px; display: grid; place-items: center; border: 4px solid #303638; border-radius: 12px; color: #fff; background: #5b7771; font-size: 8px; }
+    .proof-lines i { display: block; height: 4px; margin: 4px 0; background: #5f6668; }
+    .proof-lines i:nth-child(2) { width: 83%; }
+    .proof-lines i:nth-child(3) { width: 68%; }
+    .creative-fineprint { flex: 0 0 35px; padding: 6px 8px; color: #5d6264; background: #e8e8e4; font-size: 6px; line-height: 1.4; }
+    .ad-cta-bar { min-height: 52px; flex: 0 0 52px; display: grid; grid-template-columns: 38px 1fr 73px; align-items: center; gap: 7px; padding: 6px 9px; color: #151515; background: #fff; }
+    .cta-seal { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; color: #111; background: #ffd500; font-size: 9px; font-weight: 900; }
+    .cta-copy { min-width: 0; }
+    .cta-copy b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
+    .cta-copy small { color: #777; font-size: 7px; }
+    .ad-claim { min-height: 38px; border: 0; border-radius: 5px; color: #fff; background: #f5222d; font-size: 11px; font-weight: 800; cursor: pointer; }
+
+    .h5-view { height: 100%; position: relative; overflow: hidden; background: #fff; }
+    .h5-scroll { height: 100%; overflow-y: auto; overscroll-behavior: contain; padding-bottom: 66px; color: #1b1b1b; background: #fff; scrollbar-width: none; }
+    .h5-scroll::-webkit-scrollbar, .chat-scroll::-webkit-scrollbar { display: none; }
+    .h5-hero { min-height: 195px; padding: 8px 12px 6px; text-align: center; background: #fff; }
+    .h5-title { margin: 0; color: #d30d16; font-size: 25px; line-height: 1.05; font-weight: 900; }
+    .gift-tags { display: flex; justify-content: center; margin: 5px 0; }
+    .gift-tags b { padding: 3px 8px; color: #fff; background: #d50b13; font-size: 13px; }
+    .gift-tags b:last-child { background: #1539b8; }
+    .health-book-cover { width: 86px; height: 100px; margin: 7px auto 3px; position: relative; border: 4px solid #e8eadf; background: #9ec76d; box-shadow: 6px 5px 0 #d6dcc8; transform: perspective(180px) rotateY(-6deg); }
+    .health-book-cover::before { content: "四季\A养生"; white-space: pre; position: absolute; inset: 8px 15px; display: grid; place-items: center; color: #fff; border: 2px solid #fff; font-size: 16px; line-height: 1.05; font-weight: 900; }
+    .health-book-cover::after { content: "免费赠送"; position: absolute; right: -34px; bottom: 16px; padding: 5px 7px; color: #d10d14; border: 3px solid #d10d14; background: rgba(255,255,255,.9); font-size: 10px; font-weight: 900; transform: rotate(-17deg); }
+    .hero-arrow { color: #c9151e; font-size: 13px; font-weight: 900; }
+    .claim-panel { margin: 0 8px 10px; padding: 10px 9px 11px; border: 3px solid #65e765; border-radius: 8px; background: #f2ebdf; box-shadow: 0 0 8px rgba(79,221,91,.45); text-align: center; }
+    .claim-panel.holding { border-color: #e34a42; box-shadow: 0 0 9px rgba(227,74,66,.45); }
+    .claim-panel h3 { margin: 0 0 4px; font-size: 13px; }
+    .claim-instruction { margin: 0 0 8px; color: #d4232c; font-size: 10px; line-height: 1.45; }
+    .fake-qr.dense {
+      --qr-size: 21;
+      width: 160px;
+      height: 160px;
+      padding: 9px;
+      display: grid;
+      grid-template-columns: repeat(var(--qr-size), 1fr);
+      grid-template-rows: repeat(var(--qr-size), 1fr);
+      gap: 1px;
+      border: 0;
+      background: #fff;
+      touch-action: none;
+      cursor: pointer;
+      position: relative;
+    }
+    .fake-qr.compact { --qr-size: 15; width: 62px; height: 62px; padding: 4px; gap: 1px; cursor: default; }
+    .fake-qr .qr-cell { min-width: 0; min-height: 0; background: transparent; }
+    .fake-qr .qr-cell.on { background: #070707; }
+    .qr-center-badge { position: absolute; left: 50%; top: 50%; width: 31px; height: 31px; transform: translate(-50%, -50%); display: grid; place-items: center; border: 3px solid #fff; border-radius: 5px; color: #346f4f; background: #e9f2d4; font-size: 7px; font-weight: 900; }
+    .hold-track { width: 160px; height: 4px; margin: 7px auto 0; }
+    .hold-label { margin-top: 4px; }
+    .claim-count { margin: 6px 0 0; font-size: 9px; font-weight: 800; }
+    .avatar-strip { display: flex; justify-content: center; margin-top: 7px; }
+    .avatar-dot { width: 25px; height: 25px; margin-left: -3px; border: 2px solid #fff; border-radius: 50%; background: #8faca6; }
+    .avatar-dot:nth-child(2n) { background: #d68f96; }
+    .avatar-dot:nth-child(3n) { background: #7ba0c4; }
+    .avatar-dot:nth-child(4n) { background: #d5b45e; }
+    .claim-list { margin: 0 14px 10px; padding: 8px 10px 10px; background: #f6efe4; }
+    .claim-list h3 { margin: 0 0 7px; padding: 5px; color: #fff; background: #d90913; font-size: 14px; text-align: center; }
+    .claim-row { display: grid; grid-template-columns: 48px 1fr 58px 43px; gap: 4px; padding: 3px 0; font-size: 9px; text-align: left; }
+    .secondary-qr-card { margin: 0 9px 16px; padding: 10px; border: 3px solid #65e765; border-radius: 8px; background: #f7f0e5; box-shadow: 0 0 7px rgba(79,221,91,.38); text-align: center; }
+    .secondary-qr-card .fake-qr { margin: 7px auto 0; }
+    .sticky-claim-bar { position: absolute; z-index: 4; left: 0; right: 0; bottom: 0; height: 64px; display: grid; grid-template-columns: 55px 1fr 70px; align-items: center; gap: 6px; padding: 5px 8px; border-top: 1px solid #e7e7e7; color: #1b1b1b; background: #fff; }
+    .free-stamp { height: 52px; display: grid; place-items: center; color: #fff; background: #12a83e; font-size: 16px; line-height: 1.05; font-weight: 900; }
+    .sticky-copy b { color: #d30d16; font-size: 11px; }
+    .sticky-copy small { display: block; margin-top: 4px; font-size: 8px; }
+    .mini-qr-wrap { display: flex; align-items: center; justify-content: flex-end; gap: 3px; }
+    .pointing-hand { color: #e4232c; font-size: 23px; }
+
+    .menu-overlay { z-index: 9; background: rgba(0,0,0,.56); }
+    .action-sheet { padding: 0 0 8px; background: transparent; }
+    .sheet-group { border-radius: 8px 8px 0 0; }
+    .sheet-title { color: #9b9b9b; font-size: 9px; }
+    .sheet-button { min-height: 42px; color: #1a1a1a; font-size: 11px; }
+    .sheet-button.contact-option { color: #b58a31; }
+    .sheet-cancel { margin: 7px 8px 0; width: calc(100% - 16px); border-radius: 8px; color: #111; }
+
+    .chat-phone { color: #f3f3f3; background: #0b0b0c; }
+    .chat-screen.dark { height: 100%; display: flex; flex-direction: column; overflow: hidden; color: #efefef; background: #0c0c0d; }
+    .chat-scroll { min-height: 0; flex: 1; overflow-y: auto; padding: 9px 8px 8px; scrollbar-width: none; }
+    .chat-day { margin: 1px 0 7px; color: #737376; font-size: 8px; text-align: center; }
+    .chat-row { display: flex; align-items: flex-start; gap: 7px; margin: 8px 0; }
+    .chat-row.user { justify-content: flex-end; align-items: flex-end; }
+    .service-mark { width: 29px; height: 29px; flex: 0 0 29px; display: grid; place-items: center; border-radius: 4px; color: #fa8f2e; background: #f5f5f5; font-size: 16px; font-weight: 900; }
+    .service-mark::before { content: "V"; transform: skew(-12deg); }
+    .chat-bubble { max-width: calc(100% - 38px); padding: 8px 9px; border-radius: 3px; color: #e9e9e9; background: #272728; font-size: 10px; line-height: 1.42; text-align: left; }
+    .chat-bubble.compact { display: grid; grid-template-columns: 1fr 54px; gap: 6px; align-items: center; }
+    .chat-bubble p { margin: 0; }
+    .chat-bubble .muted-line { margin-top: 3px; color: #a2a2a5; }
+    .chat-bubble .masked-link { display: block; margin-top: 3px; color: #7895b1; overflow-wrap: anywhere; }
+    .user-bubble { min-width: 38px; padding: 9px 12px; border-radius: 4px 4px 0 4px; color: #09140e; background: #18b957; font-size: 11px; text-align: center; }
+    .user-thumb, .product-thumb { overflow: hidden; position: relative; background: #c43c35; }
+    .user-thumb { width: 31px; height: 31px; border-radius: 2px; background: #7f9a8e; }
+    .user-thumb::before { content: ""; position: absolute; left: 8px; top: 5px; width: 15px; height: 15px; border-radius: 50%; background: #e2c1a3; }
+    .user-thumb::after { content: ""; position: absolute; left: 4px; right: 4px; bottom: 1px; height: 13px; border-radius: 9px 9px 2px 2px; background: #ebddd0; }
+    .product-thumb { width: 54px; height: 54px; display: grid; place-items: end center; padding-bottom: 4px; border: 2px solid #f1d4c2; color: #fff; font-size: 7px; font-weight: 900; }
+    .product-thumb::before { content: "健康\A资料"; white-space: pre; position: absolute; left: 5px; top: 5px; width: 29px; height: 32px; display: grid; place-items: center; color: #a62224; background: #fff2dc; font-size: 8px; line-height: 1; }
+    .message-entry, .card-entry { color: inherit; }
+    .chat-screen.dark .message-entry,
+    .chat-screen.dark .card-entry { width: auto; max-width: calc(100% - 38px); min-height: 44px; padding: 8px 9px; border: 0; border-radius: 3px; color: #ededed; background: #272728; cursor: pointer; font-size: 10px; line-height: 1.42; text-align: left; }
+    .chat-screen.dark .message-entry .masked-link { display: block; color: #7895b1; overflow-wrap: anywhere; }
+    .chat-screen.dark .card-entry { display: grid; grid-template-columns: 1fr 54px; align-items: center; gap: 6px; }
+    .chat-screen.dark .card-copy b { display: block; font-size: 10px; }
+    .chat-screen.dark .card-copy small { display: block; margin-top: 3px; color: #a9a9ac; font-size: 8px; }
+    .chat-screen.dark .typing { background: #272728; }
+    .chat-composer { min-height: 48px; flex: 0 0 48px; display: grid; grid-template-columns: 1fr 24px 24px 24px; align-items: center; gap: 5px; padding: 7px 8px; background: #181819; }
+    .composer-field { height: 32px; border-radius: 3px; background: #242425; }
+    .composer-icon { width: 24px; height: 24px; display: grid; place-items: center; border: 1px solid #a8a8ab; border-radius: 50%; color: #c9c9cb; font-size: 13px; }
+
+    .webview-phone { color: #fff; background: #0d0d0e; }
+    .webview-bar { height: 45px; flex: 0 0 45px; display: grid; grid-template-columns: 34px 1fr 34px; align-items: center; padding: 0 8px; color: #ddd; background: #111113; font-size: 12px; text-align: center; }
+    .webview-close { font-size: 25px; font-weight: 300; }
+    .webview-more { font-size: 16px; }
+    .webview-progress { height: 2px; flex: 0 0 2px; width: 44%; background: #08c95b; animation: webview-load .65s linear forwards; transform-origin: left; }
+    @keyframes webview-load { from { transform: scaleX(.08); } to { transform: scaleX(1); } }
+    .link-loading-screen { min-height: 0; flex: 1; display: grid; place-items: center; background: #fff; }
+    .loading-toast { width: 72px; height: 72px; display: grid; place-items: center; gap: 3px; padding: 13px 7px 8px; border-radius: 5px; color: #fff; background: rgba(40,40,40,.84); font-size: 8px; }
+    .loading-spinner { width: 25px; height: 25px; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .contact-screen { height: 100%; display: flex; flex-direction: column; overflow-y: auto; }
+    .contact-screen.light-theme { color: #111; background: #ededed; }
+    .contact-screen.dark-theme { color: #eaeaea; background: #0e0e0f; }
+    .contact-screen .contact-profile { display: grid; grid-template-columns: 62px 1fr; gap: 12px; align-items: center; padding: 20px 16px 17px; text-align: left; }
+    .contact-screen.light-theme .contact-profile { background: #fff; }
+    .contact-screen.dark-theme .contact-profile { background: #111112; }
+    .portrait { width: 62px; height: 62px; position: relative; overflow: hidden; border-radius: 4px; background: #d9ddd9; }
+    .portrait::before { content: ""; position: absolute; left: 18px; top: 9px; width: 27px; height: 27px; border-radius: 50% 50% 44% 44%; background: #d5a783; box-shadow: 0 -7px 0 #38342f; }
+    .portrait::after { content: ""; position: absolute; left: 10px; right: 10px; bottom: -5px; height: 34px; border-radius: 18px 18px 0 0; background: #27384a; }
+    .profile-copy h3 { margin: 0; font-size: 16px; }
+    .profile-copy p { margin: 5px 0 0; color: #b4823d; font-size: 9px; }
+    .profile-copy small { display: block; margin-top: 5px; color: #8a8a8d; font-size: 8px; }
+    .contact-section { margin-top: 9px; padding: 0 13px; }
+    .contact-screen.light-theme .contact-section { background: #fff; }
+    .contact-screen.dark-theme .contact-section { background: #151516; }
+    .friend-summary { min-height: 70px; display: grid; grid-template-columns: 1fr 12px; align-content: center; gap: 6px 8px; margin-top: 9px; padding: 11px 13px; background: #151516; }
+    .friend-summary b { font-size: 10px; font-weight: 600; }
+    .friend-summary span { color: #66676a; font-size: 8px; }
+    .friend-summary i { grid-column: 2; grid-row: 1 / span 2; align-self: center; color: #5f6063; font-size: 18px; }
+    .section-label { padding: 9px 0 5px; color: #848487; font-size: 8px; }
+    .contact-row { min-height: 39px; display: grid; grid-template-columns: 58px 1fr 10px; align-items: center; gap: 8px; border-bottom: 1px solid rgba(127,127,127,.15); font-size: 9px; }
+    .contact-row span:first-child { color: #777b7d; }
+    .contact-row b { font-weight: 600; }
+    .moments { display: flex; gap: 4px; padding: 5px 0; }
+    .moment-thumb { width: 34px; height: 27px; background: #769482; }
+    .moment-thumb:nth-child(2) { background: #b6c6d3; }
+    .moment-thumb:nth-child(3) { background: #7791a0; }
+    .contact-screen .contact-action { margin-top: 0; padding: 0; }
+    .contact-screen .contact-action .primary-action { min-height: 48px; margin-top: 0; border-radius: 0; }
+    .contact-screen.dark-theme .primary-action { color: #848895; border-top: 1px solid #0d0d0e; background: #151516; }
+    .contact-screen.light-theme .primary-action { color: #286e9b; border-top: 1px solid #ededed; background: #fff; }
+    .contact-screen .added-state { color: #2f7d5e; background: #dfeee7; }
+
+    .phone button:focus-visible, .phone [tabindex]:focus-visible { outline: 0; box-shadow: inset 0 0 0 3px rgba(44, 184, 115, .82); }
+
     @media (max-width: 979px) {
       .intro { align-items: flex-start; }
       .stage { grid-template-columns: 1fr; gap: 34px; }
@@ -416,6 +678,7 @@
           MENU_OPEN_CONTACT: { to: 'OLD_CONTACT', userAction: 1, highFriction: 1 },
           MENU_CANCEL: { to: 'OLD_H5', userAction: 0, highFriction: 0 },
           MENU_SHARE: { to: 'OLD_MENU', userAction: 0, highFriction: 0 },
+          MENU_FAVORITE: { to: 'OLD_MENU', userAction: 0, highFriction: 0 },
           MENU_SAVE: { to: 'OLD_MENU', userAction: 0, highFriction: 0 }
         },
         OLD_CONTACT: { ADD_CONTACT: { to: 'OLD_ADDED', userAction: 1, highFriction: 0 } }
@@ -425,9 +688,10 @@
         NEW_CHAT: { SEND_TEXT: { to: 'NEW_TEXT_SENT', userAction: 0, highFriction: 0 } },
         NEW_TEXT_SENT: {
           SEND_CARD: { to: 'NEW_BOTH_SENT', userAction: 0, highFriction: 0 },
-          ACQUISITION_CLICK: { to: 'NEW_CONTACT', userAction: 1, highFriction: 0 }
+          ACQUISITION_CLICK: { to: 'NEW_LINK_LOADING', userAction: 1, highFriction: 0 }
         },
-        NEW_BOTH_SENT: { ACQUISITION_CLICK: { to: 'NEW_CONTACT', userAction: 1, highFriction: 0 } },
+        NEW_BOTH_SENT: { ACQUISITION_CLICK: { to: 'NEW_LINK_LOADING', userAction: 1, highFriction: 0 } },
+        NEW_LINK_LOADING: { LINK_RESOLVE: { to: 'NEW_CONTACT', userAction: 0, highFriction: 0 } },
         NEW_CONTACT: { ADD_CONTACT: { to: 'NEW_ADDED', userAction: 1, highFriction: 0 } }
       }
     });
@@ -460,8 +724,7 @@
       ['添加联系人', '任一入口直达']
     ]);
     const OLD_RANK = Object.freeze({ OLD_AD: 0, OLD_H5: 1, OLD_HOLDING: 2, OLD_MENU: 3, OLD_CONTACT: 4, OLD_ADDED: 5 });
-    const NEW_RANK = Object.freeze({ NEW_AD: 0, NEW_CHAT: 1, NEW_TEXT_SENT: 2, NEW_BOTH_SENT: 2, NEW_CONTACT: 3, NEW_ADDED: 4 });
-    const QR_PATTERN = '111010111101110101111010111010101010111011101001010100111010111101101101111010111';
+    const NEW_RANK = Object.freeze({ NEW_AD: 0, NEW_CHAT: 1, NEW_TEXT_SENT: 2, NEW_BOTH_SENT: 2, NEW_LINK_LOADING: 3, NEW_CONTACT: 3, NEW_ADDED: 4 });
     const AUTO_EVENTS = Object.freeze([
       [3000, 'old', 'CLAIM_CLICK'],
       [3000, 'new', 'CLAIM_CLICK'],
@@ -470,6 +733,7 @@
       [4400, 'old', 'HOLD_START'],
       [5200, 'old', 'HOLD_COMPLETE'],
       [6200, 'new', 'ACQUISITION_CLICK'],
+      [6850, 'new', 'LINK_RESOLVE'],
       [7600, 'new', 'ADD_CONTACT'],
       [8000, 'old', 'MENU_OPEN_CONTACT'],
       [10700, 'old', 'ADD_CONTACT']
@@ -528,112 +792,205 @@
       }, 0);
     }
 
-    function phoneFrame(title, content) {
-      return `
-        <div class="phone-screen">
-          <div class="statusbar"><span>9:41</span><span class="status-icons">● ◔ ▰</span></div>
-          <div class="appbar"><span class="appbar-side">‹</span><span>${title}</span><span class="appbar-side">•••</span></div>
-          <div class="screen-body">${content}</div>
-        </div>`;
+    function deviceStatus(theme = 'light', time = '17:34') {
+      return `<div class="device-status ${theme}">
+        <span class="device-time">${time}</span>
+        <span class="dynamic-island" aria-hidden="true"></span>
+        <span class="device-signals"><span class="signal-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>5G</span><span class="battery">58</span></span>
+      </div>`;
+    }
+
+    function nativeAppbar(title, theme = 'light', subtitle = '') {
+      return `<div class="native-appbar ${theme}">
+        <span class="native-back" aria-hidden="true">‹</span>
+        <span class="native-title"><strong>${title}</strong>${subtitle ? `<small>${subtitle}</small>` : ''}</span>
+        <span class="native-more" aria-hidden="true">•••</span>
+      </div>`;
+    }
+
+    function videoPeople() {
+      return Array.from({ length: 19 }, () => '<i></i>').join('');
     }
 
     function adView(lane) {
-      return phoneFrame('内容推荐', `
-        <div class="ad-screen">
-          <div class="ad-label">广告 · 虚构内容</div>
-          <div class="ad-visual" aria-hidden="true">
-            <div class="booklet"><b>控糖生活手册</b><i></i><small>饮食记录<br>生活建议<br>日常陪伴</small></div>
+      return `<div class="phone-screen video-phone">
+        ${deviceStatus('dark')}
+        <div class="short-video-ad">
+          <span class="video-back" aria-hidden="true">‹</span>
+          <span class="video-pill" aria-hidden="true"><b>•••</b><b>◉</b></span>
+          <span class="video-close" aria-hidden="true">×</span>
+          <div class="ad-hero-banner" aria-hidden="true">
+            <div class="coast-rail"></div><div class="coast-people">${videoPeople()}</div>
+            <span class="video-play"><i class="play-triangle"></i>播放视频</span>
+            <p class="video-headline">这份健康资料，很多人都在找</p>
           </div>
-          <div class="ad-copy">
-            <h3>领取控糖生活资料</h3>
-            <p>虚构健康资料示意，不构成医疗建议。</p>
+          <div class="ad-vertical-creative" aria-hidden="true">
+            <div class="creative-scene"><div class="creative-window"></div><div class="creative-person"></div></div>
+            <div class="creative-caption">从一个常见问题说起</div>
+            <div class="creative-proof"><span class="mini-device">记录</span><span class="proof-lines"><i></i><i></i><i></i></span></div>
+            <div class="creative-fineprint">虚构健康资料内容，仅用于演示页面结构。请以专业机构建议为准。</div>
           </div>
-          <button class="primary-action" type="button" data-testid="${lane}-claim" data-event="CLAIM_CLICK">立即领取</button>
-        </div>`);
+          <div class="ad-cta-bar">
+            <span class="cta-seal">领取<br>入口</span>
+            <span class="cta-copy"><b>健康生活资料</b><small>资料已准备好</small></span>
+            <button class="ad-claim" type="button" data-testid="${lane}-claim" data-event="CLAIM_CLICK">立即领取</button>
+          </div>
+        </div>
+      </div>`;
     }
 
-    function qrMarkup() {
-      return QR_PATTERN.split('').map(bit => `<i class="qr-cell${bit === '1' ? ' on' : ''}"></i>`).join('');
+    function qrMarkup(size = 21, salt = 0) {
+      const cells = [];
+      const inFinder = (row, col, top, left) => {
+        const r = row - top;
+        const c = col - left;
+        if (r < 0 || r > 6 || c < 0 || c > 6) return false;
+        return r === 0 || r === 6 || c === 0 || c === 6 || (r >= 2 && r <= 4 && c >= 2 && c <= 4);
+      };
+      for (let row = 0; row < size; row += 1) {
+        for (let col = 0; col < size; col += 1) {
+          const finder = inFinder(row, col, 0, 0) || inFinder(row, col, 0, size - 7) || inFinder(row, col, size - 7, 0);
+          const data = ((row * 17 + col * 11 + row * col * 3 + salt * 7) % 13) < 6;
+          cells.push(`<i class="qr-cell${finder || data ? ' on' : ''}"></i>`);
+        }
+      }
+      return cells.join('');
+    }
+
+    function avatarStrip() {
+      return Array.from({ length: 9 }, () => '<i class="avatar-dot"></i>').join('');
+    }
+
+    function claimRows() {
+      return [
+        ['周女士', '176****3807', '广州', '刚刚'],
+        ['林先生', '135****9964', '成都', '1分钟前'],
+        ['许女士', '156****6837', '长沙', '2分钟前'],
+        ['陈先生', '153****6158', '南昌', '3分钟前']
+      ].map(row => `<div class="claim-row">${row.map(value => `<span>${value}</span>`).join('')}</div>`).join('');
+    }
+
+    function compactQr(salt = 4) {
+      return `<span class="fake-qr dense compact" aria-hidden="true">${qrMarkup(15, salt)}</span>`;
     }
 
     function h5View(holding = false, withMenu = false) {
-      const page = `
-        <div class="browserbar"><span>‹</span><span class="browser-address">资料领取页 · 示例</span><span>⋯</span></div>
-        <div class="h5-screen${holding ? ' holding' : ''}">
-          <h3>添加顾问领取资料</h3>
-          <p>请长按下方二维码，在系统菜单中选择联系人。</p>
-          <div class="qr-wrap">
-            <div class="fake-qr" data-testid="old-qr" data-hold-target tabindex="0" role="button" aria-label="长按二维码 0.8 秒">${qrMarkup()}</div>
-            <div class="hold-track" aria-hidden="true"><div class="hold-fill"></div></div>
-            <div class="hold-label">${holding ? '请继续按住…' : '长按 0.8 秒识别'}</div>
+      const page = `<div class="phone-screen">
+        ${deviceStatus('light', '17:53')}
+        ${nativeAppbar('0元领取四季养生手册', 'light')}
+        <div class="screen-body h5-view">
+          <div class="h5-scroll">
+            <section class="h5-hero">
+              <h3 class="h5-title">中老年健康生活手册</h3>
+              <div class="gift-tags"><b>免费送</b><b>免费学</b></div>
+              <div class="health-book-cover" aria-hidden="true"></div>
+              <div class="hero-arrow">↓ 立即添加顾问　领取健康资料 ↓</div>
+            </section>
+            <section class="claim-panel${holding ? ' holding' : ''}">
+              <h3>0元领取四季养生手册</h3>
+              <p class="claim-instruction">👇 长按下方二维码 0.8 秒<br>选择「打开企业联系人」</p>
+              <div class="qr-wrap">
+                <div class="fake-qr dense" data-testid="old-qr" data-hold-target tabindex="0" role="button" aria-label="长按二维码 0.8 秒">
+                  ${qrMarkup(21, 2)}<span class="qr-center-badge">健康<br>资料</span>
+                </div>
+                <div class="hold-track" aria-hidden="true"><div class="hold-fill"></div></div>
+                <div class="hold-label">${holding ? '请继续按住…' : '长按 0.8 秒识别'}</div>
+              </div>
+              <p class="claim-count">已有 8,315 位用户领取虚构资料</p>
+            </section>
+            <section class="claim-list"><h3>0元领取用户名单</h3>${claimRows()}</section>
+            <section class="secondary-qr-card">
+              <b>0元领取四季养生手册</b>
+              <div class="fake-qr dense" aria-hidden="true">${qrMarkup(21, 8)}<span class="qr-center-badge">资料</span></div>
+              <p class="claim-count">已有 8,315 位用户开启健康计划</p>
+              <div class="avatar-strip" aria-hidden="true">${avatarStrip()}</div>
+            </section>
           </div>
-          <p>示意图案无法识别，不含真实二维码。</p>
-        </div>`;
-      const menu = withMenu ? `
-        <div class="menu-overlay" role="dialog" aria-modal="true" aria-label="模拟系统菜单">
-          <div class="action-sheet">
-            <div class="sheet-group">
-              <div class="sheet-title">模拟系统菜单 · 不调用设备权限</div>
-              <button class="sheet-button" type="button" data-testid="menu-open-contact" data-event="MENU_OPEN_CONTACT">打开企业联系人</button>
+          <div class="sticky-claim-bar">
+            <span class="free-stamp">免费<br>领取</span>
+            <span class="sticky-copy"><b>0元领取</b><small>长按右侧二维码添加顾问</small></span>
+            <span class="mini-qr-wrap"><b class="pointing-hand">☛</b>${compactQr()}</span>
+          </div>
+          ${withMenu ? `<div class="menu-overlay" role="dialog" aria-modal="true" aria-label="模拟系统菜单">
+            <div class="action-sheet"><div class="sheet-group">
+              <div class="sheet-title">图片操作</div>
               <button class="sheet-button" type="button" data-testid="menu-share" data-event="MENU_SHARE">转发给朋友</button>
+              <button class="sheet-button" type="button" data-testid="menu-favorite" data-event="MENU_FAVORITE">收藏</button>
               <button class="sheet-button" type="button" data-testid="menu-save" data-event="MENU_SAVE">保存图片</button>
-            </div>
-            <button class="sheet-button sheet-cancel" type="button" data-testid="menu-cancel" data-event="MENU_CANCEL">取消</button>
-          </div>
-        </div>` : '';
-      return phoneFrame('资料领取页', page + menu);
+              <button class="sheet-button contact-option" type="button" data-testid="menu-open-contact" data-event="MENU_OPEN_CONTACT">打开企业联系人「林顾问」</button>
+            </div><button class="sheet-button sheet-cancel" type="button" data-testid="menu-cancel" data-event="MENU_CANCEL">取消</button></div>
+          </div>` : ''}
+        </div>
+      </div>`;
+      return page;
+    }
+
+    function serviceRow(content, className = '') {
+      return `<div class="chat-row"><span class="service-mark" aria-hidden="true"></span>${content}</div>`;
     }
 
     function chatView(chatState) {
       const hasText = chatState === 'NEW_TEXT_SENT' || chatState === 'NEW_BOTH_SENT';
       const hasCard = chatState === 'NEW_BOTH_SENT';
-      return phoneFrame('暖心健康客服 · 虚构', `
-        <div class="chat-screen">
-          <div class="chat-time">今天 09:41</div>
-          <div class="system-line">已进入客服会话</div>
-          <div class="message-row">
-            <div class="avatar" aria-hidden="true">暖心</div>
-            <div class="message-stack">
-              <p class="sender">暖心健康客服 · 虚构</p>
-              ${hasText ? `
-                <button class="message-entry" type="button" data-testid="acquisition-text" data-event="ACQUISITION_CLICK">
-                  资料已为你准备好。点击本段任意位置即可添加顾问并领取：<strong>work.example/link</strong>
-                </button>` : '<span class="typing" aria-label="正在自动下发文案"><i></i><i></i><i></i></span>'}
-            </div>
+      return `<div class="phone-screen chat-phone">
+        ${deviceStatus('dark')}
+        ${nativeAppbar('轻享圈｜生活内容服务', 'dark', '客服会话')}
+        <div class="screen-body chat-screen dark">
+          <div class="chat-scroll">
+            <div class="chat-day">今天 17:34</div>
+            ${serviceRow('<div class="chat-bubble compact"><span><b>【资料领取入口】</b><p class="muted-line">已有多人领取成功</p></span><span class="product-thumb">限量</span></div>')}
+            <div class="chat-row user"><span class="user-bubble">11</span><span class="user-thumb" aria-hidden="true"></span></div>
+            ${serviceRow('<div class="chat-bubble"><p>您好！我是生活内容客服，请问有什么可以帮助您的？</p><p class="muted-line">1. 资料领取　2. 使用问题<br>3. 内容建议　4. 分享方法</p></div>')}
+            ${hasText ? serviceRow(`<button class="message-entry" type="button" data-testid="acquisition-text" data-event="ACQUISITION_CLICK">
+              恭喜您获得本期健康资料领取资格。点击下方蓝色领取通道，添加顾问登记收货信息。<br>全程不收取费用。<span class="masked-link">work.weixin.qq.com/ca/••••••••</span>
+            </button>`) : serviceRow('<span class="typing" aria-label="正在自动下发文案"><i></i><i></i><i></i></span>')}
+            ${hasCard ? serviceRow(`<button class="card-entry" type="button" data-testid="acquisition-card" data-event="ACQUISITION_CLICK">
+              <span class="card-copy"><b>【● 点击这里领取 ●】</b><small>0元领取，名额有限</small></span><span class="product-thumb">领取</span>
+            </button>`) : ''}
+            ${hasCard ? serviceRow(`<div class="chat-bubble"><p>资料已经准备好，点击上方任一领取入口即可继续。</p><span class="masked-link">work.weixin.qq.com/ca/••••••••</span></div>`) : ''}
           </div>
-          ${hasCard ? `
-            <div class="message-row">
-              <div class="avatar" aria-hidden="true">暖心</div>
-              <div class="message-stack">
-                <p class="sender">同一获客链接卡片</p>
-                <button class="card-entry" type="button" data-testid="acquisition-card" data-event="ACQUISITION_CLICK">
-                  <span class="card-cover"><b>控糖生活资料包</b><small>点击卡片任意位置添加顾问</small></span>
-                  <span class="card-footer">work.example/link　›</span>
-                </button>
-              </div>
-            </div>` : ''}
-        </div>`);
+          <div class="chat-composer" data-testid="chat-composer" aria-label="客服会话输入栏">
+            <span class="composer-field"></span><span class="composer-icon">♩</span><span class="composer-icon">☺</span><span class="composer-icon">＋</span>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    function linkLoadingView() {
+      return `<div class="phone-screen webview-phone">
+        ${deviceStatus('dark')}
+        <div class="webview-bar"><span class="webview-close">×</span><span>work.weixin.qq.com</span><span class="webview-more">•••</span></div>
+        <div class="webview-progress" aria-hidden="true"></div>
+        <div class="link-loading-screen" data-testid="link-loading">
+          <div class="loading-toast"><span class="loading-spinner" aria-hidden="true"></span><span>正在加载</span></div>
+        </div>
+      </div>`;
     }
 
     function contactView(lane, added) {
-      return phoneFrame('企业联系人', `
-        <div class="contact-screen">
-          <div class="contact-profile">
-            <div class="contact-avatar" aria-hidden="true">程</div>
-            <h3>健康顾问 小程</h3>
-            <p>暖心健康服务 · 虚构联系人</p>
-            <span class="verified">示意企业身份 · 已脱敏</span>
+      const dark = lane === 'new';
+      const theme = dark ? 'dark' : 'light';
+      const name = dark ? '王顾问' : '林顾问';
+      const friendDetails = dark
+        ? '<section class="friend-summary"><b>朋友资料</b><span>添加朋友的备注名，并设置朋友权限。</span><i>›</i></section>'
+        : '<section class="contact-section"><div class="section-label">朋友资料</div><div class="contact-row"><span>来源</span><b>来自扫一扫</b><i>›</i></div><div class="contact-row"><span>朋友圈</span><span class="moments"><i class="moment-thumb"></i><i class="moment-thumb"></i><i class="moment-thumb"></i></span><i>›</i></div></section>';
+      const enterpriseDetails = dark
+        ? `<div class="contact-row"><span>来自</span><b>企业微信</b><i>›</i></div><div class="contact-row"><span>企业</span><b>青禾生活服务有限公司</b><i>›</i></div><div class="contact-row"><span>实名</span><b>${name}</b><i>›</i></div>`
+        : `<div class="contact-row"><span>来自</span><b>企业微信</b><i>›</i></div><div class="contact-row"><span>企业</span><b>青禾健康服务有限公司</b><i>›</i></div><div class="contact-row"><span>实名</span><b>${name}</b><i>›</i></div><div class="contact-row"><span>投诉建议</span><b>我要反馈</b><i>›</i></div>`;
+      return `<div class="phone-screen ${dark ? 'chat-phone' : ''}">
+        ${deviceStatus(theme, dark ? '17:34' : '17:53')}
+        ${nativeAppbar('', theme)}
+        <div class="screen-body">
+          <div class="contact-screen ${theme}-theme">
+            <div class="contact-profile"><span class="portrait" aria-hidden="true"></span><span class="profile-copy"><h3>${name} <small>👤</small></h3><p>@${dark ? '青禾生活服务' : '青禾健康服务'}</p></span></div>
+            ${friendDetails}
+            <section class="contact-section"><div class="section-label">企业信息</div>${enterpriseDetails}</section>
+            <div class="contact-action">${added
+              ? '<button class="primary-action added-state" type="button" disabled>✓ 已添加到通讯录</button>'
+              : `<button class="primary-action" type="button" data-testid="${lane}-add-contact" data-event="ADD_CONTACT">添加到通讯录</button>`}</div>
           </div>
-          <div class="contact-details">
-            <div class="detail-row"><span>服务内容</span><b>资料领取与日常陪伴</b></div>
-            <div class="detail-row"><span>隐私说明</span><b>不收集真实信息</b></div>
-          </div>
-          <div class="contact-action">
-            ${added
-              ? '<button class="primary-action added-state" type="button" disabled>✓ 已添加</button>'
-              : `<button class="primary-action" type="button" data-testid="${lane}-add-contact" data-event="ADD_CONTACT">添加到通讯录</button>`}
-          </div>
-        </div>`);
+        </div>
+      </div>`;
     }
 
     function renderOldLane() {
@@ -652,6 +1009,7 @@
       if (state.newLane === 'NEW_CHAT' || state.newLane === 'NEW_TEXT_SENT' || state.newLane === 'NEW_BOTH_SENT') {
         newPhone.innerHTML = chatView(state.newLane);
       }
+      if (state.newLane === 'NEW_LINK_LOADING') newPhone.innerHTML = linkLoadingView();
       if (state.newLane === 'NEW_CONTACT') newPhone.innerHTML = contactView('new', false);
       if (state.newLane === 'NEW_ADDED') newPhone.innerHTML = contactView('new', true);
     }
@@ -736,9 +1094,17 @@
       }
     }
 
+    function scheduleLinkResolution() {
+      if (document.hidden || state.mode !== 'manual' || state.newLane !== 'NEW_LINK_LOADING') return;
+      clearTimers('navigation');
+      registerTimer('navigation', 650, () => dispatch('new', 'LINK_RESOLVE'));
+    }
+
     function updateAutoFeedback(lane, event) {
       if (lane === 'new' && event === 'SEND_TEXT') state.feedback = '新链路已自动下发含获客链接的文案。';
       if (lane === 'new' && event === 'SEND_CARD') state.feedback = '新链路已补齐含同一链接的卡片，两个入口均可点击。';
+      if (lane === 'new' && event === 'ACQUISITION_CLICK') state.feedback = '新链路正在打开获客入口。';
+      if (lane === 'new' && event === 'LINK_RESOLVE') state.feedback = '获客入口已打开联系人资料。';
       if (lane === 'new' && event === 'ADD_CONTACT') state.feedback = '新链路已先完成，原链路仍在继续。';
       if (lane === 'old' && event === 'HOLD_COMPLETE') state.feedback = '原链路完成长按，仍需在系统菜单中选择联系人。';
       if (lane === 'old' && event === 'ADD_CONTACT') state.feedback = '自动演示完成：两条链路均已添加。';
@@ -783,7 +1149,7 @@
       if (state.oldLane === 'OLD_HOLDING') {
         state.oldLane = 'OLD_H5';
         oldPhone.dataset.state = 'OLD_H5';
-        oldPhone.querySelector('.h5-screen')?.classList.remove('holding');
+        oldPhone.querySelector('.claim-panel')?.classList.remove('holding');
         const holdLabel = oldPhone.querySelector('.hold-label');
         if (holdLabel) holdLabel.textContent = '长按 0.8 秒识别';
       }
@@ -794,6 +1160,7 @@
       renderControls();
       showFeedback(message);
       scheduleLaneMessages();
+      scheduleLinkResolution();
       return true;
     }
 
@@ -843,7 +1210,8 @@
         showFeedback('客服会话已打开，文案和卡片将自动下发。');
         scheduleLaneMessages();
       } else if (lane === 'new' && action === 'ACQUISITION_CLICK') {
-        showFeedback('已通过获客链接打开同一联系人页。');
+        showFeedback('正在打开获客入口，请稍候。');
+        scheduleLinkResolution();
       } else if (action === 'CLAIM_CLICK') {
         showFeedback('已进入 H5，请长按二维码 0.8 秒。');
       } else if (action === 'MENU_OPEN_CONTACT') {
@@ -851,7 +1219,7 @@
       } else if (action === 'MENU_CANCEL') {
         document.querySelector('[data-hold-target]')?.focus();
         showFeedback('已取消，请重新长按二维码。');
-      } else if (action === 'MENU_SHARE' || action === 'MENU_SAVE') {
+      } else if (action === 'MENU_SHARE' || action === 'MENU_FAVORITE' || action === 'MENU_SAVE') {
         showFeedback('该菜单项仅作提示，不会调用系统功能。');
       } else if (action === 'ADD_CONTACT') {
         showFeedback('模拟完成：联系人已添加。');
@@ -916,6 +1284,7 @@
     window.addEventListener('blur', () => abortHold());
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
+        clearTimers('navigation');
         if (!cancelAutomation('页面进入后台，自动演示已暂停。')) {
           clearTimers('message');
           abortHold();
@@ -923,6 +1292,7 @@
         return;
       }
       scheduleLaneMessages();
+      scheduleLinkResolution();
     });
 
     render();
