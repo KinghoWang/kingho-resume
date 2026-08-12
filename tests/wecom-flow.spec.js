@@ -137,3 +137,17 @@ for (const viewport of [
     expect(newPhoneBox.width).toBeGreaterThan(200);
   });
 }
+
+test('Case 01 links to the demo and preserves the published evidence', async ({ page }) => {
+  await page.goto(`${BASE}/cases.html#case-lianlu`);
+  const caseOne = page.locator('#case-lianlu');
+  await expect(caseOne.getByRole('link', { name: '打开交互 Demo' }))
+    .toHaveAttribute('href', 'demo-wecom-flow.html');
+  await expect(caseOne).toContainText('曝光-加微率 +50%+');
+  await expect(caseOne).toContainText('曝光-地址率 +40%+');
+  await expect(caseOne).toContainText('后转无损');
+
+  await page.goto(`${BASE}/demo-wecom-flow.html`);
+  await expect(page.getByRole('link', { name: '返回企微获客案例' }))
+    .toHaveAttribute('href', 'cases.html#case-lianlu');
+});
