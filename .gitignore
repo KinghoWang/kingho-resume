@@ -9,6 +9,10 @@
 # 依赖与构建
 node_modules/
 dist/
+test-results/
+
+# 本地 agent 工作文件
+.superpowers/
 
 # 编辑器
 .vscode/

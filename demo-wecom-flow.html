@@ -657,11 +657,10 @@
 
     function renderSteps(container, definitions, rank, maxRank) {
       container.innerHTML = definitions.map(([title, detail], index) => {
-        const stepRank = index + 1;
+        const stepRank = index;
         const status = rank > stepRank ? 'done' : (rank === stepRank ? 'active' : 'pending');
         return `<div class="step ${status}"><span class="step-index">${index + 1}</span><span><b>${title}</b><small>${detail}</small></span></div>`;
       }).join('');
-      if (rank === 0) container.firstElementChild?.classList.add('active');
       if (rank >= maxRank) {
         container.querySelectorAll('.step').forEach(step => step.classList.add('done'));
       }

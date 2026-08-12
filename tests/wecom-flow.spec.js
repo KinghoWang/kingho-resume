@@ -42,6 +42,19 @@ test('transition metadata reports standard path counts from ad to added', async 
   await expect(page.getByTestId('new-friction-actions')).toHaveText('0');
 });
 
+test('step rails highlight the screen currently shown on each phone', async ({ page }) => {
+  await expect(page.getByTestId('old-steps').locator('.step.active b')).toHaveText('广告起点');
+  await expect(page.getByTestId('new-steps').locator('.step.active b')).toHaveText('广告起点');
+
+  await page.getByTestId('old-claim').click();
+  await expect(page.getByTestId('old-steps').locator('.step.active b')).toHaveText('H5 落地页');
+
+  await page.getByTestId('new-claim').click();
+  await expect(page.getByTestId('new-steps').locator('.step.active b')).toHaveText('客服会话');
+  await expect(page.getByTestId('acquisition-card')).toBeVisible();
+  await expect(page.getByTestId('new-steps').locator('.step.active b')).toHaveText('文案 + 卡片');
+});
+
 test('old flow rejects a short press and keeps menu side actions non-progressing', async ({ page }) => {
   await page.getByTestId('old-claim').click();
   let qrBox = await page.getByTestId('old-qr').boundingBox();
@@ -82,6 +95,21 @@ test('old flow completes with an 800ms keyboard hold', async ({ page }) => {
   await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_CONTACT');
   await page.getByTestId('old-add-contact').click();
   await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_ADDED');
+});
+
+test('new-flow clicks do not cancel an active old-flow hold', async ({ page }) => {
+  await page.getByTestId('old-claim').click();
+  await page.getByTestId('new-claim').click();
+
+  await page.getByTestId('old-qr').dispatchEvent('pointerdown', {
+    pointerType: 'touch', pointerId: 11, button: 0
+  });
+  await page.waitForTimeout(300);
+  await expect(page.getByTestId('acquisition-text')).toBeVisible();
+  await page.getByTestId('acquisition-text').dispatchEvent('click');
+  await expect(page.getByTestId('new-phone')).toHaveAttribute('data-state', 'NEW_CONTACT');
+  await page.waitForTimeout(550);
+  await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_MENU');
 });
 
 test('autoplay counts down, starts together, and finishes the new lane first', async ({ page }) => {
