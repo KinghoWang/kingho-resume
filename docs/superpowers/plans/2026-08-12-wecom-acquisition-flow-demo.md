@@ -20,17 +20,13 @@
 测试命令统一使用：
 
 ```bash
-NODE_PATH=/Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules \
-  /Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node \
-  /Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/cli.js \
-  test tests/wecom-flow.spec.js --workers=1
+playwright test tests/wecom-flow.spec.js --workers=1
 ```
 
 本地服务统一使用：
 
 ```bash
-/Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 \
-  -m http.server 52784 --bind 127.0.0.1
+python3 -m http.server 52784 --bind 127.0.0.1
 ```
 
 ### Task 1: 建立失败的页面骨架与集成测试
@@ -530,7 +526,7 @@ Expected: 全部 PASS。
 
 - [x] **Step 7: 用浏览器截图检查四个 viewport 和关键状态**
 
-用 Codex 内置浏览器或 Playwright 打开本地 Demo，至少检查并保存到 `/private/tmp/wecom-flow-qa/`：
+用浏览器或 Playwright 打开本地 Demo，至少检查并保存到临时 QA 目录：
 
 - `1440x900` 初始双手机。
 - `1024x768` 自动演示中双入口与旧链路菜单同时可见。

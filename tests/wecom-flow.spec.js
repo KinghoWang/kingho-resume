@@ -55,6 +55,16 @@ test('step rails highlight the screen currently shown on each phone', async ({ p
   await expect(page.getByTestId('new-steps').locator('.step.active b')).toHaveText('文案 + 卡片');
 });
 
+test('async card delivery preserves focus on the existing text entry', async ({ page }) => {
+  await page.getByTestId('new-claim').click();
+  const textEntry = page.getByTestId('acquisition-text');
+  await textEntry.waitFor({ state: 'visible' });
+  await textEntry.focus();
+  await expect(textEntry).toBeFocused();
+  await page.getByTestId('acquisition-card').waitFor({ state: 'visible' });
+  await expect(page.getByTestId('acquisition-text')).toBeFocused();
+});
+
 test('old flow rejects a short press and keeps menu side actions non-progressing', async ({ page }) => {
   await page.getByTestId('old-claim').click();
   let qrBox = await page.getByTestId('old-qr').boundingBox();
@@ -95,6 +105,31 @@ test('old flow completes with an 800ms keyboard hold', async ({ page }) => {
   await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_CONTACT');
   await page.getByTestId('old-add-contact').click();
   await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_ADDED');
+});
+
+test('keyboard release before 800ms aborts the hold', async ({ page }) => {
+  await page.getByTestId('old-claim').click();
+  const qr = page.getByTestId('old-qr');
+  await qr.focus();
+  await page.keyboard.down('Space');
+  await page.waitForTimeout(200);
+  await page.keyboard.up('Space');
+  await page.waitForTimeout(700);
+  await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_H5');
+  await expect(page.getByTestId('feedback')).toContainText('请长按二维码');
+});
+
+test('system menu is announced as a dialog and receives focus', async ({ page }) => {
+  await page.getByTestId('old-claim').click();
+  const qr = page.getByTestId('old-qr');
+  await qr.focus();
+  await page.keyboard.down('Space');
+  await page.waitForTimeout(850);
+  await page.keyboard.up('Space');
+  await expect(page.getByRole('dialog', { name: '模拟系统菜单' })).toBeVisible();
+  await expect(page.getByTestId('menu-open-contact')).toBeFocused();
+  await page.getByTestId('menu-cancel').click();
+  await expect(page.getByTestId('old-qr')).toBeFocused();
 });
 
 test('new-flow clicks do not cancel an active old-flow hold', async ({ page }) => {
@@ -165,6 +200,29 @@ for (const viewport of [
     expect(newPhoneBox.width).toBeGreaterThan(200);
   });
 }
+
+test('navigation links meet the 44px touch target on mobile', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const backBox = await page.getByRole('link', { name: '返回企微获客案例' }).boundingBox();
+  expect(backBox.height).toBeGreaterThanOrEqual(44);
+
+  await page.goto(`${BASE}/cases.html#case-lianlu`);
+  const demoBox = await page.getByRole('link', { name: '打开交互 Demo' }).boundingBox();
+  expect(demoBox.height).toBeGreaterThanOrEqual(44);
+});
+
+test('reduced motion keeps the hold indicator aligned with the 800ms state', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.getByTestId('old-claim').click();
+  const qr = page.getByTestId('old-qr');
+  await qr.focus();
+  await page.keyboard.down('Space');
+  await page.waitForTimeout(200);
+  await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_HOLDING');
+  const duration = await page.locator('.hold-fill').evaluate(element => getComputedStyle(element).animationDuration);
+  expect(duration).toBe('0.8s');
+  await page.keyboard.up('Space');
+});
 
 test('Case 01 links to the demo and preserves the published evidence', async ({ page }) => {
   await page.goto(`${BASE}/cases.html#case-lianlu`);
