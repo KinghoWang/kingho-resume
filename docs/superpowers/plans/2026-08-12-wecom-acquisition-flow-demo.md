@@ -39,7 +39,7 @@ NODE_PATH=/Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/n
 - Create: `tests/wecom-flow.spec.js`
 - Create: `demo-wecom-flow.html`
 
-- [ ] **Step 1: 写页面存在性、双链路起点和隐私边界的失败测试**
+- [x] **Step 1: 写页面存在性、双链路起点和隐私边界的失败测试**
 
 在 `tests/wecom-flow.spec.js` 写入测试夹具和首组断言：
 
@@ -63,13 +63,13 @@ test('loads two independent lanes at the shared ad start', async ({ page }) => {
 });
 ```
 
-- [ ] **Step 2: 启动本地服务并确认测试以页面缺失失败**
+- [x] **Step 2: 启动本地服务并确认测试以页面缺失失败**
 
 在仓库根目录启动服务，再在另一个终端运行统一测试命令。
 
 Expected: FAIL，原因包含 `404`、标题不匹配或找不到 `old-phone`。
 
-- [ ] **Step 3: 写最小语义页面骨架**
+- [x] **Step 3: 写最小语义页面骨架**
 
 创建 `demo-wecom-flow.html`，先提供稳定的测试钩子和无外部依赖声明：
 
@@ -104,13 +104,13 @@ Expected: FAIL，原因包含 `404`、标题不匹配或找不到 `old-phone`。
 </html>
 ```
 
-- [ ] **Step 4: 运行测试确认骨架通过**
+- [x] **Step 4: 运行测试确认骨架通过**
 
 Run: 统一测试命令。
 
 Expected: `1 passed`。
 
-- [ ] **Step 5: 提交页面骨架和首个回归测试**
+- [x] **Step 5: 提交页面骨架和首个回归测试**
 
 ```bash
 git add demo-wecom-flow.html tests/wecom-flow.spec.js
@@ -123,7 +123,7 @@ git commit -m "test: scaffold WeCom flow demo"
 - Modify: `demo-wecom-flow.html`
 - Modify: `tests/wecom-flow.spec.js`
 
-- [ ] **Step 1: 写状态机、链路独立性和双入口失败测试**
+- [x] **Step 1: 写状态机、链路独立性和双入口失败测试**
 
 追加以下核心测试：
 
@@ -155,13 +155,13 @@ test('transition metadata reports standard path counts', async ({ page }) => {
 });
 ```
 
-- [ ] **Step 2: 运行测试确认因状态机未实现而失败**
+- [x] **Step 2: 运行测试确认因状态机未实现而失败**
 
 Run: 统一测试命令。
 
 Expected: FAIL，找不到 `reset-all`、`acquisition-text` 或状态未推进。
 
-- [ ] **Step 3: 定义状态、事件和转移元数据**
+- [x] **Step 3: 定义状态、事件和转移元数据**
 
 在页面脚本中定义稳定名称：
 
@@ -201,7 +201,7 @@ const TRANSITIONS = Object.freeze({
 });
 ```
 
-- [ ] **Step 4: 实现 `dispatch`、单向渲染和会话消息调度**
+- [x] **Step 4: 实现 `dispatch`、单向渲染和会话消息调度**
 
 实现这些接口，所有事件都经过 `dispatch`：
 
@@ -228,7 +228,7 @@ function scheduleLaneMessages() {
 
 `renderOldLane()` 和 `renderNewLane()` 必须根据状态生成广告、H5、菜单、会话、文案、卡片、联系人及已添加画面，并在根节点同步 `data-state`。文案控件和卡片控件都使用 `type="button"` 且共同派发 `ACQUISITION_CLICK`。
 
-- [ ] **Step 5: 从转移元数据计算标准动作指标**
+- [x] **Step 5: 从转移元数据计算标准动作指标**
 
 定义标准事件序列，再复用转移元数据求和：
 
@@ -254,13 +254,13 @@ function sumPath(lane, field) {
 }
 ```
 
-- [ ] **Step 6: 运行测试确认新链路和指标通过**
+- [x] **Step 6: 运行测试确认新链路和指标通过**
 
 Run: 统一测试命令。
 
 Expected: 所有现有测试 PASS。
 
-- [ ] **Step 7: 提交状态机与手动新链路**
+- [x] **Step 7: 提交状态机与手动新链路**
 
 ```bash
 git add demo-wecom-flow.html tests/wecom-flow.spec.js
@@ -273,7 +273,7 @@ git commit -m "feat: add WeCom flow state machines"
 - Modify: `demo-wecom-flow.html`
 - Modify: `tests/wecom-flow.spec.js`
 
-- [ ] **Step 1: 写短按、真实长按、取消和无效菜单项失败测试**
+- [x] **Step 1: 写短按、真实长按、取消和无效菜单项失败测试**
 
 ```js
 test('old flow requires an 800ms hold and supports menu branches', async ({ page }) => {
@@ -308,13 +308,13 @@ test('old flow completes with keyboard hold', async ({ page }) => {
 });
 ```
 
-- [ ] **Step 2: 运行测试确认长按行为失败**
+- [x] **Step 2: 运行测试确认长按行为失败**
 
 Run: 统一测试命令。
 
 Expected: FAIL，状态停在 `OLD_H5` 或缺少菜单控件。
 
-- [ ] **Step 3: 实现统一的长按生命周期**
+- [x] **Step 3: 实现统一的长按生命周期**
 
 实现 `startHold` / `abortHold` / `completeHold`，鼠标、触屏和空格键复用同一逻辑：
 
@@ -343,17 +343,17 @@ function completeHold() {
 
 在伪二维码上绑定 `pointerdown`、`pointerup`、`pointercancel`、`pointerleave`、`keydown` 和 `keyup`。阻止 `contextmenu`，且空格键只在非重复按键时启动。
 
-- [ ] **Step 4: 实现菜单与联系人结束页**
+- [x] **Step 4: 实现菜单与联系人结束页**
 
 菜单按钮明确派发四个事件；联系人页新旧链路复用同一 DOM 结构和 CSS token，只有 `data-testid` 前缀不同。添加完成后按钮替换为不可操作的「已添加」。
 
-- [ ] **Step 5: 运行测试确认长按与菜单通过**
+- [x] **Step 5: 运行测试确认长按与菜单通过**
 
 Run: 统一测试命令。
 
 Expected: 所有测试 PASS。
 
-- [ ] **Step 6: 提交原链路交互**
+- [x] **Step 6: 提交原链路交互**
 
 ```bash
 git add demo-wecom-flow.html tests/wecom-flow.spec.js
@@ -366,7 +366,7 @@ git commit -m "feat: simulate legacy long-press flow"
 - Modify: `demo-wecom-flow.html`
 - Modify: `tests/wecom-flow.spec.js`
 
-- [ ] **Step 1: 写自动完成顺序、接管补消息和重置失败测试**
+- [x] **Step 1: 写自动完成顺序、接管补消息和重置失败测试**
 
 ```js
 test('autoplay starts together and the new lane finishes first', async ({ page }) => {
@@ -397,13 +397,13 @@ test('reset clears timers and returns both lanes to the shared ad', async ({ pag
 });
 ```
 
-- [ ] **Step 2: 运行测试确认自动演示尚未实现**
+- [x] **Step 2: 运行测试确认自动演示尚未实现**
 
 Run: 统一测试命令。
 
 Expected: FAIL，缺少 `auto-mode` 或状态未按时间线推进。
 
-- [ ] **Step 3: 实现分类计时器注册表**
+- [x] **Step 3: 实现分类计时器注册表**
 
 ```js
 const timers = new Map();
@@ -427,7 +427,7 @@ function clearTimers(kind) {
 }
 ```
 
-- [ ] **Step 4: 实现倒计时和规格时间线**
+- [x] **Step 4: 实现倒计时和规格时间线**
 
 `startAutoDemo()` 必须先 `resetAll({ mode: 'auto' })`，再通过 `demo` 计时器展示 3、2、1。倒计时结束后严格调度规格中的事件：
 
@@ -443,17 +443,17 @@ const AUTO_EVENTS = Object.freeze([
 
 自动演示中的新链路不得同时注册普通 `message` 消息定时器，否则会重复派发。
 
-- [ ] **Step 5: 实现用户接管和后台暂停**
+- [x] **Step 5: 实现用户接管和后台暂停**
 
 `cancelAutomation()` 清除 `demo` 计时器、切为手动并调用 `scheduleLaneMessages()`；手机容器捕获 `pointerdown` / `keydown` 时先暂停，再让命中的控件继续处理。`visibilitychange` 进入 hidden 时暂停，回到 visible 时只补消息，不恢复自动演示。新链路入口只清理 `message` 计时器，原链路长按只使用 `hold` 计时器，二者不能互相取消。
 
-- [ ] **Step 6: 运行测试确认自动演示、接管和重置通过**
+- [x] **Step 6: 运行测试确认自动演示、接管和重置通过**
 
 Run: 统一测试命令。
 
 Expected: 所有测试 PASS；完整测试时间约 20 秒。
 
-- [ ] **Step 7: 提交自动演示**
+- [x] **Step 7: 提交自动演示**
 
 ```bash
 git add demo-wecom-flow.html tests/wecom-flow.spec.js
@@ -466,7 +466,7 @@ git commit -m "feat: add WeCom flow autoplay"
 - Modify: `demo-wecom-flow.html`
 - Modify: `tests/wecom-flow.spec.js`
 
-- [ ] **Step 1: 写响应式、最小触控尺寸和无溢出失败测试**
+- [x] **Step 1: 写响应式、最小触控尺寸和无溢出失败测试**
 
 ```js
 for (const viewport of [
@@ -489,13 +489,13 @@ for (const viewport of [
 }
 ```
 
-- [ ] **Step 2: 运行测试确认未完成样式时失败**
+- [x] **Step 2: 运行测试确认未完成样式时失败**
 
 Run: 统一测试命令。
 
 Expected: 至少一个 viewport 因横向溢出或按钮高度不足 FAIL。
 
-- [ ] **Step 3: 落实已批准视觉 token 和稳定几何**
+- [x] **Step 3: 落实已批准视觉 token 和稳定几何**
 
 页面根部定义多色但克制的 token，避免单一色系：
 
@@ -511,24 +511,24 @@ Expected: 至少一个 viewport 因横向溢出或按钮高度不足 FAIL。
 
 手机使用固定 `aspect-ratio: 9 / 18.4` 和受控宽度；状态画面放入固定高度内容区；步骤编号、按钮、反馈区和指标行均设置稳定尺寸。使用系统字体，不依赖远程字体或图片。
 
-- [ ] **Step 4: 实现桌面、平板和手机断点**
+- [x] **Step 4: 实现桌面、平板和手机断点**
 
 - `>= 980px`：`.stage` 双列，两条链路并排。
 - `< 980px`：`.stage` 单列，每条链路手机与步骤并排。
 - `< 580px`：手机居中，步骤栏两列或单列；主容器 padding 缩小。
 - 所有控件 `min-height:44px`；文字允许换行；`body{overflow-x:hidden}` 只能作为兜底，测试仍要求根元素 `scrollWidth <= clientWidth`。
 
-- [ ] **Step 5: 加入焦点、长按进度与 reduced-motion**
+- [x] **Step 5: 加入焦点、长按进度与 reduced-motion**
 
 为按钮、伪二维码和菜单项提供明显 `:focus-visible`；长按用 CSS 自定义属性绘制进度；在 `prefers-reduced-motion: reduce` 中关闭非必要位移和渐变动画，但保留状态切换。
 
-- [ ] **Step 6: 运行全部自动测试**
+- [x] **Step 6: 运行全部自动测试**
 
 Run: 统一测试命令。
 
 Expected: 全部 PASS。
 
-- [ ] **Step 7: 用浏览器截图检查四个 viewport 和关键状态**
+- [x] **Step 7: 用浏览器截图检查四个 viewport 和关键状态**
 
 用 Codex 内置浏览器或 Playwright 打开本地 Demo，至少检查并保存到 `/private/tmp/wecom-flow-qa/`：
 
@@ -539,7 +539,7 @@ Expected: 全部 PASS。
 
 逐张检查：页面非空、手机完整、中文正常、控件无重叠、文字不截断、没有横向滚动。
 
-- [ ] **Step 8: 提交视觉和响应式实现**
+- [x] **Step 8: 提交视觉和响应式实现**
 
 ```bash
 git add demo-wecom-flow.html tests/wecom-flow.spec.js
@@ -553,7 +553,7 @@ git commit -m "style: polish WeCom flow comparison"
 - Modify: `tests/wecom-flow.spec.js`
 - Modify: `docs/superpowers/specs/2026-08-12-wecom-acquisition-flow-demo-design.md:4`
 
-- [ ] **Step 1: 写案例入口、返回锚点和既有 KPI 保留失败测试**
+- [x] **Step 1: 写案例入口、返回锚点和既有 KPI 保留失败测试**
 
 ```js
 test('Case 01 links to the demo and preserves the published evidence', async ({ page }) => {
@@ -571,13 +571,13 @@ test('Case 01 links to the demo and preserves the published evidence', async ({ 
 });
 ```
 
-- [ ] **Step 2: 运行测试确认入口尚不存在**
+- [x] **Step 2: 运行测试确认入口尚不存在**
 
 Run: 统一测试命令。
 
 Expected: FAIL，找不到「打开交互 Demo」。
 
-- [ ] **Step 3: 在 Case 01 故事卡后加入单一入口**
+- [x] **Step 3: 在 Case 01 故事卡后加入单一入口**
 
 在 `cases.html` 的 `.story` 后、首个 `.panel` 前加入：
 
@@ -590,7 +590,7 @@ Expected: FAIL，找不到「打开交互 Demo」。
 
 复用现有 `.demo-pointer` 样式，不新增无必要 CSS。
 
-- [ ] **Step 4: 将规格状态更新纳入提交**
+- [x] **Step 4: 将规格状态更新纳入提交**
 
 确认规格头部为：
 
@@ -598,7 +598,7 @@ Expected: FAIL，找不到「打开交互 Demo」。
 - 状态：用户已于 2026-08-12 通过书面规格
 ```
 
-- [ ] **Step 5: 运行全部自动测试与静态检查**
+- [x] **Step 5: 运行全部自动测试与静态检查**
 
 Run: 统一测试命令。
 
@@ -617,13 +617,13 @@ rg -n -i 'localhost|127\.0\.0\.1|file://|/Users/|api[_-]?key|access[_-]?token|ke
 
 Expected: Playwright 全部 PASS；`git diff --check` 无输出；敏感扫描无输出。
 
-- [ ] **Step 6: 运行全站本地链接扫描**
+- [x] **Step 6: 运行全站本地链接扫描**
 
 用 Python `html.parser` 收集仓库根目录 HTML 的 `href` / `src`，忽略 `http(s)`、锚点、`mailto:`、`tel:` 和 `data:`，断言所有相对文件存在。
 
 Expected: `missing=[]`。
 
-- [ ] **Step 7: 提交案例集成**
+- [x] **Step 7: 提交案例集成**
 
 ```bash
 git add cases.html tests/wecom-flow.spec.js docs/superpowers/specs/2026-08-12-wecom-acquisition-flow-demo-design.md
@@ -637,7 +637,7 @@ git commit -m "feat: link WeCom flow demo from case study"
 - Verify: `cases.html`
 - Verify: `tests/wecom-flow.spec.js`
 
-- [ ] **Step 1: 获取最新远端并确认提交基线**
+- [x] **Step 1: 获取最新远端并确认提交基线**
 
 ```bash
 git fetch origin main
@@ -647,13 +647,13 @@ git log --oneline --decorate -6
 
 Expected: 能看到设计提交及实现提交；若 `origin/main` 有新提交，先无破坏地合并 / rebase 并重新跑全部测试，禁止 force push。
 
-- [ ] **Step 2: 最终运行完整测试**
+- [x] **Step 2: 最终运行完整测试**
 
 Run: 统一测试命令。
 
 Expected: 所有用例 PASS，且无未处理浏览器错误。
 
-- [ ] **Step 3: 做最终浏览器人工验收**
+- [x] **Step 3: 做最终浏览器人工验收**
 
 在桌面和手机 viewport 逐项操作：
 
@@ -665,7 +665,7 @@ Expected: 所有用例 PASS，且无未处理浏览器错误。
 
 Expected: 每项与设计规格一致，浏览器控制台无 error。
 
-- [ ] **Step 4: 确认提交范围**
+- [x] **Step 4: 确认提交范围**
 
 ```bash
 git status --short
