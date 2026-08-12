@@ -410,6 +410,18 @@
     const OLD_RANK = Object.freeze({ OLD_AD: 0, OLD_H5: 1, OLD_HOLDING: 2, OLD_MENU: 3, OLD_CONTACT: 4, OLD_ADDED: 5 });
     const NEW_RANK = Object.freeze({ NEW_AD: 0, NEW_CHAT: 1, NEW_TEXT_SENT: 2, NEW_BOTH_SENT: 2, NEW_CONTACT: 3, NEW_ADDED: 4 });
     const QR_PATTERN = '111010111101110101111010111010101010111011101001010100111010111101101101111010111';
+    const AUTO_EVENTS = Object.freeze([
+      [3000, 'old', 'CLAIM_CLICK'],
+      [3000, 'new', 'CLAIM_CLICK'],
+      [3800, 'new', 'SEND_TEXT'],
+      [4400, 'new', 'SEND_CARD'],
+      [4400, 'old', 'HOLD_START'],
+      [5200, 'old', 'HOLD_COMPLETE'],
+      [6200, 'new', 'ACQUISITION_CLICK'],
+      [7600, 'new', 'ADD_CONTACT'],
+      [8000, 'old', 'MENU_OPEN_CONTACT'],
+      [10700, 'old', 'ADD_CONTACT']
+    ]);
 
     let state = { ...INITIAL };
     const timers = new Map();
@@ -655,6 +667,67 @@
       }
     }
 
+    function updateAutoFeedback(lane, event) {
+      if (lane === 'new' && event === 'SEND_TEXT') state.feedback = '新链路已自动下发含获客链接的文案。';
+      if (lane === 'new' && event === 'SEND_CARD') state.feedback = '新链路已补齐含同一链接的卡片，两个入口均可点击。';
+      if (lane === 'new' && event === 'ADD_CONTACT') state.feedback = '新链路已先完成，原链路仍在继续。';
+      if (lane === 'old' && event === 'HOLD_COMPLETE') state.feedback = '原链路完成长按，仍需在系统菜单中选择联系人。';
+      if (lane === 'old' && event === 'ADD_CONTACT') state.feedback = '自动演示完成：两条链路均已添加。';
+      feedback.textContent = state.feedback;
+    }
+
+    function startAutoDemo() {
+      resetAll({ mode: 'auto' });
+      state.countdown = 3;
+      state.feedback = '3 秒后，两条链路将从同一广告同时开始。';
+      renderControls();
+      feedback.textContent = state.feedback;
+
+      registerTimer('demo', 1000, () => {
+        if (state.mode !== 'auto') return;
+        state.countdown = 2;
+        renderControls();
+      });
+      registerTimer('demo', 2000, () => {
+        if (state.mode !== 'auto') return;
+        state.countdown = 1;
+        renderControls();
+      });
+
+      for (const [delay, lane, event] of AUTO_EVENTS) {
+        registerTimer('demo', delay, () => {
+          if (state.mode !== 'auto') return;
+          if (delay === 3000) state.countdown = null;
+          if (!dispatch(lane, event)) return;
+          updateAutoFeedback(lane, event);
+        });
+      }
+    }
+
+    function cancelAutomation(message = '自动演示已暂停，可从当前步骤继续操作。') {
+      if (state.mode !== 'auto') return false;
+      clearTimers('demo');
+      state.mode = 'manual';
+      state.countdown = null;
+
+      // A simulated hold has no physical pointer to continue after takeover.
+      if (state.oldLane === 'OLD_HOLDING') {
+        state.oldLane = 'OLD_H5';
+        oldPhone.dataset.state = 'OLD_H5';
+        oldPhone.querySelector('.h5-screen')?.classList.remove('holding');
+        const holdLabel = oldPhone.querySelector('.hold-label');
+        if (holdLabel) holdLabel.textContent = '长按 0.8 秒识别';
+      }
+
+      renderSteps(oldSteps, OLD_STEPS, OLD_RANK[state.oldLane], 5);
+      renderSteps(newSteps, NEW_STEPS, NEW_RANK[state.newLane], 4);
+      renderMetrics();
+      renderControls();
+      showFeedback(message);
+      scheduleLaneMessages();
+      return true;
+    }
+
     function startHold(input, pointerId = null) {
       if (state.oldLane !== 'OLD_H5' || hold.active) return false;
       if (!dispatch('old', 'HOLD_START')) return false;
@@ -724,6 +797,10 @@
 
     oldPhone.addEventListener('click', event => handleLaneClick('old', event));
     newPhone.addEventListener('click', event => handleLaneClick('new', event));
+    for (const phone of [oldPhone, newPhone]) {
+      phone.addEventListener('pointerdown', () => cancelAutomation(), true);
+      phone.addEventListener('keydown', () => cancelAutomation(), true);
+    }
     oldPhone.addEventListener('pointerdown', event => {
       if (!event.target.closest('[data-hold-target]') || event.button !== 0) return;
       event.preventDefault();
@@ -756,16 +833,24 @@
       abortHold();
     });
     document.querySelector('[data-testid="reset-all"]').addEventListener('click', () => resetAll());
+    autoButton.addEventListener('click', startAutoDemo);
     manualButton.addEventListener('click', () => {
-      state.mode = 'manual';
-      state.countdown = null;
-      clearTimers('demo');
-      renderControls();
-      scheduleLaneMessages();
-      showFeedback('已切换为手动操作，当前进度已保留。');
+      if (!cancelAutomation('已切换为手动操作，当前进度已保留。')) {
+        showFeedback('当前已是手动操作。');
+      }
     });
 
     window.addEventListener('blur', () => abortHold());
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        if (!cancelAutomation('页面进入后台，自动演示已暂停。')) {
+          clearTimers('message');
+          abortHold();
+        }
+        return;
+      }
+      scheduleLaneMessages();
+    });
 
     render();
   </script>

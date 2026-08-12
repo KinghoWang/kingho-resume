@@ -77,3 +77,32 @@ test('old flow completes with an 800ms keyboard hold', async ({ page }) => {
   await page.getByTestId('old-add-contact').click();
   await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_ADDED');
 });
+
+test('autoplay counts down, starts together, and finishes the new lane first', async ({ page }) => {
+  await page.getByTestId('auto-mode').click();
+  await expect(page.getByTestId('countdown')).toHaveText('3');
+  await expect(page.getByTestId('new-phone')).toHaveAttribute('data-state', 'NEW_ADDED', { timeout: 8500 });
+  await expect(page.getByTestId('old-phone')).not.toHaveAttribute('data-state', 'OLD_ADDED');
+  await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_ADDED', { timeout: 5000 });
+});
+
+test('user takeover preserves progress and completes pending chat messages', async ({ page }) => {
+  await page.getByTestId('auto-mode').click();
+  await expect(page.getByTestId('new-phone')).toHaveAttribute('data-state', 'NEW_CHAT', { timeout: 5000 });
+  await page.getByTestId('new-phone').click({ position: { x: 10, y: 10 } });
+  await expect(page.getByTestId('mode-status')).toContainText('手动');
+  await expect(page.getByTestId('new-phone')).not.toHaveAttribute('data-state', 'NEW_AD');
+  await expect(page.getByTestId('acquisition-text')).toBeVisible();
+  await expect(page.getByTestId('acquisition-card')).toBeVisible();
+});
+
+test('reset clears every pending autoplay event', async ({ page }) => {
+  await page.getByTestId('auto-mode').click();
+  await expect(page.getByTestId('countdown')).toHaveText('3');
+  await page.getByTestId('reset-all').click();
+  await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_AD');
+  await expect(page.getByTestId('new-phone')).toHaveAttribute('data-state', 'NEW_AD');
+  await page.waitForTimeout(4500);
+  await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_AD');
+  await expect(page.getByTestId('new-phone')).toHaveAttribute('data-state', 'NEW_AD');
+});
