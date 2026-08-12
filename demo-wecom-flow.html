@@ -655,6 +655,39 @@
       }
     }
 
+    function startHold(input, pointerId = null) {
+      if (state.oldLane !== 'OLD_H5' || hold.active) return false;
+      if (!dispatch('old', 'HOLD_START')) return false;
+      hold.active = true;
+      hold.input = input;
+      hold.pointerId = pointerId;
+      hold.timer = registerTimer('hold', 800, completeHold);
+      return true;
+    }
+
+    function abortHold(message = '请长按二维码 0.8 秒。') {
+      if (!hold.active) return false;
+      clearTimer(hold.timer);
+      hold.active = false;
+      hold.timer = null;
+      hold.pointerId = null;
+      hold.input = null;
+      const changed = dispatch('old', 'HOLD_ABORT');
+      if (changed) showFeedback(message);
+      return changed;
+    }
+
+    function completeHold() {
+      if (!hold.active || state.oldLane !== 'OLD_HOLDING') return false;
+      hold.active = false;
+      hold.timer = null;
+      hold.pointerId = null;
+      hold.input = null;
+      const changed = dispatch('old', 'HOLD_COMPLETE');
+      if (changed) showFeedback('长按识别完成，已弹出模拟系统菜单。');
+      return changed;
+    }
+
     function handleLaneClick(lane, event) {
       const control = event.target.closest('[data-event]');
       if (!control) return;
@@ -666,6 +699,14 @@
         scheduleLaneMessages();
       } else if (lane === 'new' && action === 'ACQUISITION_CLICK') {
         showFeedback('已通过获客链接打开同一联系人页。');
+      } else if (action === 'CLAIM_CLICK') {
+        showFeedback('已进入 H5，请长按二维码 0.8 秒。');
+      } else if (action === 'MENU_OPEN_CONTACT') {
+        showFeedback('已从模拟系统菜单打开联系人页。');
+      } else if (action === 'MENU_CANCEL') {
+        showFeedback('已取消，请重新长按二维码。');
+      } else if (action === 'MENU_SHARE' || action === 'MENU_SAVE') {
+        showFeedback('该菜单项仅作提示，不会调用系统功能。');
       } else if (action === 'ADD_CONTACT') {
         showFeedback('模拟完成：联系人已添加。');
       }
@@ -683,6 +724,37 @@
 
     oldPhone.addEventListener('click', event => handleLaneClick('old', event));
     newPhone.addEventListener('click', event => handleLaneClick('new', event));
+    oldPhone.addEventListener('pointerdown', event => {
+      if (!event.target.closest('[data-hold-target]') || event.button !== 0) return;
+      event.preventDefault();
+      startHold('pointer', event.pointerId);
+    });
+    oldPhone.addEventListener('pointerup', event => {
+      if (!hold.active || hold.input !== 'pointer' || hold.pointerId !== event.pointerId) return;
+      abortHold();
+    });
+    oldPhone.addEventListener('pointercancel', event => {
+      if (!hold.active || hold.input !== 'pointer' || hold.pointerId !== event.pointerId) return;
+      abortHold();
+    });
+    oldPhone.addEventListener('pointerout', event => {
+      if (!hold.active || hold.input !== 'pointer') return;
+      const target = event.target.closest('[data-hold-target]');
+      if (target && !target.contains(event.relatedTarget)) abortHold();
+    });
+    oldPhone.addEventListener('contextmenu', event => {
+      if (event.target.closest('[data-hold-target]')) event.preventDefault();
+    });
+    oldPhone.addEventListener('keydown', event => {
+      if (!event.target.closest('[data-hold-target]') || event.code !== 'Space' || event.repeat) return;
+      event.preventDefault();
+      startHold('keyboard');
+    });
+    oldPhone.addEventListener('keyup', event => {
+      if (event.code !== 'Space' || !hold.active || hold.input !== 'keyboard') return;
+      event.preventDefault();
+      abortHold();
+    });
     document.querySelector('[data-testid="reset-all"]').addEventListener('click', () => resetAll());
     manualButton.addEventListener('click', () => {
       state.mode = 'manual';
@@ -692,6 +764,8 @@
       scheduleLaneMessages();
       showFeedback('已切换为手动操作，当前进度已保留。');
     });
+
+    window.addEventListener('blur', () => abortHold());
 
     render();
   </script>

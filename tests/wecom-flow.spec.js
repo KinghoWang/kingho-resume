@@ -41,3 +41,39 @@ test('transition metadata reports standard path counts from ad to added', async 
   await expect(page.getByTestId('new-standard-actions')).toHaveText('3');
   await expect(page.getByTestId('new-friction-actions')).toHaveText('0');
 });
+
+test('old flow rejects a short press and keeps menu side actions non-progressing', async ({ page }) => {
+  await page.getByTestId('old-claim').click();
+  const qr = page.getByTestId('old-qr');
+
+  await qr.dispatchEvent('pointerdown', { pointerType: 'mouse', pointerId: 1, button: 0 });
+  await page.waitForTimeout(200);
+  await qr.dispatchEvent('pointerup', { pointerType: 'mouse', pointerId: 1, button: 0 });
+  await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_H5');
+  await expect(page.getByTestId('feedback')).toContainText('请长按二维码');
+
+  await qr.dispatchEvent('pointerdown', { pointerType: 'mouse', pointerId: 2, button: 0 });
+  await page.waitForTimeout(850);
+  await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_MENU');
+  await page.getByTestId('menu-share').click();
+  await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_MENU');
+  await expect(page.getByTestId('feedback')).toContainText('仅作提示');
+  await page.getByTestId('menu-save').click();
+  await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_MENU');
+  await page.getByTestId('menu-cancel').click();
+  await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_H5');
+});
+
+test('old flow completes with an 800ms keyboard hold', async ({ page }) => {
+  await page.getByTestId('old-claim').click();
+  const qr = page.getByTestId('old-qr');
+  await qr.focus();
+  await page.keyboard.down('Space');
+  await page.waitForTimeout(850);
+  await page.keyboard.up('Space');
+  await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_MENU');
+  await page.getByTestId('menu-open-contact').click();
+  await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_CONTACT');
+  await page.getByTestId('old-add-contact').click();
+  await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_ADDED');
+});
