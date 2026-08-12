@@ -119,6 +119,21 @@ test('keyboard release before 800ms aborts the hold', async ({ page }) => {
   await expect(page.getByTestId('feedback')).toContainText('请长按二维码');
 });
 
+test('a real touch tap remains a short press after the hold view rerenders', async ({ browser }) => {
+  const context = await browser.newContext({
+    hasTouch: true,
+    viewport: { width: 390, height: 844 }
+  });
+  const page = await context.newPage();
+  await page.goto(`${BASE}/demo-wecom-flow.html`);
+  await page.getByTestId('old-claim').tap();
+  await page.getByTestId('old-qr').tap();
+  await page.waitForTimeout(900);
+  await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_H5');
+  await expect(page.getByTestId('feedback')).toContainText('请长按二维码');
+  await context.close();
+});
+
 test('system menu is announced as a dialog and receives focus', async ({ page }) => {
   await page.getByTestId('old-claim').click();
   const qr = page.getByTestId('old-qr');
