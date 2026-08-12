@@ -44,17 +44,23 @@ test('transition metadata reports standard path counts from ad to added', async 
 
 test('old flow rejects a short press and keeps menu side actions non-progressing', async ({ page }) => {
   await page.getByTestId('old-claim').click();
-  const qr = page.getByTestId('old-qr');
+  let qrBox = await page.getByTestId('old-qr').boundingBox();
+  let qrCenter = { x: qrBox.x + qrBox.width / 2, y: qrBox.y + qrBox.height / 2 };
 
-  await qr.dispatchEvent('pointerdown', { pointerType: 'mouse', pointerId: 1, button: 0 });
+  await page.mouse.move(qrCenter.x, qrCenter.y);
+  await page.mouse.down();
   await page.waitForTimeout(200);
-  await qr.dispatchEvent('pointerup', { pointerType: 'mouse', pointerId: 1, button: 0 });
+  await page.mouse.up();
   await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_H5');
   await expect(page.getByTestId('feedback')).toContainText('请长按二维码');
 
-  await qr.dispatchEvent('pointerdown', { pointerType: 'mouse', pointerId: 2, button: 0 });
+  qrBox = await page.getByTestId('old-qr').boundingBox();
+  qrCenter = { x: qrBox.x + qrBox.width / 2, y: qrBox.y + qrBox.height / 2 };
+  await page.mouse.move(qrCenter.x, qrCenter.y);
+  await page.mouse.down();
   await page.waitForTimeout(850);
   await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_MENU');
+  await page.mouse.up();
   await page.getByTestId('menu-share').click();
   await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_MENU');
   await expect(page.getByTestId('feedback')).toContainText('仅作提示');
@@ -106,3 +112,28 @@ test('reset clears every pending autoplay event', async ({ page }) => {
   await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_AD');
   await expect(page.getByTestId('new-phone')).toHaveAttribute('data-state', 'NEW_AD');
 });
+
+for (const viewport of [
+  { name: 'desktop', width: 1440, height: 900 },
+  { name: 'laptop', width: 1024, height: 768 },
+  { name: 'mobile', width: 390, height: 844 },
+  { name: 'narrow', width: 360, height: 800 }
+]) {
+  test(`${viewport.name} layout has no horizontal overflow and keeps controls tappable`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await page.reload();
+    const sizes = await page.evaluate(() => ({
+      scrollWidth: document.documentElement.scrollWidth,
+      clientWidth: document.documentElement.clientWidth
+    }));
+    expect(sizes.scrollWidth).toBeLessThanOrEqual(sizes.clientWidth);
+
+    const resetBox = await page.getByTestId('reset-all').boundingBox();
+    expect(resetBox.height).toBeGreaterThanOrEqual(44);
+
+    const oldPhoneBox = await page.getByTestId('old-phone').boundingBox();
+    const newPhoneBox = await page.getByTestId('new-phone').boundingBox();
+    expect(oldPhoneBox.width).toBeGreaterThan(200);
+    expect(newPhoneBox.width).toBeGreaterThan(200);
+  });
+}
