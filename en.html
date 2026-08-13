@@ -22,7 +22,7 @@
     .lead{max-width:960px;margin:0 auto;padding:4px 48px 20px}
     .lead p{font-size:1.02rem;line-height:1.85;color:#3a3a3a;border-left:3px solid var(--accent);padding:8px 0 8px 20px}
     .lead strong{color:var(--accent);font-weight:600}
-    .statwall{max-width:960px;margin:0 auto;padding:0 48px 44px;display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+    .statwall{max-width:960px;margin:0 auto;padding:0 48px 44px;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
     .stat{text-align:center;padding:16px 8px;border:1px solid var(--border);border-radius:var(--radius);background:linear-gradient(180deg,#fff,#fbf7f5);transition:transform .25s ease,box-shadow .25s ease}
     .stat:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
     .stat .s-num{font-family:var(--font-display);font-size:1.32rem;font-weight:700;color:var(--accent);line-height:1.1;white-space:nowrap}
@@ -63,53 +63,53 @@
 </header>
 
 <div class="lead">
-  <p>Ad monetization operator turned AI commercialization product manager. Three core strengths: <strong>monetization</strong> (hundreds of millions RMB in budget, industry 0→1), <strong>data</strong> (analysis was 70-80% of my work; self-built attribution methodology), and <strong>building with AI</strong> (an analytics agent with an embedded Eval gate, an Agent production pipeline, and a query &amp; reconciliation system). Engineering background — able to collaborate directly with engineering teams.</p>
+  <p>Ad monetization operator turned AI commercialization product manager. Three core strengths: <strong>monetization</strong> (hundreds of millions RMB in budget, industry 0→1), <strong>data</strong> (analysis was 70-80% of my work; self-built attribution and metric methodology), and <strong>product delivery</strong> (led a WeCom acquisition-flow redesign, then used AI as a collaborator to build an analytics agent, Eval gate and Agent production pipeline). Engineering background — able to collaborate directly with engineering teams.</p>
 </div>
 
 <div class="statwall">
-  <div class="stat"><div class="s-num">5 yrs</div><div class="s-lab">Ad monetization</div></div>
-  <div class="stat"><div class="s-num">¥300M+</div><div class="s-lab">Annual ad spend managed</div></div>
-  <div class="stat"><div class="s-num">0→90%</div><div class="s-lab">Healthcare 0→1</div></div>
-  <div class="stat"><div class="s-num">3</div><div class="s-lab">Self-built AI / data core projects</div></div>
-  <div class="stat"><div class="s-num">3 models</div><div class="s-lab">Eval coverage (22 cases)</div></div>
-  <div class="stat"><div class="s-num">60min→min</div><div class="s-lab">Daily-report time (team of 3)</div></div>
+  <div class="stat"><div class="s-num">+50%+</div><div class="s-lab">Impression-to-WeCom contact</div></div>
+  <div class="stat"><div class="s-num">60min→mins</div><div class="s-lab">Daily-report time (team of 3)</div></div>
+  <div class="stat"><div class="s-num">+47%</div><div class="s-lab">CTCVR improvement</div></div>
+  <div class="stat"><div class="s-num">+27%</div><div class="s-lab">Conversion lift</div></div>
+  <div class="stat"><div class="s-num">-13%</div><div class="s-lab">Conversion-cost reduction</div></div>
+  <div class="stat"><div class="s-num">20%→60%</div><div class="s-lab">Concurrent lead qualification · method rollout</div></div>
 </div>
 
 <section class="section" data-reveal>
-  <h2 class="section-title"><span class="icon">1</span>Selected Projects · AI / Data Products</h2>
+  <h2 class="section-title"><span class="icon">1</span>Selected Projects · Product / AI / Data Practice</h2>
 </section>
-<div class="sec-note">Self-built / led during current employment, with AI as a collaborator.</div>
+<div class="sec-note">Led or self-built during current employment; each is deployed or backed by verifiable output.</div>
 <section class="section" data-reveal style="padding-top:0">
   <div class="ai-grid">
     <div class="ai-card feat">
-      <h3>01 Analytics Agent × Eval · Attribution Analysis Loop</h3>
-      <div class="role">Production product + embedded quality gate · Daily use by a team of 3 · Iterated 3 months · Human-in-the-loop</div>
+      <h3>01 WeCom Acquisition Flow · Removing the Long-Press Barrier</h3>
+      <div class="role">Product redesign · Deployed · Validated with post-launch data</div>
       <ul class="tl-list">
-        <li><strong>Problem</strong>: writing daily anomaly-attribution reports took <strong>30-60 min/day</strong>, depended on personal experience, hard to scale or hand over</li>
-        <li><strong>Solution</strong>: scripts pull 8 days of market / industry / client data from the warehouse → rule engine does <strong>threshold anomaly detection</strong> and <strong>structure/level effect decomposition</strong> → a prompt with "observation → root cause → action" structure and attribution red lines → LLM writes the narrative</li>
-        <li><strong>Reliability and Eval</strong>: <strong>all numbers are computed by code; the model only narrates</strong>. An embedded gate uses 22 annotated reports, code metrics and LLM-as-judge to measure numeric fidelity, anomaly recall / precision, attribution quality and fabricated-mechanism rate</li>
-        <li><strong>Evidence</strong>: built in <strong>1 week</strong>, used daily by a team of 3, and reduced reporting to <strong>minutes of review</strong>; 3 models × 2 configurations produce comparable, auditable results</li>
+        <li><strong>Problem</strong>: the mini-program could not invoke WeCom's acquisition assistant directly. The fallback H5 flow required long-press QR recognition and a system-menu choice; many <strong>older users were unfamiliar with the gesture</strong> and dropped off</li>
+        <li><strong>Solution</strong>: use a supported WeCom customer-service chat as the bridge, automatically sending text and a card with the same acquisition link so either familiar tap opens the contact flow</li>
+        <li><strong>Result</strong>: north-star impression-to-WeCom-contact conversion <strong>+50%+</strong>; supporting impression-to-address conversion <strong>+40%+</strong>; downstream advertiser conversion held flat as the quality guardrail, while efficiency CPM improved (relative lift; absolute values sanitized)</li>
+      </ul>
+      <div class="project-links"><a class="project-link primary" href="demo-wecom-flow.html">Try the WeCom flow demo</a><a class="project-link" href="cases.html#case-lianlu">View the full case</a></div>
+    </div>
+    <div class="ai-card" style="border-left:3px solid var(--accent)">
+      <h3>02 Analytics Agent × Eval · Attribution Analysis Loop</h3>
+      <div class="role">Production product + embedded quality gate · Daily use by a team of 3 · Iterated 3 months</div>
+      <ul class="tl-list">
+        <li><strong>Problem and solution</strong>: daily anomaly-attribution reports took 30-60 minutes and depended on personal experience; a rule engine detects anomalies and decomposes structure / efficiency effects before the LLM writes "observation → root cause → action"</li>
+        <li><strong>Anti-hallucination</strong>: all numbers are computed by code; 22 annotated reports, code metrics and LLM-as-judge across 3 models × 2 configurations form the prompt regression gate</li>
+        <li><strong>Result</strong>: built in 1 week, used daily by a team of 3, reduced reporting to <strong>minutes of review</strong>; evaluation cost is auditable at ¥0.45 per run</li>
       </ul>
       <div class="project-links"><a class="project-link primary" href="demo-shufen.html">Try the analytics agent</a><a class="project-link" href="demo-eval.html">View Eval evidence</a></div>
     </div>
-    <div class="ai-card" style="border-left:3px solid var(--accent)">
-      <h3>02 “Wukong” Agent × AI Video Repurposing Pipeline</h3>
-      <div class="role">Agent-agnostic execution contract · Video pipeline: 37 Python scripts / ~3.7K lines (including validation and tests) · 4 jobs produced playable master videos</div>
+    <div class="ai-card">
+      <h3>03 “Wukong” Agent × AI Video Repurposing Pipeline</h3>
+      <div class="role">Agent-agnostic execution contract · 37 Python scripts / ~3.7K lines · 4 jobs produced playable master videos</div>
       <ul class="tl-list">
         <li><strong>Reliable delivery</strong>: 8 core automated QA gates, a self-repair loop and a JSON contract for human review. <strong>Only verification-script output counts; an agent’s self-report of “done” does not.</strong></li>
         <li><strong>Execution guardrails</strong>: the contract forbids Agent edits to gate scripts; self-repair is limited to rerunning scripts, clearing caches or changing geometric values, while non-verifiable judgments go to human review</li>
         <li><strong>Cost engineering</strong>: one-card / one-script tasks and file-based progress support recovery after disconnects, allowing free-tier models to complete the main workflow from decomposition through rendered-video QA</li>
       </ul>
       <div class="project-links"><a class="project-link primary" href="demo-wukong.html">Open interactive demo</a></div>
-    </div>
-    <div class="ai-card">
-      <h3>03 adquery-lite · Ad Query &amp; Financial Reconciliation</h3>
-      <div class="role">Lightweight workspace for ad querying and reconciliation · Clean-room portable version</div>
-      <ul class="tl-list">
-        <li><strong>Query</strong>: <strong>pluggable data sources</strong> (zero-dependency, swap one adapter to switch databases), catalog-driven metric definitions; weighted totals, SQL whitelist, honest truncation; drill-down / charts / export / p50·p95 latency monitoring</li>
-        <li><strong>Reconciliation</strong>: split out a finance reconciliation module — field definitions aligned with business, warehouse &amp; dashboards connected — turning one-off audits into a <strong>monitorable, reportable, debuggable</strong> routine</li>
-      </ul>
-      <div class="project-links"><a class="project-link" href="cases.html#case2">View reconciliation case</a></div>
     </div>
   </div>
 </section>
@@ -120,22 +120,20 @@
     <div class="tl-item"><div class="tl-dot"></div>
       <div class="tl-card">
         <div class="tl-header"><div><h3>Beijing Taizi Liudong Technology Co., Ltd. · Ad Monetization Operations</h3><span class="company-tag">Piaoquan Video</span></div><span class="date-tag">2023.11 - Present</span></div>
-        <div class="tags"><span class="tag tag-ind">Healthcare</span><span class="tag tag-ind">Interest Education</span><span class="tag tag-role">Monetization / Growth</span><span class="tag tag-met">7-figure daily spend</span></div>
+        <div class="tags"><span class="tag tag-ind">Healthcare</span><span class="tag tag-ind">Interest Education</span><span class="tag tag-role">Monetization Mechanics</span><span class="tag tag-met">Data Products</span></div>
         <ul class="tl-list">
-          <li><strong>Industry monetization</strong>: led TCM &amp; healthcare from zero to scale; participated in industry monetization strategy</li>
-          <li><strong>Scale</strong>: served <strong>60+ clients</strong> (education for older adults + TCM healthcare), <strong>¥300M+ annual spend</strong>; owned industry trend, spend, and budget stability</li>
-          <li><strong>Funnel product optimization</strong>: many <strong>older users</strong> dropped off because they were unfamiliar with <strong>long-press QR recognition</strong> and got stuck at the system menu. Used a WeCom customer-service chat as the supported bridge to automatically send <strong>clickable acquisition text and card</strong>, each containing the same acquisition link; tapping either opened the same flow. Impression-to-WeCom-contact conversion <strong>+50%+</strong>, impression-to-address-submission conversion <strong>+40%+</strong>, with no degradation in downstream conversion quality; efficiency CPM also improved</li>
-          <li><strong>Data-driven decisions</strong>: analysis was <strong>70-80%</strong> of the work; strategy iterated via attribution / experiments / reviews (self-built tools above)</li>
+          <li><strong>Industry monetization</strong>: led TCM &amp; healthcare from zero to scale and participated in industry monetization strategy; served <strong>60+ clients</strong> at <strong>¥300M+ annual-spend scale</strong></li>
+          <li><strong>Data and tools</strong>: analysis was <strong>70-80%</strong> of the work; built query and finance-reconciliation tools that standardized <strong>55 dimensions / 32 metrics</strong>, turning one-off audits into a routine control</li>
+          <li><strong>Creative and funnel strategy</strong>: built a reusable targeting × creative test framework, lifting CTCVR <strong>+47%</strong>; led a first-party landing-flow A/B integration for a further 5-10% lift</li>
         </ul>
       </div>
     </div>
     <div class="tl-item"><div class="tl-dot"></div>
       <div class="tl-card">
         <div class="tl-header"><div><h3>Baidu (China) Co., Ltd., Shenzhen Branch · Client Operations</h3><span class="company-tag">Baidu</span></div><span class="date-tag">2022.11 - 2023.07</span></div>
-        <div class="tags"><span class="tag tag-ind">Education</span><span class="tag tag-ind">Healthcare</span><span class="tag tag-role">Monetization Innovation</span><span class="tag tag-met">Revenue +287%</span></div>
+        <div class="tags"><span class="tag tag-ind">Education</span><span class="tag tag-ind">Healthcare</span><span class="tag tag-role">Monetization Mechanics</span><span class="tag tag-met">Method Replication</span></div>
         <ul class="tl-list">
-          <li><strong>Monetization innovation</strong>: designed a "livestream + low-cost trial + bundled books" model, opening a new closed-loop online monetization path</li>
-          <li><strong>Methodology replicated</strong>: lead qualification rate <strong>20% → 60%</strong>, packaged as an industry methodology rolled out to 5 clients; client revenue <strong>+287% YoY</strong>; awarded "Best Newcomer"</li>
+          <li><strong>Monetization exploration and replication</strong>: designed a "livestream + low-cost trial + bundled books" model to explore closed-loop monetization; in parallel, packaged lead screening and delivery methods into a playbook, with lead qualification improving from <strong>20% to 60%</strong> and rollout to 5 clients; awarded "Best Newcomer"</li>
         </ul>
       </div>
     </div>
@@ -144,7 +142,7 @@
         <div class="tl-header"><div><h3>Shenzhen Yike Digital Technology Co., Ltd. · Ad Operations</h3><span class="company-tag">Yike Digital</span></div><span class="date-tag">2020.06 - 2022.07</span></div>
         <div class="tags"><span class="tag tag-ind">Finance</span><span class="tag tag-role">0→1 Growth</span></div>
         <ul class="tl-list">
-          <li><strong>Finance 0→1 growth system</strong>: built WeBank's cross-platform ad delivery system (WeChat + Douyin); independently managed ¥100M+ annual budget from cold start to 7-figure daily spend; audience modeling lifted conversion <strong>+27%</strong> and cut cost <strong>-13%</strong></li>
+          <li><strong>Finance 0→1 growth system</strong>: built a WeChat + Douyin delivery system from scratch (¥100M+ annual-budget scale); lookalike modeling from historical converters plus segmented tests lifted conversion <strong>+27%</strong>; refined operations reduced conversion cost <strong>13%</strong></li>
         </ul>
       </div>
     </div>
