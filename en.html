@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Kingho Wang - AI Commercialization Product Manager</title>
-  <meta name="description" content="Kingho Wang · AI Commercialization Product Manager, Beijing. 5 years in ad monetization: monetization strategy, data-driven attribution, and self-built AI/data tools (analytics agent, query & reconciliation system, attribution Eval).">
+  <meta name="description" content="Kingho Wang · AI Commercialization Product Manager, Beijing. 5 years in ad monetization: monetization strategy, data-driven attribution, and self-built AI/data tools (analytics agent, Agent production pipeline, query and reconciliation system, attribution Eval).">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="favicon.png" type="image/png" sizes="256x256">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Kingho Wang · AI Commercialization Product Manager">
-  <meta property="og:description" content="Monetization · Data · AI-built tools. 5 years in ad monetization + self-built AI/data products.">
+  <meta property="og:description" content="Monetization · Data · AI-built tools. 5 years in ad monetization + self-built AI/data products and an Agent production pipeline.">
   <meta property="og:image" content="https://kinghowang.github.io/kingho-resume/og-image.png">
   <meta property="og:url" content="https://kinghowang.github.io/kingho-resume/en.html">
   <meta name="twitter:card" content="summary_large_image">
@@ -58,20 +58,20 @@
 </header>
 
 <div class="lead">
-  <p>Ad monetization operator turned AI commercialization product manager. Three core strengths: <strong>monetization</strong> (hundreds of millions RMB in budget, industry 0→1), <strong>data</strong> (analysis was 70-80% of my work; self-built attribution methodology), and <strong>building tools with AI</strong> (analytics agent, query &amp; reconciliation system, and an Eval harness to quantify quality). Engineering background — fluent in talking with engineers.</p>
+  <p>Ad monetization operator turned AI commercialization product manager. Three core strengths: <strong>monetization</strong> (hundreds of millions RMB in budget, industry 0→1), <strong>data</strong> (analysis was 70-80% of my work; self-built attribution methodology), and <strong>building tools with AI</strong> (analytics agent, Agent production pipeline, query &amp; reconciliation system, and an Eval harness to quantify quality). Engineering background — able to collaborate directly with engineering teams.</p>
 </div>
 
 <div class="statwall">
   <div class="stat"><div class="s-num">5 yrs</div><div class="s-lab">Ad monetization</div></div>
   <div class="stat"><div class="s-num">¥300M+</div><div class="s-lab">Annual ad spend managed</div></div>
-  <div class="stat"><div class="s-num">0→90%</div><div class="s-lab">Industry 0→1 share</div></div>
-  <div class="stat"><div class="s-num">3</div><div class="s-lab">Self-built AI / data tools</div></div>
+  <div class="stat"><div class="s-num">0→90%</div><div class="s-lab">Healthcare 0→1</div></div>
+  <div class="stat"><div class="s-num">4</div><div class="s-lab">Self-built AI / data tools</div></div>
   <div class="stat"><div class="s-num">3 models</div><div class="s-lab">Eval coverage (22 cases)</div></div>
   <div class="stat"><div class="s-num">60min→min</div><div class="s-lab">Daily-report time (team of 3)</div></div>
 </div>
 
 <section class="section" data-reveal>
-  <h2 class="section-title"><span class="icon">1</span>AI / Data Product Practice</h2>
+  <h2 class="section-title"><span class="icon">1</span>Selected Projects · AI / Data Products</h2>
 </section>
 <div class="sec-note">Self-built / led during current employment, with AI as a collaborator.</div>
 <section class="section" data-reveal style="padding-top:0">
@@ -83,7 +83,16 @@
         <li><strong>Problem</strong>: writing daily anomaly-attribution reports took <strong>30-60 min/day</strong>, depended on personal experience, hard to scale or hand over</li>
         <li><strong>Solution</strong>: scripts pull 8 days of market / industry / client data from the warehouse → rule engine does <strong>threshold anomaly detection</strong> and <strong>structure/level effect decomposition</strong> → a prompt with "observation → root cause → action" structure and attribution red lines → LLM writes the narrative</li>
         <li><strong>Anti-hallucination by architecture</strong>: <strong>all numbers are computed by code and fed in; the model does no arithmetic</strong> — it only narrates</li>
-        <li><strong>Outcome</strong>: built in <strong>1 week</strong>; daily use by <strong>3 teammates</strong>; report time cut from 30-60 min to <strong>minutes of review</strong>; attribution quality quantified by a companion Eval (see ③)</li>
+        <li><strong>Outcome</strong>: built in <strong>1 week</strong>; daily use by <strong>3 teammates</strong>; report time cut from 30-60 min to <strong>minutes of review</strong>; attribution quality quantified by the Eval project below</li>
+      </ul>
+    </div>
+    <div class="ai-card" style="grid-column:1/-1;border-left:3px solid var(--accent)">
+      <h3>“Wukong” Self-Built Agent × AI Video Repurposing Pipeline</h3>
+      <div class="role">Agent-agnostic execution contract · Video pipeline: 37 Python scripts / ~3.7K lines (including validation and tests) · 4 jobs produced playable master videos</div>
+      <ul class="tl-list">
+        <li><strong>Deliverable pipeline</strong>: engineered AI-assisted video repurposing into a controlled workflow with <strong>8 core automated QA gates (v2 baseline)</strong>, covering OCR text residue, boundary-frame sampling, motion share, duration, and audio; paired with a <strong>self-repair loop</strong> and a JSON contract for human review</li>
+        <li><strong>Guardrails for an unreliable executor</strong>: <strong>Only verification-script output counts; an agent’s self-report of “done” does not.</strong> The execution contract forbids Agent edits to gate scripts, while self-repair is limited to three allowlisted operations: rerun scripts, clear caches, or adjust geometric values. Three-way capability routing assigns machine-verifiable work to scripts, proxy evidence to review, and only four predefined cases to a human; each of ten hard rules traces back to an observed failure</li>
+        <li><strong>Cost engineering</strong>: split long instructions into <strong>one-card / one-script</strong> task cards and persisted progress to files rather than model memory, enabling free-tier models to complete the main workflow from decomposition through rendered-video QA and resume from the last verified card after disconnects</li>
       </ul>
     </div>
     <div class="ai-card">
@@ -98,8 +107,8 @@
       <h3>Attribution Quality Eval Harness</h3>
       <div class="role">Self-built · Prompt regression gate · Cross-model comparable</div>
       <ul class="tl-list">
-        <li><strong>Benchmark</strong>: 22 annotated historical reports as the <strong>golden set</strong>; code metrics (numeric fidelity, anomaly recall/precision) + LLM-as-judge (attribution quality, mechanism-hallucination rate) as a regression gate for prompt changes</li>
-        <li><strong>3 models × 6 rounds leaderboard</strong>: DeepSeek / GLM / Kimi each ran with and without methodology, judged by DeepSeek across vendors — <strong>Kimi K3 + methodology won with judge 4.50 and a 4.5% hallucination rate</strong>, at ¥0.45/run, fully auditable</li>
+        <li><strong>Benchmark</strong>: 22 annotated historical reports as the <strong>golden set</strong>; code metrics (numeric fidelity, anomaly recall/precision) + LLM-as-judge (attribution quality, fabricated-mechanism rate) as a regression gate for prompt changes</li>
+        <li><strong>3 models × 6 rounds leaderboard</strong>: DeepSeek / GLM / Kimi each ran with and without methodology, judged by DeepSeek across vendors — <strong>Kimi K3 + methodology won with judge 4.50 and a 4.5% fabricated-mechanism rate</strong>, at ¥0.45/run, fully auditable</li>
       </ul>
       <p style="margin:10px 0 0;font-size:.86rem"><a href="demo-eval.html" style="color:var(--accent);font-weight:700">▶ Open the Eval leaderboard demo</a></p>
     </div>
@@ -115,7 +124,8 @@
         <div class="tags"><span class="tag tag-ind">Healthcare</span><span class="tag tag-ind">Interest Education</span><span class="tag tag-role">Monetization / Growth</span><span class="tag tag-met">7-figure daily spend</span></div>
         <ul class="tl-list">
           <li><strong>Industry monetization</strong>: led TCM &amp; healthcare from zero to scale; participated in industry monetization strategy</li>
-          <li><strong>Scale</strong>: served <strong>60+ clients</strong> (senior education + TCM healthcare), <strong>¥300M+ annual spend</strong>; owned industry trend, spend, and budget stability</li>
+          <li><strong>Scale</strong>: served <strong>60+ clients</strong> (education for older adults + TCM healthcare), <strong>¥300M+ annual spend</strong>; owned industry trend, spend, and budget stability</li>
+          <li><strong>Funnel product optimization</strong>: many <strong>older users</strong> dropped off because they were unfamiliar with <strong>long-press QR recognition</strong> and got stuck at the system menu. Used a WeCom customer-service chat as the supported bridge to automatically send <strong>clickable acquisition text and card</strong>, each containing the same acquisition link; tapping either opened the same flow. Impression-to-WeCom-contact conversion <strong>+50%+</strong>, impression-to-address-submission conversion <strong>+40%+</strong>, with no degradation in downstream conversion quality; efficiency CPM also improved</li>
           <li><strong>Data-driven decisions</strong>: analysis was <strong>70-80%</strong> of the work; strategy iterated via attribution / experiments / reviews (self-built tools above)</li>
         </ul>
       </div>
@@ -147,7 +157,7 @@
   <div class="info-grid">
     <div class="info-card">
       <h4>AI Product &amp; Collaboration</h4>
-      <ul class="info-list"><li>LLM app design · Prompt engineering (methodology-as-code)</li><li>Anti-hallucination design (numeric grounding)</li><li>Eval (golden set / LLM-as-judge, 3-model benchmark)</li><li>AI-assisted development: Claude · Codex</li></ul>
+      <ul class="info-list"><li>LLM app design · Prompt engineering (methodology-as-code)</li><li>Agent orchestration and guardrail design · anti-hallucination through code-grounded metrics</li><li>Eval (golden set / LLM-as-judge, 3-model benchmark)</li><li>AI-assisted development: Claude · Codex</li></ul>
     </div>
     <div class="info-card">
       <h4>Product &amp; Growth</h4>

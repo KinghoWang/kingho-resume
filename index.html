@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>王钧灏 - AI 商业化产品经理</title>
-  <meta name="description" content="王钧灏 · AI 商业化产品经理。5 年商业化操盘，核心三条：懂变现、懂数据、能用 AI 造工具（自建数分机器人、取数与对账系统、归因质量 Eval）。">
+  <meta name="description" content="王钧灏 · AI 商业化产品经理。5 年商业化操盘，核心三条：懂变现、懂数据、能用 AI 造工具（自建数分机器人、Agent 生产管线、取数对账系统、归因质量 Eval）。">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="favicon.png" type="image/png" sizes="256x256">
   <meta property="og:type" content="website">
@@ -60,14 +60,14 @@
 </header>
 
 <div class="lead">
-  <p>5 年商业化广告操盘者，专注 AI 商业化产品方向。核心能力三条：<strong>懂变现</strong>（亿级预算、行业 0-1 突破）、<strong>懂数据</strong>（分析占原工作 70-80%、自建归因方法论）、<strong>能用 AI 造工具</strong>（以 AI 为协作者，把方法论产品化为数分机器人、取数与对账系统，并自建 Eval 量化质量）。理工背景、能与工程对话。</p>
+  <p>5 年商业化广告操盘者，专注 AI 商业化产品方向。核心能力三条：<strong>懂变现</strong>（亿级预算、行业 0-1 突破）、<strong>懂数据</strong>（分析占原工作 70-80%、自建归因方法论）、<strong>能用 AI 造工具</strong>（以 AI 为协作者，把方法论产品化为数分机器人、Agent 生产管线与取数对账系统，并自建 Eval 量化质量）。理工背景、能与工程对话。</p>
 </div>
 
 <div class="statwall">
   <div class="stat"><div class="s-num">5 年</div><div class="s-lab">商业化操盘</div></div>
   <div class="stat"><div class="s-num">3 亿+</div><div class="s-lab">年消耗规模</div></div>
   <div class="stat"><div class="s-num">0→90%</div><div class="s-lab">大健康行业 0-1</div></div>
-  <div class="stat"><div class="s-num">3 个</div><div class="s-lab">自建 AI / 数据工具</div></div>
+  <div class="stat"><div class="s-num">4 个</div><div class="s-lab">自建 AI / 数据工具</div></div>
   <div class="stat"><div class="s-num">3 模型</div><div class="s-lab">Eval 覆盖（22 例）</div></div>
   <div class="stat"><div class="s-num">60min→分钟级</div><div class="s-lab">日报提效（团队 3 人）</div></div>
 </div>
@@ -86,7 +86,16 @@
         <li><strong>问题</strong>：每天人工撰写广告异常归因日报约 <strong>30-60 分钟</strong>，重度依赖个人经验，难规模化、难传承</li>
         <li><strong>方案</strong>：脚本自数仓抓取 8 天大盘 / 行业 / 客户数据 → 按规则做<strong>阈值异常检出</strong>与<strong>结构 / 效率效应分解</strong> → 拼装含「现象 → 根因 → 建议」三段式与归因红线的 prompt → 交 LLM 做深度归因</li>
         <li><strong>防幻觉设计</strong>：<strong>所有数值均由数仓计算后输入、模型不做算术</strong>，只负责归因叙述，从架构上规避数值幻觉</li>
-        <li><strong>成果</strong>：<strong>1 周</strong>产出；<strong>团队 3 人</strong>日常使用；日报从人工 30-60 分钟压缩为<strong>分钟级复核</strong>；归因质量已由配套 Eval 量化（见 ③）</li>
+        <li><strong>成果</strong>：<strong>1 周</strong>产出；<strong>团队 3 人</strong>日常使用；日报从人工 30-60 分钟压缩为<strong>分钟级复核</strong>；归因质量已由配套 Eval 量化（见下）</li>
+      </ul>
+    </div>
+    <div class="ai-card" style="grid-column:1/-1;border-left:3px solid var(--accent)">
+      <h3>「悟空」自建 Agent × 视频二创生产管线</h3>
+      <div class="role">Agent 无关执行契约 · 二创管线 37 个 Python 脚本 / 约 3.7k 行（含验证与测试） · 4 个 job 产出可播放主成片</div>
+      <ul class="tl-list">
+        <li><strong>做成可交付管线</strong>：把「用 AI 剪素材」工程化 —— <strong>8 道核心自动质检门（v2 基线）</strong>，覆盖 OCR 文字残留 / 边界抽帧 / 运动占比 / 时长 / 音频；配套<strong>自修循环</strong>与人工审校 JSON 契约</li>
+        <li><strong>给不可靠执行体设围栏</strong>：<strong>只有验证脚本输出算数、Agent 自述「已完成」无效</strong>；执行契约禁止 Agent 修改门脚本，自修仅限重跑 / 清缓存 / 改几何数值 3 项；<strong>能力三分法</strong>（可量化跑脚本 / 有代理证据挂看板 / 仅 4 类情况停下问人）；十条铁律每条对应一次真实翻车</li>
+        <li><strong>成本工程</strong>：长指令拆成「一卡一脚本」任务卡、<strong>进度落文件而非模型记忆</strong>，让免费档模型跑通从解构到成片质检的主生产链路（断连后按最后一张 ✅ 的卡续跑）</li>
       </ul>
     </div>
     <div class="ai-card">
@@ -120,7 +129,7 @@
         <ul class="tl-list">
           <li><strong>行业变现操盘</strong>：主导中医 &amp; 大健康行业 0 → 规模化，参与行业商业化策略制定</li>
           <li><strong>商业化规模</strong>：服务 <strong>60+ 客户</strong>（老年教育 + 中医大健康），年消耗规模 <strong>3 亿+</strong>，对行业趋势、消耗与预算稳定性负责</li>
-          <li><strong>链路产品优化</strong>：小程序环境调不起企微获客助手「一键加微」→ 以<strong>企微客服会话为桥</strong>打通一键加微，<strong>曝光-加微率 +50%+、曝光-地址率 +40%+</strong>，后转无损、效率 CPM 提升</li>
+          <li><strong>链路产品优化</strong>：针对<strong>中老年主力用户不熟悉「长按识别二维码」</strong>、易卡在菜单选择的问题，以<strong>企微客服会话为桥</strong>自动下发可点击的获客文案与卡片，<strong>曝光-加微率 +50%+、曝光-地址率 +40%+</strong>，后转无损、效率 CPM 提升</li>
           <li><strong>数据驱动决策</strong>：数据分析占工作 <strong>70-80%</strong>，以归因 / 实验 / 复盘驱动策略迭代（相关自建工具见上「项目经历」）</li>
         </ul>
       </div>
@@ -153,7 +162,7 @@
   <div class="info-grid">
     <div class="info-card">
       <h4>AI 产品 &amp; 协作</h4>
-      <ul class="info-list"><li>LLM 应用设计 · Prompt 工程（方法论编码）</li><li>防幻觉设计（数值代码化 / grounding）</li><li>Eval（黄金集 / LLM-as-judge · 3 模型跑分）</li><li>AI 协作开发：Claude cowork · Codex</li></ul>
+      <ul class="info-list"><li>LLM 应用设计 · Prompt 工程（方法论编码）</li><li>Agent 编排与围栏设计 · 防幻觉（数值代码化 / grounding）</li><li>Eval（黄金集 / LLM-as-judge · 3 模型跑分）</li><li>AI 协作开发：Claude cowork · Codex</li></ul>
     </div>
     <div class="info-card">
       <h4>产品 &amp; 增长</h4>
