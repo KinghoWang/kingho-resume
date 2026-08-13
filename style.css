@@ -63,6 +63,8 @@ body{
 .wechat-contact{flex:0 0 104px;margin:0;text-align:center;color:var(--muted);font-size:.72rem;line-height:1.35}
 .wechat-contact img{display:block;width:96px;height:96px;margin:0 auto 7px;object-fit:contain;background:#fff}
 .wechat-contact figcaption{max-width:104px}
+.wechat-contact figcaption > *{display:block}
+.wechat-contact .wechat-id{color:var(--ink);font-size:.74rem;font-weight:600;overflow-wrap:anywhere}
 
 /* Section */
 .section{max-width:960px;margin:0 auto;padding:0 48px 56px;opacity:0;transform:translateY(32px)}

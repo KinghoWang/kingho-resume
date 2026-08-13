@@ -15,6 +15,8 @@ test('resume contact details use real email and phone links', async ({ page }) =
     const qr = wechat.locator('img[src="wechat-qr.png"]');
     await expect(wechat).toHaveCount(1);
     await expect(wechat).toContainText(/微信扫码联系|Scan to connect on WeChat/);
+    await expect(wechat.locator('.wechat-id')).toHaveText('WJH748247724');
+    await expect(page.getByText('WJH748247724', { exact: true })).toHaveCount(1);
     await expect(qr).toBeVisible();
     const qrGeometry = await qr.evaluate((image) => ({
       naturalWidth: image.naturalWidth,
