@@ -60,10 +60,14 @@ test('resume heroes advertise five live AI and data demos', async ({ page }) => 
 
 test('portfolio publishes five live AI and data demo cards', async ({ page }) => {
   await page.goto(`${BASE}/cases.html`);
-  await expect(page.locator('.section-divider').first()).toContainText('自建 AI / 数据产品');
-  await expect(page.locator('.demo-lead')).toContainText('以下五个');
-  await expect(page.locator('.demo-gallery > .demo-card')).toHaveCount(5);
+  await expect(page.locator('.section-divider').first()).toContainText('自建 AI 产品');
+  await expect(page.locator('.demo-lead')).toContainText('5 个 AI / 数据在线 Demo');
+  await expect(page.locator('[data-testid="core-project"]')).toHaveCount(2);
+  await expect(page.locator('[data-testid="extension-demo"]')).toHaveCount(2);
   await expect(page.locator('.demo-gallery a[href="demo-wukong.html"]')).toHaveCount(1);
+  for (const href of ['demo-shufen.html', 'demo-eval.html', 'demo-wukong.html', 'demo-advideo.html', 'demo-creative.html']) {
+    await expect(page.locator(`.demo-gallery a[href="${href}"]`)).toHaveCount(1);
+  }
 });
 
 test('both resume languages frame the WeCom work around the older-user long-press barrier', async ({ page }) => {

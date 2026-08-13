@@ -19,7 +19,7 @@
 
 ## 🚀 Portfolio
 
-**① Three core projects**: Analytics Agent × embedded Eval, Wukong Agent production pipeline, and adquery-lite query & financial reconciliation.
+**① Two core projects**: Analytics Agent × embedded Eval and the Wukong Agent production pipeline. adquery-lite query & financial reconciliation remains available as Case 03 in section ③.
 
 **② Five AI / data live demos** (four sanitized versions of real engines or dashboards; Wukong reproduces the real task contract and state machine without connecting to production)
 

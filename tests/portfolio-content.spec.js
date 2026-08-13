@@ -2,11 +2,11 @@ const { test, expect } = require('playwright/test');
 
 const BASE = process.env.DEMO_BASE_URL || 'http://127.0.0.1:52784';
 
-test('portfolio separates three core projects from two extension demos', async ({ page }) => {
+test('portfolio separates two core projects from two extension demos', async ({ page }) => {
   await page.goto(`${BASE}/cases.html`);
 
-  await expect(page.getByRole('heading', { name: /3 组核心项目/ })).toBeVisible();
-  await expect(page.locator('[data-testid="core-project"]')).toHaveCount(3);
+  await expect(page.getByRole('heading', { name: /2 组核心项目/ })).toBeVisible();
+  await expect(page.locator('[data-testid="core-project"]')).toHaveCount(2);
 
   const core = page.locator('[data-testid="core-project"]');
   await expect(core.nth(0)).toContainText('数分机器人 × Eval');
@@ -15,9 +15,6 @@ test('portfolio separates three core projects from two extension demos', async (
 
   await expect(core.nth(1)).toContainText('悟空');
   await expect(core.nth(1).locator('a[href="demo-wukong.html"]')).toHaveCount(1);
-
-  await expect(core.nth(2)).toContainText('adquery-lite');
-  await expect(core.nth(2).locator('a[href="#case2"]')).toHaveCount(1);
 
   await expect(page.getByRole('heading', { name: /扩展在线 Demo/ })).toBeVisible();
   const extensions = page.locator('[data-testid="extension-demo"]');
@@ -28,6 +25,10 @@ test('portfolio separates three core projects from two extension demos', async (
   await expect(extensions.nth(1).locator('a[href="demo-creative.html"]')).toHaveCount(1);
 
   await expect(page.locator('body')).toContainText('5 个 AI / 数据在线 Demo');
+  await expect(page.locator('.demo-lead')).toContainText('取数与财务对账见 ③ 案例 03');
+  const reconciliationCase = page.locator('#case2');
+  await expect(reconciliationCase).toContainText('自建广告数据取数工具 & 财务对账模块');
+  await expect(page.locator('[data-testid="core-project"]').filter({ hasText: 'adquery-lite' })).toHaveCount(0);
 });
 
 for (const viewport of [
@@ -44,7 +45,7 @@ for (const viewport of [
       viewportWidth: document.documentElement.clientWidth,
     }));
     expect(geometry.documentWidth).toBeLessThanOrEqual(geometry.viewportWidth);
-    await expect(page.locator('[data-testid="core-project"]')).toHaveCount(3);
+    await expect(page.locator('[data-testid="core-project"]')).toHaveCount(2);
     await expect(page.locator('[data-testid="extension-demo"]')).toHaveCount(2);
   });
 }

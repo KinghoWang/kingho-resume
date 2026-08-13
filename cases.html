@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>王钧灏 - 作品集：AI/数据产品 + 数据分析案例</title>
-  <meta name="description" content="王钧灏作品集：数分机器人与 Eval 质量闭环、悟空 Agent 生产管线、adquery-lite 三组核心项目，5 个 AI/数据在线 Demo 与脱敏策略产品案例。">
+  <meta name="description" content="王钧灏作品集：数分机器人与 Eval 质量闭环、悟空 Agent 生产管线两组核心项目，5 个 AI/数据在线 Demo 与脱敏策略产品案例。">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="favicon.png" type="image/png" sizes="256x256">
   <meta property="og:type" content="website">
   <meta property="og:title" content="王钧灏 · 作品集：AI/数据产品 + 数据分析案例">
-  <meta property="og:description" content="3 组核心项目、5 个 AI/数据在线 Demo，以及脱敏策略产品与数据分析案例。">
+  <meta property="og:description" content="2 组核心项目、5 个 AI/数据在线 Demo，以及脱敏策略产品与数据分析案例。">
   <meta property="og:image" content="https://kinghowang.github.io/kingho-resume/og-image.png">
   <meta property="og:url" content="https://kinghowang.github.io/kingho-resume/cases.html">
   <meta name="twitter:card" content="summary_large_image">
@@ -142,6 +142,7 @@
 
     /* ===== 在线 Demo 画廊 ===== */
     .demo-gallery{max-width:960px;margin:6px auto 8px;padding:0 48px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .core-gallery{grid-template-columns:1fr}
     .demo-card{position:relative;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--border);border-top:3px solid var(--accent);border-radius:var(--radius);padding:20px 22px 18px;box-shadow:var(--shadow);opacity:0;transform:translateY(24px)}
     .demo-card.visible{animation:fadeUp .55s ease forwards}
     .demo-card .dc-badge{position:absolute;top:16px;right:18px;font-size:.66rem;font-weight:700;color:var(--c-green);background:#e8f8f0;border-radius:20px;padding:3px 10px;letter-spacing:.02em}
@@ -155,7 +156,6 @@
     .demo-card.core-feature{grid-column:1/-1;background:linear-gradient(180deg,#fff,#fdf8f7);border-left:3px solid var(--accent)}
     .demo-card.core-feature .dc-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:auto}
     .demo-card.core-feature .dc-open.secondary{color:var(--accent);background:#fff;border:1px solid var(--accent)}
-    .demo-card.core-support{border-top-color:#777}
     .demo-card.extension{box-shadow:none;border-top-color:#aaa;background:#fcfbf9}
     .demo-card.extension .dc-open{background:#555}
     .section-divider{max-width:960px;margin:34px auto 0;padding:0 48px}
@@ -196,7 +196,7 @@
 <header class="page-head" data-reveal>
   <a class="back-link" href="index.html">← 返回简历主页</a>
   <h1>作品集 · AI/数据产品 + 数据分析案例</h1>
-  <p class="sub">三层结构：<strong>①</strong> 三组核心项目；<strong>②</strong> 扩展在线 Demo；<strong>③</strong> 策略产品与数据分析案例。项目讲完整闭环，Demo 提供可操作证据。</p>
+  <p class="sub">三层结构：<strong>①</strong> 两组核心项目；<strong>②</strong> 扩展在线 Demo；<strong>③</strong> 策略产品与数据分析案例。项目讲完整闭环，Demo 提供可操作证据。</p>
 </header>
 
 <div class="disclaimer" data-reveal>
@@ -204,8 +204,8 @@
 </div>
 
 <!-- ============ ① 核心项目 ============ -->
-<div class="section-divider" data-reveal><h2>① 自建 AI / 数据产品 · 3 组核心项目 <span class="sd-tag">从产品落地到质量闭环</span></h2></div>
-<p class="demo-lead" data-reveal>以下五个可直接打开体验，共 <strong style="color:var(--accent)">5 个 AI / 数据在线 Demo</strong>：数分、Eval、悟空构成核心项目证据；竞品情报与创意诊断作为扩展能力展示。</p>
+<div class="section-divider" data-reveal><h2>① 自建 AI 产品 · 2 组核心项目 <span class="sd-tag">从产品落地到质量闭环</span></h2></div>
+<p class="demo-lead" data-reveal>两组核心项目、共 <strong style="color:var(--accent)">5 个 AI / 数据在线 Demo</strong> 可直接打开体验：数分、Eval、悟空构成核心项目证据；竞品情报与创意诊断见 ② 扩展能力；取数与财务对账见 ③ 案例 03。</p>
 <div class="demo-gallery core-gallery">
   <div class="demo-card core-feature" data-testid="core-project" data-reveal>
     <span class="dc-badge">生产产品 + 质量门禁</span>
@@ -223,14 +223,6 @@
     <div class="dc-meta">37 个 Python 脚本 / 约 3.7k 行（含验证与测试）· 4 个 job 产出主成片</div>
     <a class="dc-open" href="demo-wukong.html">▶ 打开交互 Demo</a>
   </div>
-  <div class="demo-card core-support" data-testid="core-project" data-reveal>
-    <span class="dc-badge">数据可信底座</span>
-    <h3>adquery-lite · 广告取数与财务对账</h3>
-    <div class="dc-kind">指标 catalog ｜ 多维下钻 · 加权合计 · 对账闭环</div>
-    <p class="dc-desc">以 catalog 统一指标口径，可插拔数据源承接多维下钻、图表与导出；合计行按总量加权、截断如实标注。对账模块把一次性核账变成<strong>可监控、可上报、可排查</strong>的常态机制。</p>
-    <div class="dc-meta">面向广告取数与对账的轻量工作台 · 净室可迁移版</div>
-    <a class="dc-open" href="#case2">查看对账案例 ↓</a>
-  </div>
 </div>
 
 <!-- ============ ② 扩展在线 DEMO ============ -->
@@ -241,7 +233,7 @@
     <h3>竞品广告情报引擎</h3>
     <div class="dc-kind">竞品侦察 ｜ 多源采集 + 结构化检索 · 分源分桶</div>
     <p class="dc-desc">统一多平台竞品广告 schema 与周度快照；按行业 / 曝光量 / 标签检索，查看秒级时序、多模态标签与受众下钻，严守不同曝光口径不混排。</p>
-    <div class="dc-meta">扩展探索 · 不计入三组核心项目</div>
+    <div class="dc-meta">扩展探索 · 不计入核心项目</div>
     <a class="dc-open" href="demo-advideo.html">▶ 打开在线 Demo</a>
   </div>
   <div class="demo-card extension" data-testid="extension-demo" data-reveal>
