@@ -2,6 +2,33 @@ const { test, expect } = require('playwright/test');
 
 const BASE = process.env.DEMO_BASE_URL || 'http://127.0.0.1:52784';
 
+test('resume contact details use real email and phone links', async ({ page }) => {
+  for (const file of ['index.html', 'en.html']) {
+    await page.goto(`${BASE}/${file}`);
+    const contacts = page.locator('.contact-row');
+    await expect(contacts.locator('a[href="mailto:kinghowang@foxmail.com"]')).toHaveCount(1);
+    await expect(contacts.locator('a[href="tel:+8617512006748"]')).toHaveCount(1);
+    await expect(contacts.locator('a[href^="mailto:"]')).toHaveCount(1);
+    await expect(contacts.locator('a[href^="tel:"]')).toHaveCount(1);
+
+    const wechat = page.locator('[data-testid="wechat-contact"]');
+    const qr = wechat.locator('img[src="wechat-qr.png"]');
+    await expect(wechat).toHaveCount(1);
+    await expect(wechat).toContainText(/微信扫码联系|Scan to connect on WeChat/);
+    await expect(qr).toBeVisible();
+    const qrGeometry = await qr.evaluate((image) => ({
+      naturalWidth: image.naturalWidth,
+      naturalHeight: image.naturalHeight,
+      width: image.getBoundingClientRect().width,
+      height: image.getBoundingClientRect().height,
+    }));
+    expect(qrGeometry.naturalWidth).toBe(720);
+    expect(qrGeometry.naturalHeight).toBe(720);
+    expect(qrGeometry.width).toBeGreaterThanOrEqual(88);
+    expect(qrGeometry.height).toBeGreaterThanOrEqual(88);
+  }
+});
+
 test('Chinese resume presents three product and AI projects with WeCom first', async ({ page }) => {
   await page.goto(`${BASE}/index.html`);
   const cards = page.locator('.ai-grid > .ai-card');
