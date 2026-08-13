@@ -31,11 +31,11 @@ test('resume contact details use real email and phone links', async ({ page }) =
   }
 });
 
-test('Chinese resume presents three product and AI projects with WeCom first', async ({ page }) => {
+test('Chinese resume presents four product, AI and data projects with WeCom first', async ({ page }) => {
   await page.goto(`${BASE}/index.html`);
   const cards = page.locator('.ai-grid > .ai-card');
 
-  await expect(cards).toHaveCount(3);
+  await expect(cards).toHaveCount(4);
 
   const wecom = cards.nth(0);
   await expect(wecom.locator('h3')).toContainText('企微获客链路改造');
@@ -51,19 +51,27 @@ test('Chinese resume presents three product and AI projects with WeCom first', a
 
   const wukong = cards.nth(2);
   await expect(wukong.locator('h3')).toContainText('悟空');
+  await expect(wukong).toContainText('4 个 job 产出可播放主成片');
+  await expect(wukong).not.toContainText('端到端交付');
   await expect(wukong).toContainText('只有验证脚本输出算数');
   await expect(wukong.locator('a[href="demo-wukong.html"]')).toHaveCount(1);
+
+  const reconciliation = cards.nth(3);
+  await expect(reconciliation.locator('h3')).toContainText('广告财务对账系统');
+  await expect(reconciliation).toContainText('与财务对齐对账规则');
+  await expect(reconciliation).toContainText('固化到固定查询与月度核对流程');
+  await expect(reconciliation).not.toContainText('推动上线');
 
   await expect(cards.locator('h3').filter({ hasText: 'adquery-lite' })).toHaveCount(0);
   await expect(cards.locator('h3').filter({ hasText: /^广告归因质量 Eval 评测体系$/ })).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'English' })).toHaveAttribute('href', 'en.html');
 });
 
-test('English resume presents three product and AI projects with WeCom first', async ({ page }) => {
+test('English resume presents four product, AI and data projects with WeCom first', async ({ page }) => {
   await page.goto(`${BASE}/en.html`);
   const cards = page.locator('.ai-grid > .ai-card');
 
-  await expect(cards).toHaveCount(3);
+  await expect(cards).toHaveCount(4);
 
   const wecom = cards.nth(0);
   await expect(wecom.locator('h3')).toContainText('WeCom Acquisition Flow');
@@ -79,20 +87,28 @@ test('English resume presents three product and AI projects with WeCom first', a
 
   const wukong = cards.nth(2);
   await expect(wukong.locator('h3')).toContainText('Wukong');
+  await expect(wukong).toContainText('4 jobs produced playable master videos');
+  await expect(wukong).not.toContainText('end-to-end delivery');
   await expect(wukong).toContainText('Only verification-script output counts');
   await expect(wukong.locator('a[href="demo-wukong.html"]')).toHaveCount(1);
+
+  const reconciliation = cards.nth(3);
+  await expect(reconciliation.locator('h3')).toContainText('Ad Finance Reconciliation System');
+  await expect(reconciliation).toContainText('aligned reconciliation rules with finance');
+  await expect(reconciliation).toContainText('monthly reconciliation workflow');
+  await expect(reconciliation).not.toContainText('drove it to launch');
 
   await expect(cards.locator('h3').filter({ hasText: 'adquery-lite' })).toHaveCount(0);
   await expect(cards.locator('h3').filter({ hasText: /^Attribution Quality Eval Harness$/ })).toHaveCount(0);
   await expect(page.getByRole('link', { name: '中文版简历' })).toHaveAttribute('href', 'index.html');
 });
 
-test('resume heroes advertise five live AI and data demos', async ({ page }) => {
+test('resume heroes distinguish five AI/data demos from one WeCom interaction demo', async ({ page }) => {
   await page.goto(`${BASE}/index.html`);
-  await expect(page.locator('.hero-links a[href="cases.html"]')).toContainText('作品集：5 个在线 Demo');
+  await expect(page.locator('.hero-links a[href="cases.html"]')).toContainText('5 个 AI / 数据 Demo + 1 个企微交互演示');
 
   await page.goto(`${BASE}/en.html`);
-  await expect(page.locator('.hero-links a[href="cases.html"]')).toContainText('Portfolio: 5 live demos');
+  await expect(page.locator('.hero-links a[href="cases.html"]')).toContainText('5 AI/data demos + 1 interactive WeCom flow');
 });
 
 test('portfolio publishes five live AI and data demo cards', async ({ page }) => {
@@ -117,37 +133,44 @@ test('both resume languages promote WeCom out of work bullets without duplicatin
   await expect(page.locator('.ai-card').first()).toContainText('long-press QR recognition');
 });
 
-test('resume highlights contributions and removes weak attribution claims', async ({ page }) => {
+test('resume keeps contribution claims tied to their verified evidence', async ({ page }) => {
   for (const file of ['index.html', 'en.html']) {
     await page.goto(`${BASE}/${file}`);
-    const stats = page.locator('.stat');
-    await expect(stats).toHaveCount(6);
-    await expect(stats.first()).toContainText(/\+50%/);
-    await expect(stats.nth(2)).toContainText('+47%');
-    await expect(stats.nth(3)).toContainText('+27%');
-    await expect(stats.nth(4)).toContainText('-13%');
-    await expect(stats.nth(5)).toContainText('20%→60%');
+    await expect(page.locator('.stat')).toHaveCount(0);
+    await expect(page.locator('.statwall')).toHaveCount(0);
+    await expect(page.locator('.ai-grid > .ai-card')).toHaveCount(4);
+    await expect(page.locator('body')).toContainText(/5%\s*(?:→|to)\s*90%\+/);
+    await expect(page.locator('body')).toContainText(/低于大盘.*14%|14%\s*below.*benchmark/i);
+    await expect(page.locator('body')).not.toContainText(/20%\s*(?:→|to)\s*60%/i);
     await expect(page.locator('body')).not.toContainText('+287%');
     await expect(page.locator('body')).not.toContainText('opening a new closed-loop');
   }
 });
 
-test('Baidu result remains a concurrent fact instead of a claimed direct causal effect', async ({ page }) => {
+test('Baidu keeps the evidenced model and rollout without an unsupported rate claim', async ({ page }) => {
   await page.goto(`${BASE}/index.html`);
   const zhBaidu = page.locator('.tl-card').filter({ hasText: '百度(中国)' });
-  await expect(zhBaidu).toContainText('同期');
-  await expect(zhBaidu).not.toContainText(/组合替代.*20%\s*→\s*60%/);
+  await expect(zhBaidu).toContainText('直播 + 低价体验 + 附赠图书');
+  await expect(zhBaidu).toContainText('5 家客户');
+  await expect(zhBaidu).toContainText('最佳新人奖');
+  await expect(zhBaidu).not.toContainText(/20%\s*→\s*60%/);
 
   await page.goto(`${BASE}/en.html`);
   const enBaidu = page.locator('.tl-card').filter({ hasText: 'Baidu (China)' });
-  await expect(enBaidu).toContainText('in parallel');
-  await expect(enBaidu).not.toContainText(/model.*(?:improved|lifted).*20%\s*(?:to|→)\s*60%/i);
+  await expect(enBaidu).toContainText('livestream + low-cost trial + bundled books');
+  await expect(enBaidu).toContainText('five clients');
+  await expect(enBaidu).toContainText('Best Newcomer');
+  await expect(enBaidu).not.toContainText(/20%\s*(?:to|→)\s*60%/i);
 });
 
 test('Chinese primary resume no longer routes readers to the stale ad-operations page', async ({ page }) => {
   await page.goto(`${BASE}/index.html`);
   await expect(page.locator('a[href="resume-adops.html"]')).toHaveCount(0);
-  await expect(page.getByRole('link', { name: '策略产品案例' })).toHaveAttribute('href', 'cases.html#case-lianlu');
+  const heroLinks = page.locator('.hero-links > a');
+  await expect(heroLinks).toHaveCount(3);
+  await expect(heroLinks.nth(0)).toHaveAttribute('href', 'cases.html');
+  await expect(heroLinks.nth(1)).toHaveAttribute('href', 'kingho-resume-ai-pm.pdf');
+  await expect(heroLinks.nth(2)).toHaveAttribute('href', 'en.html');
 });
 
 for (const viewport of [
@@ -173,7 +196,7 @@ for (const viewport of [
       }));
       expect(geometry.documentWidth).toBeLessThanOrEqual(geometry.viewportWidth);
       expect(geometry.statsInsideCards).toBe(true);
-      await expect(page.locator('.ai-grid > .ai-card')).toHaveCount(3);
+      await expect(page.locator('.ai-grid > .ai-card')).toHaveCount(4);
       await expect(page.locator('footer')).toBeVisible();
     }
   });
