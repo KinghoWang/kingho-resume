@@ -326,12 +326,176 @@
     .event-log h3 { margin-bottom: 8px; }
     .event-log p { margin: 6px 0 0; color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
 
+    .runtime-evidence {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 8px clamp(14px, 4vw, 48px) 68px;
+    }
+
+    .runtime-heading {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 0.48fr);
+      gap: 24px;
+      align-items: end;
+      padding: 28px 0 22px;
+      border-top: 1px solid var(--line);
+    }
+
+    .runtime-heading h2 { max-width: 760px; margin-bottom: 8px; }
+    .runtime-heading p { max-width: 760px; margin: 0; color: var(--muted); }
+
+    .provenance-note {
+      padding: 12px 14px;
+      border-left: 3px solid var(--amber);
+      background: var(--amber-soft);
+      color: #6e501a;
+      font-size: 13px;
+    }
+
+    .runtime-section {
+      min-width: 0;
+      padding: 26px 0 30px;
+      border-top: 1px solid var(--line);
+    }
+
+    .runtime-section-head {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 13px;
+      margin-bottom: 18px;
+    }
+
+    .runtime-index {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: var(--panel);
+      color: var(--accent);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-weight: 900;
+    }
+
+    .runtime-section h3 { margin: 0 0 3px; font-size: 19px; }
+    .runtime-section-head p { margin: 0; color: var(--muted); }
+
+    .trace-grid, .contract-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .trace-card {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--panel);
+      overflow: hidden;
+    }
+
+    .trace-card.pass { border-top: 3px solid var(--green); }
+    .trace-card.fail { border-top: 3px solid var(--red); }
+
+    .trace-title { padding: 14px 16px 10px; }
+    .trace-title strong { display: block; font-size: 16px; }
+    .trace-title span { color: var(--muted); font-size: 12px; }
+
+    .runtime-code {
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      padding: 15px 16px;
+      overflow-x: auto;
+      background: #232321;
+      color: #f0eee8;
+      font: 12px/1.65 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre;
+      scrollbar-width: thin;
+    }
+
+    .trace-caption { margin: 0; padding: 12px 16px 15px; color: var(--muted); font-size: 13px; }
+
+    .runtime-table-wrap {
+      max-width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--panel);
+    }
+
+    .runtime-table { width: 100%; min-width: 680px; border-collapse: collapse; }
+    .runtime-table th, .runtime-table td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    .runtime-table th { background: var(--soft); color: var(--muted); font-size: 12px; }
+    .runtime-table tr:last-child td { border-bottom: 0; }
+    .runtime-table .failed-row td { background: var(--red-soft); }
+    .runtime-table .blocked-row td { background: var(--amber-soft); }
+    .exit-pass { color: var(--green); font-weight: 800; }
+    .exit-fail { color: var(--red); font-weight: 800; }
+
+    .fingerprints {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1px;
+      margin-top: 14px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--line);
+    }
+
+    .fingerprint { min-width: 0; padding: 12px; background: var(--panel); }
+    .fingerprint b, .fingerprint code { display: block; }
+    .fingerprint code { margin: 5px 0; color: var(--accent); font-size: 13px; font-weight: 800; }
+    .fingerprint span { color: var(--muted); font-size: 12px; }
+
+    .runtime-footnote { margin: 12px 0 0; color: var(--muted); font-size: 13px; }
+    .runtime-footnote strong { color: var(--ink); }
+
+    .ruling-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .ruling-list li {
+      min-width: 0;
+      padding: 16px;
+      border-top: 3px solid var(--accent);
+      background: var(--panel);
+      box-shadow: 0 7px 22px rgba(38, 35, 30, 0.05);
+    }
+
+    .ruling-list b { display: block; margin-bottom: 8px; }
+    .ruling-list p { margin: 0 0 9px; }
+    .ruling-list small { color: var(--muted); }
+
+    .contract-copy {
+      display: grid;
+      align-content: start;
+      gap: 12px;
+      padding: 17px 18px;
+      border-left: 3px solid var(--green);
+      background: var(--green-soft);
+    }
+
+    .contract-copy p { margin: 0; }
+    .contract-copy strong { color: var(--green); }
+    .contract-points { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .contract-points li { padding-top: 8px; border-top: 1px solid rgba(55, 107, 76, 0.22); }
+
     @media (max-width: 979px) {
       .workspace { grid-template-columns: minmax(0, 1fr); }
       .evidence-panel { position: static; min-height: 0; }
       .main-panel { min-height: 560px; }
       .intro { grid-template-columns: minmax(0, 1fr); }
       .proof-line { max-width: none; }
+      .runtime-heading { grid-template-columns: minmax(0, 1fr); align-items: start; }
+      .ruling-list { grid-template-columns: minmax(0, 1fr); }
     }
 
     @media (max-width: 620px) {
@@ -348,6 +512,10 @@
       .segmented { width: 100%; }
       .actions > button { flex: 1 1 100%; }
       .task-grid { grid-template-columns: repeat(5, minmax(42px, 1fr)); overflow-x: auto; padding-bottom: 4px; }
+      .trace-grid, .contract-grid { grid-template-columns: minmax(0, 1fr); }
+      .fingerprints { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .runtime-section-head { grid-template-columns: 36px minmax(0, 1fr); }
+      .runtime-index { width: 36px; height: 36px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -394,6 +562,131 @@
       <section class="main-panel" data-testid="main-panel"></section>
       <aside class="evidence-panel" data-testid="evidence-panel" aria-label="任务证据"></aside>
     </div>
+
+    <section class="runtime-evidence" data-testid="runtime-evidence" aria-labelledby="runtime-evidence-title">
+      <header class="runtime-heading">
+        <div>
+          <div class="panel-kicker">Reviewed runtime evidence</div>
+          <h2 id="runtime-evidence-title">真实执行痕迹 · 围栏实际拦住了什么</h2>
+          <p>上方是确定性的交互演示；下方根据真实运行文件逐项核对后，结构化脱敏重绘门禁输出、段落战报、审计裁决与任务卡。它们用来证明“只有验证脚本输出算数”确实进入过执行现场。</p>
+        </div>
+        <div class="provenance-note"><strong>证据边界</strong><br>01 区运动门 PASS 来自作业 B；音频门 FAIL、战报与裁决来自作业 A，不代表同一次运行。SKU、路径、原文、完整日志与文件指纹均未公开。</div>
+      </header>
+
+      <section class="runtime-section" data-testid="gate-proof" aria-labelledby="gate-proof-title">
+        <div class="runtime-section-head">
+          <span class="runtime-index">01</span>
+          <div><h3 id="gate-proof-title">门禁输出 · 一次放行，一次停车</h3><p>阈值和退出条件写进报告，结论由脚本给出。</p></div>
+        </div>
+        <div class="trace-grid">
+          <article class="trace-card pass">
+            <div class="trace-title"><strong>job-b · 运动门 PASS</strong><span>脱敏作业 B · 报告字段重绘</span></div>
+            <pre class="runtime-code" data-testid="runtime-code"><code>{
+  "file": "job-b_V1.mp4",
+  "duration_s": 54.2,
+  "frozen_spans": [],
+  "frozen_ratio": 0.0,
+  "threshold": {
+    "freeze_th": 0.3,
+    "min_run_s": 1.0,
+    "max_frozen_ratio": 0.1
+  },
+  "verdict": "PASS"
+}</code></pre>
+            <p class="trace-caption">静止段占比 0% ≤ 10% 上限，脚本才允许过门。</p>
+          </article>
+          <article class="trace-card fail">
+            <div class="trace-title"><strong>job-a · 音频门 FAIL</strong><span>脱敏作业 A · 三轮记录结构化复述</span></div>
+            <pre class="runtime-code" data-testid="runtime-code"><code>轮1  FAIL · 6窗
+     1 个窗口文本匹配 50%
+     措施：原样重跑 make_audio.py
+
+轮2  FAIL · 5窗
+     根因：音字不同源 + 长文本压缩
+     措施：对齐音频与字幕文本
+
+轮3  FAIL · 6窗
+     改善：50% → 90% 通过
+     音频门自修 3 轮仍 FAIL
+     → 按 C 类上报，停车等审计</code></pre>
+            <p class="trace-caption">三轮用尽后必须停车；不允许继续硬试、绕道或自行放松门槛。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="runtime-section" data-testid="run-ledger" aria-labelledby="run-ledger-title">
+        <div class="runtime-section-head">
+          <span class="runtime-index">02</span>
+          <div><h3 id="run-ledger-title">段落战报 · 失败真的阻断后续卡</h3><p>同一脱敏作业 A 的逐卡退出码与渲染指纹链。</p></div>
+        </div>
+        <div class="runtime-table-wrap">
+          <table class="runtime-table">
+            <thead><tr><th>卡号</th><th>命令</th><th>退出码</th><th>结果</th></tr></thead>
+            <tbody>
+              <tr><td>卡①</td><td><code>render.py</code>（首渲）</td><td class="exit-pass">exit 0</td><td>成片已产出</td></tr>
+              <tr><td>卡②</td><td><code>verify_cut.py</code></td><td class="exit-pass">exit 0</td><td>PASS</td></tr>
+              <tr><td>卡③</td><td><code>verify_boundaries.py</code></td><td class="exit-pass">exit 0</td><td>PASS</td></tr>
+              <tr><td>卡④</td><td><code>verify_motion.py</code></td><td class="exit-pass">exit 0</td><td>PASS · 静止段 0%</td></tr>
+              <tr><td>卡⑤</td><td><code>make_audio.py</code></td><td class="exit-pass">exit 0</td><td>wav 10 / 10</td></tr>
+              <tr><td>卡⑥</td><td><code>render.py</code>（再渲）</td><td class="exit-pass">exit 0</td><td>成片 MD5 已变化</td></tr>
+              <tr class="failed-row"><td><strong>卡⑦</strong></td><td><code>verify_audio.py</code></td><td class="exit-fail">exit 1</td><td><strong>自修 3 轮仍 FAIL</strong></td></tr>
+              <tr class="blocked-row"><td><strong>卡⑧</strong></td><td>复跑三门</td><td>—</td><td><strong>因卡⑦失败，未执行</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fingerprints" aria-label="版本指纹核对历史">
+          <div class="fingerprint"><b>V1 · 首渲</b><code>已记录</code><span>画面层</span></div>
+          <div class="fingerprint"><b>V2 · 合配音</b><code>已变化</code><span>合入初始配音</span></div>
+          <div class="fingerprint"><b>V3 · 自修轮 1</b><code>已变化</code><span>重跑音频脚本</span></div>
+          <div class="fingerprint"><b>V4 · 自修轮 3</b><code>已变化</code><span>音字对齐与归一化</span></div>
+        </div>
+        <p class="runtime-footnote"><strong>版本指纹只证明文件发生变化，不证明质量通过。</strong>真实战报记录了 4 版不同 MD5；公开页仅保留变化关系。指纹相同就不能声称已经重渲染。</p>
+      </section>
+
+      <section class="runtime-section" data-testid="audit-rulings" aria-labelledby="audit-rulings-title">
+        <div class="runtime-section-head">
+          <span class="runtime-index">03</span>
+          <div><h3 id="audit-rulings-title">审计裁决 · Agent 不能自己改答案</h3><p>门会误报，但纠错也必须留下证据与责任边界。</p></div>
+        </div>
+        <ol class="ruling-list">
+          <li><b>越界修改被撤回</b><p>自修轮 2 为过门缩短了已批文案，审计判违规并还原 3 条；文本变更会自动触发重克隆。</p><small>自修白名单仅限：重跑脚本、清缓存、改几何数值。</small></li>
+          <li><b>用实测证伪误报</b><p>4 个“疑截断”窗口经克隆源尾部 RMS 实测为 0，确认为背景音乐造成的假阳性。</p><small>确认误报后由审计方修正检测逻辑，执行体不能自行放行。</small></li>
+          <li><b>验证规则有维护者</b><p>同音词误杀经拼音重合 100% 证伪，审计方将规则升级为基线 v2；另一处归一化改动经审查后仅作例外追认。</p><small>验证规则对执行 Agent 禁止修改，由审计方维护版本与阈值。</small></li>
+        </ol>
+      </section>
+
+      <section class="runtime-section" data-testid="task-contract" aria-labelledby="task-contract-title">
+        <div class="runtime-section-head">
+          <span class="runtime-index">04</span>
+          <div><h3 id="task-contract-title">任务卡 · 把开放任务压成可判定动作</h3><p>一卡一脚本，进度写进文件，不依赖模型记忆。</p></div>
+        </div>
+        <div class="contract-grid">
+          <pre class="runtime-code" data-testid="runtime-code"><code>任务卡结构 · 脱敏结构重绘
+
+卡① · 首渲
+命令：运行既有渲染脚本
+成功判据：exit 0，且产出新版本
+报告格式：卡号 + 退出码 + 产物状态 → 下一卡
+
+卡② · 切点门
+命令：运行既有切点验证脚本
+成功判据：exit 0 且输出含 PASS
+
+任一卡 FAIL
+报告格式：卡号 + 退出码 + 日志末段
+动作：停车，等待审计；不得自行绕道</code></pre>
+          <div class="contract-copy">
+            <p><strong>每张卡固定三要素：</strong>命令、成功判据、报告格式。模型不负责重新解释“什么算完成”，只负责执行并回填机器可比对的结果。</p>
+            <ul class="contract-points">
+              <li><b>任务尺寸有限</b><br>单卡不超过弱模型的输出预算。</li>
+              <li><b>失败出口明确</b><br>退出码非 0 就停车，不能带病领取下一卡。</li>
+              <li><b>进度外置</b><br>完成标记落在任务文件，不靠长对话记忆。</li>
+            </ul>
+            <p>这组原件能证明免费档模型在 P3–P5 段按卡执行，并在音频门失败时正确停车；不据此推断完整交付链路。最终质量仍需人工耳审与审计裁决。</p>
+          </div>
+        </div>
+      </section>
+    </section>
   </main>
 
   <script>

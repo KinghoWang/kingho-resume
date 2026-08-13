@@ -79,6 +79,85 @@ test('starts as a sanitized, offline-only static demonstration', async ({ page }
   expect(await page.evaluate(key => sessionStorage.getItem(key), STORAGE_KEY)).toBeNull();
 });
 
+test('places reviewed runtime evidence after the interactive workspace', async ({ page }) => {
+  await openDemo(page);
+
+  const evidence = page.getByTestId('runtime-evidence');
+  await expect(evidence).toBeVisible();
+  await expect(evidence.getByRole('heading', { name: /真实执行痕迹/ })).toBeVisible();
+  await expect(evidence).toContainText('结构化脱敏重绘');
+  await expect(evidence).toContainText('01 区运动门 PASS 来自作业 B');
+  await expect(evidence).toContainText('音频门 FAIL、战报与裁决来自作业 A');
+  await expect(evidence).toContainText('不代表同一次运行');
+  await expect(evidence.getByTestId('gate-proof')).toContainText('门禁输出');
+  await expect(evidence.getByTestId('run-ledger')).toContainText('段落战报');
+  await expect(evidence.getByTestId('audit-rulings')).toContainText('审计裁决');
+  await expect(evidence.getByTestId('task-contract')).toContainText('任务卡');
+
+  const order = await page.evaluate(() => {
+    const workspace = document.querySelector('.workspace');
+    const evidenceSection = document.querySelector('[data-testid="runtime-evidence"]');
+    return workspace.compareDocumentPosition(evidenceSection) & Node.DOCUMENT_POSITION_FOLLOWING;
+  });
+  expect(order).toBeTruthy();
+});
+
+test('shows a real stop condition without presenting separate jobs as one run', async ({ page }) => {
+  await openDemo(page);
+
+  const gateProof = page.getByTestId('gate-proof');
+  await expect(gateProof).toContainText('job-b');
+  await expect(gateProof).toContainText('运动门 PASS');
+  await expect(gateProof).toContainText('job-a');
+  await expect(gateProof).toContainText('音频门 FAIL');
+  await expect(gateProof).toContainText('自修 3 轮');
+  await expect(gateProof).toContainText('停车');
+  await expect(gateProof).not.toContainText('同一问题自修 3 轮');
+
+  const ledger = page.getByTestId('run-ledger');
+  await expect(ledger).toContainText('卡⑦');
+  await expect(ledger).toContainText('exit 1');
+  await expect(ledger).toContainText('卡⑧');
+  await expect(ledger).toContainText('未执行');
+  await expect(ledger).toContainText('版本指纹只证明文件发生变化');
+  await expect(ledger).not.toContainText(/[a-f0-9]{32}/i);
+  await expect(ledger).not.toContainText(/\b[a-f0-9]{6,8}…/i);
+
+  const rulings = page.getByTestId('audit-rulings');
+  await expect(rulings).toContainText('执行 Agent 禁止修改');
+  await expect(rulings).toContainText('审计方维护');
+  await expect(rulings).not.toContainText('门是只读的');
+
+  const contract = page.getByTestId('task-contract');
+  await expect(contract).toContainText('命令');
+  await expect(contract).toContainText('成功判据');
+  await expect(contract).toContainText('报告格式');
+  await expect(contract).toContainText('脱敏结构重绘');
+  await expect(contract).toContainText('P3–P5 段');
+  await expect(contract).toContainText('不据此推断完整交付链路');
+  await expect(contract).not.toContainText('python3');
+  await expect(contract).not.toContainText('免费模型跑通全链路');
+});
+
+test('keeps reviewed evidence public-safe and offline', async ({ page }) => {
+  const secondaryRequests = [];
+  page.on('request', request => {
+    if (request.url() !== PAGE_URL) secondaryRequests.push(request.url());
+  });
+  await openDemo(page);
+  await page.waitForTimeout(100);
+
+  const evidence = page.getByTestId('runtime-evidence');
+  const text = await evidence.textContent();
+  expect(text).not.toMatch(/财商|钢琴|书法|唱歌|眼部|血糖|养生|电饭煲/i);
+  expect(text).not.toMatch(/caishang|piano|yanbu|\/Users\/|Downloads/i);
+  expect(text).not.toMatch(/https?:\/\/|完整交付全链路|全部验收/i);
+  expect(text).not.toMatch(/\.md 摘录|\.json 摘录/i);
+  await expect(evidence.locator('img, video, audio, iframe')).toHaveCount(0);
+  await expect(evidence.locator('script[src], link[rel="stylesheet"], a[href^="http"]')).toHaveCount(0);
+  expect(secondaryRequests).toEqual([]);
+});
+
 test('validates the synthetic setup and generates three segments with 25 task cards', async ({ page }) => {
   await openDemo(page);
 
@@ -339,5 +418,13 @@ for (const viewport of [
     const rootBox = await page.getByTestId('demo-root').boundingBox();
     expect(rootBox.x).toBeGreaterThanOrEqual(0);
     expect(rootBox.x + rootBox.width).toBeLessThanOrEqual(viewport.width + 1);
+
+    const codeOverflow = await page.getByTestId('runtime-code').first().evaluate(element => ({
+      overflowX: getComputedStyle(element).overflowX,
+      pageScrollWidth: document.documentElement.scrollWidth,
+      pageClientWidth: document.documentElement.clientWidth,
+    }));
+    expect(codeOverflow.overflowX).toBe('auto');
+    expect(codeOverflow.pageScrollWidth).toBeLessThanOrEqual(codeOverflow.pageClientWidth);
   });
 }
