@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>王钧灏 - AI 商业化产品经理</title>
-  <meta name="description" content="王钧灏 · AI 商业化产品经理。5 年商业化操盘，核心三条：懂变现、懂数据、能用 AI 造工具（自建数分机器人、Agent 生产管线、取数对账系统、归因质量 Eval）。">
+  <meta name="description" content="王钧灏 · AI 商业化产品经理。5 年商业化操盘，自建数分机器人与 Eval 质量闭环、Agent 生产管线、取数对账系统。">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="favicon.png" type="image/png" sizes="256x256">
   <meta property="og:type" content="website">
@@ -27,16 +27,21 @@
     .stat:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
     .stat .s-num{font-family:var(--font-display);font-size:1.32rem;font-weight:700;color:var(--accent);line-height:1.1;white-space:nowrap}
     .stat .s-lab{font-size:.71rem;color:var(--muted);margin-top:7px;line-height:1.45}
-    .ai-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .ai-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr);gap:16px}
     .ai-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;transition:transform .25s ease,box-shadow .25s ease}
     .ai-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
     .ai-card.feat{grid-column:1/-1;border-left:3px solid var(--accent);background:linear-gradient(180deg,#fff,#fdf8f7)}
     .ai-card h3{font-family:var(--font-display);font-size:1.08rem;font-weight:600;margin-bottom:3px}
     .ai-card.feat h3{color:var(--accent)}
     .ai-card .role{font-size:.75rem;color:var(--muted);margin-bottom:10px}
+    .project-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+    .project-link{display:inline-flex;align-items:center;min-height:44px;padding:8px 13px;border:1px solid var(--accent);border-radius:6px;color:var(--accent);font-size:.82rem;font-weight:700;text-decoration:none}
+    .project-link.primary{background:var(--accent);color:#fff}
+    .project-link:hover{opacity:.82}
     .sec-note{max-width:960px;margin:-14px auto 18px;padding:0 48px;font-size:.82rem;color:var(--muted)}
     .nextstep{margin-top:10px;padding:9px 13px;background:#fdf3e7;border-left:3px solid #b9770e;border-radius:4px;font-size:.83rem;color:#8a5f16;line-height:1.6}
-    @media(max-width:640px){.lead{padding:4px 20px 20px}.statwall{grid-template-columns:repeat(2,1fr);padding:0 20px 32px}.ai-grid{grid-template-columns:1fr}.sec-note{padding:0 20px}}
+    @media(max-width:820px){.ai-grid{grid-template-columns:1fr}}
+    @media(max-width:640px){.lead{padding:4px 20px 20px}.statwall{grid-template-columns:repeat(2,1fr);padding:0 20px 32px}.sec-note{padding:0 20px}}
   </style>
 </head>
 <body>
@@ -51,7 +56,7 @@
     </div>
     <span class="intent">求职意向：AI 商业化产品经理 / AI 增长产品经理 · 北京</span>
     <div class="hero-links">
-      <a class="hero-cta" href="cases.html">作品集：4 个在线 Demo + 脱敏案例 →</a>
+      <a class="hero-cta" href="cases.html">作品集：5 个在线 Demo + 脱敏案例 →</a>
       <a class="hero-cta" href="kingho-resume-ai-pm.pdf" download="王钧灏-AI商业化产品经理-简历.pdf">下载 PDF 简历 ↓</a>
       <a class="hero-cta" href="resume-adops.html">商业化广告运营版简历 →</a>
       <a class="hero-cta" href="en.html">English →</a>
@@ -60,14 +65,14 @@
 </header>
 
 <div class="lead">
-  <p>5 年商业化广告操盘者，专注 AI 商业化产品方向。核心能力三条：<strong>懂变现</strong>（亿级预算、行业 0-1 突破）、<strong>懂数据</strong>（分析占原工作 70-80%、自建归因方法论）、<strong>能用 AI 造工具</strong>（以 AI 为协作者，把方法论产品化为数分机器人、Agent 生产管线与取数对账系统，并自建 Eval 量化质量）。理工背景、能与工程对话。</p>
+  <p>5 年商业化广告操盘者，专注 AI 商业化产品方向。核心能力三条：<strong>懂变现</strong>（亿级预算、行业 0-1 突破）、<strong>懂数据</strong>（分析占原工作 70-80%、自建归因方法论）、<strong>能用 AI 造工具</strong>（以 AI 为协作者，做出数分机器人与 Eval 质量闭环、Agent 生产管线、取数对账系统）。理工背景、能与工程对话。</p>
 </div>
 
 <div class="statwall">
   <div class="stat"><div class="s-num">5 年</div><div class="s-lab">商业化操盘</div></div>
   <div class="stat"><div class="s-num">3 亿+</div><div class="s-lab">年消耗规模</div></div>
   <div class="stat"><div class="s-num">0→90%</div><div class="s-lab">大健康行业 0-1</div></div>
-  <div class="stat"><div class="s-num">4 个</div><div class="s-lab">自建 AI / 数据工具</div></div>
+  <div class="stat"><div class="s-num">3 个</div><div class="s-lab">自建 AI / 数据核心项目</div></div>
   <div class="stat"><div class="s-num">3 模型</div><div class="s-lab">Eval 覆盖（22 例）</div></div>
   <div class="stat"><div class="s-num">60min→分钟级</div><div class="s-lab">日报提效（团队 3 人）</div></div>
 </div>
@@ -80,40 +85,34 @@
 <section class="section" data-reveal style="padding-top:0">
   <div class="ai-grid">
     <div class="ai-card feat">
-      <h3>数分机器人 · 广告数据日报分析（规则引擎 + LLM 归因）</h3>
-      <div class="role">自建 · 设计 + 实现 · 团队 3 人日常使用 · 迭代 3 个月 · human-in-the-loop</div>
+      <h3>01 数分机器人 × Eval · 广告归因分析闭环</h3>
+      <div class="role">生产产品 + 内嵌质量门禁 · 团队 3 人日常使用 · 迭代 3 个月 · human-in-the-loop</div>
       <ul class="tl-list">
         <li><strong>问题</strong>：每天人工撰写广告异常归因日报约 <strong>30-60 分钟</strong>，重度依赖个人经验，难规模化、难传承</li>
         <li><strong>方案</strong>：脚本自数仓抓取 8 天大盘 / 行业 / 客户数据 → 按规则做<strong>阈值异常检出</strong>与<strong>结构 / 效率效应分解</strong> → 拼装含「现象 → 根因 → 建议」三段式与归因红线的 prompt → 交 LLM 做深度归因</li>
-        <li><strong>防幻觉设计</strong>：<strong>所有数值均由数仓计算后输入、模型不做算术</strong>，只负责归因叙述，从架构上规避数值幻觉</li>
-        <li><strong>成果</strong>：<strong>1 周</strong>产出；<strong>团队 3 人</strong>日常使用；日报从人工 30-60 分钟压缩为<strong>分钟级复核</strong>；归因质量已由配套 Eval 量化（见下）</li>
+        <li><strong>质量闭环</strong>：<strong>所有数值由代码计算、模型只做归因叙述</strong>；22 例黄金集以代码指标 + LLM-as-judge 量化数值忠实、异常召回 / 精确、归因质量与机制编造率，作为 prompt 回归门禁</li>
+        <li><strong>成果</strong>：<strong>1 周</strong>产出，团队 3 人日常使用，日报从 30-60 分钟压缩为<strong>分钟级复核</strong>；3 模型 × 2 配置跑分结果可比较、可对账</li>
       </ul>
+      <div class="project-links"><a class="project-link primary" href="demo-shufen.html">体验数分机器人</a><a class="project-link" href="demo-eval.html">查看 Eval 证据</a></div>
     </div>
-    <div class="ai-card" style="grid-column:1/-1;border-left:3px solid var(--accent)">
-      <h3>「悟空」自建 Agent × 视频二创生产管线</h3>
+    <div class="ai-card" style="border-left:3px solid var(--accent)">
+      <h3>02「悟空」自建 Agent × 视频二创生产管线</h3>
       <div class="role">Agent 无关执行契约 · 二创管线 37 个 Python 脚本 / 约 3.7k 行（含验证与测试） · 4 个 job 产出可播放主成片</div>
       <ul class="tl-list">
-        <li><strong>做成可交付管线</strong>：把「用 AI 剪素材」工程化 —— <strong>8 道核心自动质检门（v2 基线）</strong>，覆盖 OCR 文字残留 / 边界抽帧 / 运动占比 / 时长 / 音频；配套<strong>自修循环</strong>与人工审校 JSON 契约</li>
-        <li><strong>给不可靠执行体设围栏</strong>：<strong>只有验证脚本输出算数、Agent 自述「已完成」无效</strong>；执行契约禁止 Agent 修改门脚本，自修仅限重跑 / 清缓存 / 改几何数值 3 项；<strong>能力三分法</strong>（可量化跑脚本 / 有代理证据挂看板 / 仅 4 类情况停下问人）；十条铁律每条对应一次真实翻车</li>
-        <li><strong>成本工程</strong>：长指令拆成「一卡一脚本」任务卡、<strong>进度落文件而非模型记忆</strong>，让免费档模型跑通从解构到成片质检的主生产链路（断连后按最后一张 ✅ 的卡续跑）</li>
+        <li><strong>可靠交付</strong>：8 道核心自动质检门 + 自修循环 + 人工审校 JSON 契约；<strong>只有验证脚本输出算数、Agent 自述「已完成」无效</strong></li>
+        <li><strong>执行围栏</strong>：契约禁止 Agent 修改门脚本，自修仅限重跑 / 清缓存 / 改几何数值；不可机器验证的判断交给人工审校</li>
+        <li><strong>成本工程</strong>：「一卡一脚本」任务卡 + 文件化进度支持断连续跑，让免费档模型跑通解构至成片质检主链路</li>
       </ul>
+      <div class="project-links"><a class="project-link primary" href="demo-wukong.html">打开交互 Demo</a></div>
     </div>
     <div class="ai-card">
-      <h3>adquery-lite · 自建取数 &amp; 财务对账工具</h3>
-      <div class="role">净室可迁移版 · 替代通用 BI</div>
+      <h3>03 adquery-lite · 广告取数 &amp; 财务对账</h3>
+      <div class="role">面向广告取数与对账的轻量工作台 · 净室可迁移版</div>
       <ul class="tl-list">
         <li><strong>取数</strong>：<strong>可插拔数据源</strong>（零依赖、随处可跑，换库只改一个适配器）、catalog 驱动指标口径；合计行总量加权、SQL 白名单防注入、截断如实标注；多维下钻 / 图表 / 导出 / p50·p95 监控</li>
         <li><strong>对账</strong>：切出财务对账子模块，梳理对账字段与业务口径、打通数仓 / 看板，实现数据<strong>可监控、可上报、可排查</strong>，把一次性核账变常态化机制</li>
       </ul>
-    </div>
-    <div class="ai-card" style="border-left:3px solid var(--accent)">
-      <h3>广告归因质量 Eval 评测体系</h3>
-      <div class="role">自建 · prompt 回归门禁 · 跨模型可比</div>
-      <ul class="tl-list">
-        <li><strong>评测集</strong>：22 例带标注答案的历史日报为<strong>黄金集</strong>，代码型指标（数值忠实 / 异常召回·精确）+ LLM-as-judge（归因质量 / 机制编造率）量化，作 prompt 改动的回归门禁</li>
-        <li><strong>三模型 6 轮排行榜</strong>：给 DeepSeek / GLM / Kimi 各跑带 / 不带方法论两轮、裁判恒为 DeepSeek 跨家打分 —— <strong>Kimi K3 带方法论 judge 4.50、机制编造率 4.5% 双料第一</strong>，成本 ¥0.45/次可对账</li>
-      </ul>
-      <p style="margin:10px 0 0;font-size:.86rem"><a href="demo-eval.html" style="color:var(--accent);font-weight:700">▶ 打开 Eval 排行榜 Demo</a></p>
+      <div class="project-links"><a class="project-link" href="cases.html#case2">查看对账案例</a></div>
     </div>
   </div>
 </section>

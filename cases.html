@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>王钧灏 - 作品集：AI/数据产品 + 数据分析案例</title>
-  <meta name="description" content="王钧灏作品集：自建 AI/数据产品在线 Demo（数分机器人、竞品广告情报引擎、创意分段诊断、归因质量 Eval）+ 脱敏数据看板与跨行业归因方法论，展示 AI 产品化与数据分析能力。">
+  <meta name="description" content="王钧灏作品集：数分机器人与 Eval 质量闭环、悟空 Agent 生产管线、adquery-lite 三组核心项目，5 个 AI/数据在线 Demo 与脱敏策略产品案例。">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="favicon.png" type="image/png" sizes="256x256">
   <meta property="og:type" content="website">
   <meta property="og:title" content="王钧灏 · 作品集：AI/数据产品 + 数据分析案例">
-  <meta property="og:description" content="4 个自建 AI/数据产品在线 Demo（真实引擎 + 合成脱敏数据）+ 脱敏数据看板与归因方法论。">
+  <meta property="og:description" content="3 组核心项目、5 个 AI/数据在线 Demo，以及脱敏策略产品与数据分析案例。">
   <meta property="og:image" content="https://kinghowang.github.io/kingho-resume/og-image.png">
   <meta property="og:url" content="https://kinghowang.github.io/kingho-resume/cases.html">
   <meta name="twitter:card" content="summary_large_image">
@@ -150,8 +150,14 @@
     .demo-card .dc-desc{font-size:.85rem;line-height:1.62;color:#333;flex:1}
     .demo-card .dc-desc strong{color:var(--accent);font-weight:600}
     .demo-card .dc-meta{font-size:.72rem;color:var(--muted);margin:11px 0 13px;padding-left:11px;border-left:2px solid var(--border)}
-    .demo-card .dc-open{display:inline-flex;align-items:center;gap:7px;align-self:flex-start;font-size:.82rem;font-weight:700;color:#fff;background:var(--accent);border-radius:7px;padding:8px 16px;text-decoration:none;transition:opacity .18s,transform .18s}
+    .demo-card .dc-open{display:inline-flex;align-items:center;gap:7px;align-self:flex-start;min-height:44px;font-size:.82rem;font-weight:700;color:#fff;background:var(--accent);border-radius:7px;padding:8px 16px;text-decoration:none;transition:opacity .18s,transform .18s}
     .demo-card .dc-open:hover{opacity:.9;transform:translateX(2px)}
+    .demo-card.core-feature{grid-column:1/-1;background:linear-gradient(180deg,#fff,#fdf8f7);border-left:3px solid var(--accent)}
+    .demo-card.core-feature .dc-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:auto}
+    .demo-card.core-feature .dc-open.secondary{color:var(--accent);background:#fff;border:1px solid var(--accent)}
+    .demo-card.core-support{border-top-color:#777}
+    .demo-card.extension{box-shadow:none;border-top-color:#aaa;background:#fcfbf9}
+    .demo-card.extension .dc-open{background:#555}
     .section-divider{max-width:960px;margin:34px auto 0;padding:0 48px}
     .section-divider h2{font-family:var(--font-display);font-size:1.15rem;font-weight:700;color:#333;border-bottom:2px solid var(--border);padding-bottom:8px;display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
     .section-divider .sd-tag{font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.02em}
@@ -178,6 +184,7 @@
       .page-head,.case{padding-left:20px;padding-right:20px}
       .story,.kpi-row,.feat-grid,.twocol{grid-template-columns:1fr}
       .barrow{grid-template-columns:70px 1fr}
+      .panel-body{overflow-x:auto;-webkit-overflow-scrolling:touch}
       .demo-gallery{grid-template-columns:1fr;padding:0 20px}
       .section-divider,.demo-lead{padding:0 20px}
       .demo-card h3{padding-right:80px}
@@ -189,53 +196,66 @@
 <header class="page-head" data-reveal>
   <a class="back-link" href="index.html">← 返回简历主页</a>
   <h1>作品集 · AI/数据产品 + 数据分析案例</h1>
-  <p class="sub">两部分：<strong>①</strong> 自建 AI / 数据产品的<strong>在线 Demo</strong>（跑真实工具引擎 + 合成脱敏数据）；<strong>②</strong> 日常沉淀的数据看板与归因方法论<strong>脱敏复刻</strong>。</p>
+  <p class="sub">三层结构：<strong>①</strong> 三组核心项目；<strong>②</strong> 扩展在线 Demo；<strong>③</strong> 策略产品与数据分析案例。项目讲完整闭环，Demo 提供可操作证据。</p>
 </header>
 
 <div class="disclaimer" data-reveal>
-  <strong>脱敏说明：</strong>本页案例结构与分析方法为真实工作沉淀，所有客户 / 代理商名称、内部数据表名、看板地址与具体数值均已做<strong>脱敏与扰动</strong>处理（客户以 A–L / 甲乙丙代称），Demo 跑的是真实工具的引擎与看板本体、仅替换数据，不代表任何企业真实经营数据。
+  <strong>脱敏说明：</strong>本页案例结构与分析方法为真实工作沉淀，所有客户 / 代理商名称、内部数据表名、看板地址与具体数值均已做<strong>脱敏与扰动</strong>处理（客户以 A–L / 甲乙丙代称）。其中四个 Demo 运行真实工具引擎 / 看板的脱敏版本；悟空 Demo 复现真实任务契约与状态机，但不连接生产环境。
 </div>
 
-<!-- ============ ① 在线 DEMO 画廊 ============ -->
-<div class="section-divider" data-reveal><h2>① 自建 AI / 数据产品 <span class="sd-tag">在线 Demo · 真实引擎 + 合成脱敏数据</span></h2></div>
-<p class="demo-lead" data-reveal>以下四个可直接打开体验：跑的是真实工具的<strong style="color:var(--accent)">引擎 / 看板本体</strong>，仅把客户名、表名、数值换成合成脱敏数据 —— 而非简化复刻。</p>
-<div class="demo-gallery">
-  <div class="demo-card" data-reveal>
-    <span class="dc-badge">真实规则引擎</span>
-    <h3>数分机器人</h3>
-    <div class="dc-kind">广告日报 ｜ 规则引擎 + LLM 归因 · human-in-the-loop</div>
-    <p class="dc-desc">从数仓拉 8 天大盘 / 行业 / 客户数据，规则引擎自动做<strong>阈值异常检出</strong>、<strong>结构 / 效率效应分解</strong>与转化目标迁移检测，产出「现象 → 根因 → 建议」三段式日报。<strong>数值全由代码算、模型只做叙述</strong>，从架构上防幻觉。</p>
-    <div class="dc-meta">团队 3 人日常使用 · 日报 30min → 分钟级复核</div>
-    <a class="dc-open" href="demo-shufen.html">▶ 打开在线 Demo</a>
+<!-- ============ ① 核心项目 ============ -->
+<div class="section-divider" data-reveal><h2>① 自建 AI / 数据产品 · 3 组核心项目 <span class="sd-tag">从产品落地到质量闭环</span></h2></div>
+<p class="demo-lead" data-reveal>以下五个可直接打开体验，共 <strong style="color:var(--accent)">5 个 AI / 数据在线 Demo</strong>：数分、Eval、悟空构成核心项目证据；竞品情报与创意诊断作为扩展能力展示。</p>
+<div class="demo-gallery core-gallery">
+  <div class="demo-card core-feature" data-testid="core-project" data-reveal>
+    <span class="dc-badge">生产产品 + 质量门禁</span>
+    <h3>数分机器人 × Eval · 广告归因分析闭环</h3>
+    <div class="dc-kind">规则引擎 + LLM 归因 ｜ 22 例黄金集 · Prompt 回归门禁</div>
+    <p class="dc-desc">规则引擎自动完成<strong>阈值异常检出</strong>与<strong>结构 / 效率效应分解</strong>，LLM 只把代码证据组织成「现象 → 根因 → 建议」。配套 Eval 以代码指标 + LLM-as-judge 衡量数值忠实、归因质量与机制编造率，形成<strong>生产 → 量化 → 回归</strong>闭环。</p>
+    <div class="dc-meta">团队 3 人日常使用 · 日报 30-60min → 分钟级复核 · 3 模型 × 2 配置跑分</div>
+    <div class="dc-actions"><a class="dc-open" href="demo-shufen.html">▶ 体验数分机器人</a><a class="dc-open secondary" href="demo-eval.html">查看 Eval 证据</a></div>
   </div>
-  <div class="demo-card" data-reveal>
+  <div class="demo-card" data-testid="core-project" data-reveal>
+    <span class="dc-badge">可交互脱敏演示</span>
+    <h3>悟空 · Agent 视频生产管线</h3>
+    <div class="dc-kind">任务卡 ｜ 验证门 · 白名单自修 · 人工契约</div>
+    <p class="dc-desc">把不可靠执行体约束成可交付管线：<strong>只有验证脚本输出算数</strong>，失败必须停车；自修仅限三项白名单，开放式判断交给人工。文件化进度支持断连续跑，留言经审计翻译后才进入执行。</p>
+    <div class="dc-meta">37 个 Python 脚本 / 约 3.7k 行（含验证与测试）· 4 个 job 产出主成片</div>
+    <a class="dc-open" href="demo-wukong.html">▶ 打开交互 Demo</a>
+  </div>
+  <div class="demo-card core-support" data-testid="core-project" data-reveal>
+    <span class="dc-badge">数据可信底座</span>
+    <h3>adquery-lite · 广告取数与财务对账</h3>
+    <div class="dc-kind">指标 catalog ｜ 多维下钻 · 加权合计 · 对账闭环</div>
+    <p class="dc-desc">以 catalog 统一指标口径，可插拔数据源承接多维下钻、图表与导出；合计行按总量加权、截断如实标注。对账模块把一次性核账变成<strong>可监控、可上报、可排查</strong>的常态机制。</p>
+    <div class="dc-meta">面向广告取数与对账的轻量工作台 · 净室可迁移版</div>
+    <a class="dc-open" href="#case2">查看对账案例 ↓</a>
+  </div>
+</div>
+
+<!-- ============ ② 扩展在线 DEMO ============ -->
+<div class="section-divider" data-reveal style="margin-top:34px"><h2>② 扩展在线 Demo <span class="sd-tag">产品广度与交互能力</span></h2></div>
+<div class="demo-gallery">
+  <div class="demo-card extension" data-testid="extension-demo" data-reveal>
     <span class="dc-badge">真实库 schema</span>
     <h3>竞品广告情报引擎</h3>
     <div class="dc-kind">竞品侦察 ｜ 多源采集 + 结构化检索 · 分源分桶</div>
-    <p class="dc-desc">汇聚多平台竞品广告（评级制 / 数值制曝光），统一 canonical schema 与周度快照；按<strong>行业 / 曝光量 / 标签</strong>检索，点开看<strong>秒级时序、多模态标签、受众下钻</strong>。严守「禁止跨曝光类型混排」的口径纪律。</p>
-    <div class="dc-meta">竞品情报侦察 · 非二创素材生产</div>
+    <p class="dc-desc">统一多平台竞品广告 schema 与周度快照；按行业 / 曝光量 / 标签检索，查看秒级时序、多模态标签与受众下钻，严守不同曝光口径不混排。</p>
+    <div class="dc-meta">扩展探索 · 不计入三组核心项目</div>
     <a class="dc-open" href="demo-advideo.html">▶ 打开在线 Demo</a>
   </div>
-  <div class="demo-card" data-reveal>
+  <div class="demo-card extension" data-testid="extension-demo" data-reveal>
     <span class="dc-badge">真实看板本体</span>
-    <h3>创意分段诊断中台</h3>
+    <h3>创意分段诊断 Demo</h3>
     <div class="dc-kind">素材诊断 ｜ 分秒级 CTR 归因 + A/B 对比</div>
-    <p class="dc-desc">把一条素材<strong>逐秒拆解</strong>，定位「哪一秒观众流失、哪一段话术促成转化」；支持双素材<strong>逐段 A/B 对比</strong>，叠加话术 / 画面 / 受众多模态标签做归因。</p>
-    <div class="dc-meta">78 素材 · Chart.js · 数据量较大（约 7MB），建议 WiFi / 宽带环境打开</div>
+    <p class="dc-desc">逐秒拆解素材，定位流失点与转化话术；支持双素材逐段 A/B 对比，并叠加话术、画面与受众标签做归因。</p>
+    <div class="dc-meta">78 素材 · 数据量较大（约 7MB），建议 WiFi / 宽带环境打开</div>
     <a class="dc-open" href="demo-creative.html">▶ 打开在线 Demo</a>
-  </div>
-  <div class="demo-card" data-reveal>
-    <span class="dc-badge">真实流程跑分</span>
-    <h3>归因质量 Eval 评测</h3>
-    <div class="dc-kind">评测体系 ｜ 3 模型 × 2 配置 · 黄金集 + LLM-as-judge</div>
-    <p class="dc-desc">给数分机器人建的自动化评测：22 例黄金集，代码型指标 + LLM-as-judge 量化<strong>归因质量与机制编造率</strong>，作 prompt 回归门禁。这次给<strong>三家国产旗舰（DeepSeek / GLM / Kimi K3）各跑两轮</strong>（带 / 不带方法论），<strong>裁判恒为 DeepSeek 跨家打分</strong> —— 一张能对比、能对账的模型排行榜。</p>
-    <div class="dc-meta">Kimi K3 带方法论 judge 4.50 领先 · 编造率 4.5% · ¥0.45/次</div>
-    <a class="dc-open" href="demo-eval.html">▶ 打开在线 Demo</a>
   </div>
 </div>
 
-<!-- ============ ② 数据分析 & 工程化案例 ============ -->
-<div class="section-divider" data-reveal style="margin-top:44px"><h2>② 策略产品 &amp; 数据分析案例 <span class="sd-tag">脱敏复刻 · 链路改造 + 分析框架与方法论</span></h2></div>
+<!-- ============ ③ 数据分析 & 工程化案例 ============ -->
+<div class="section-divider" data-reveal style="margin-top:44px"><h2>③ 策略产品 &amp; 数据分析案例 <span class="sd-tag">脱敏复刻 · 链路改造 + 分析框架与方法论</span></h2></div>
 
 <!-- ============ CASE 01 · 企微获客链路改造 ============ -->
 <section class="case" id="case-lianlu" data-reveal>

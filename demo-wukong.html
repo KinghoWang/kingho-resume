@@ -1,0 +1,960 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="悟空 Agent 生产管线的静态脱敏交互演示">
+  <title>悟空 Agent 生产管线交互 Demo</title>
+  <style>
+    :root {
+      --ink: #22211f;
+      --muted: #6d6a64;
+      --line: #d9d5cc;
+      --paper: #f7f5f0;
+      --panel: #ffffff;
+      --soft: #eeece6;
+      --accent: #9f4f35;
+      --accent-soft: #f3e3dc;
+      --green: #376b4c;
+      --green-soft: #e4efe7;
+      --red: #a23f3b;
+      --red-soft: #f5e5e3;
+      --amber: #8a641f;
+      --amber-soft: #f5edd9;
+      --shadow: 0 14px 38px rgba(38, 35, 30, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; min-width: 0; background: var(--paper); color: var(--ink); }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 15px;
+      line-height: 1.55;
+      letter-spacing: 0;
+    }
+
+    button, input, textarea { font: inherit; letter-spacing: 0; }
+
+    button, .back-link {
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 9px 14px;
+      background: var(--panel);
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    button:hover:not(:disabled), button:focus-visible, .back-link:focus-visible {
+      border-color: var(--accent);
+      outline: 3px solid rgba(159, 79, 53, 0.15);
+      outline-offset: 1px;
+    }
+
+    button:disabled { cursor: not-allowed; opacity: 0.48; }
+
+    .primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
+    .secondary { background: var(--soft); }
+
+    [data-testid="demo-root"] { width: 100%; min-height: 100vh; overflow-x: clip; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-height: 68px;
+      padding: 10px clamp(14px, 4vw, 48px);
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.94);
+    }
+
+    .brand { min-width: 0; margin-right: auto; }
+    .brand strong { display: block; font-size: 17px; }
+    .brand span, .mode { color: var(--muted); font-size: 12px; }
+
+    .top-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .intro {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+      gap: 24px;
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 34px clamp(14px, 4vw, 48px) 20px;
+    }
+
+    h1 { margin: 0; font-size: clamp(26px, 4vw, 42px); line-height: 1.16; }
+    .intro p { max-width: 720px; margin: 10px 0 0; color: var(--muted); }
+
+    .proof-line {
+      max-width: 360px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--accent);
+      background: var(--accent-soft);
+      font-size: 13px;
+      color: #713823;
+    }
+
+    .privacy {
+      max-width: 1320px;
+      margin: 0 auto 18px;
+      padding: 0 clamp(14px, 4vw, 48px);
+    }
+
+    .privacy > div {
+      padding: 10px 13px;
+      border: 1px solid #cbd9cf;
+      border-radius: 6px;
+      background: #edf4ef;
+      color: #335640;
+      font-size: 13px;
+    }
+
+    .stages {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 clamp(14px, 4vw, 48px) 18px;
+    }
+
+    .stage-list {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1px;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--line);
+      list-style: none;
+    }
+
+    .stage {
+      min-width: 0;
+      padding: 11px 13px;
+      background: var(--panel);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .stage b { display: block; color: inherit; }
+    .stage.active { background: var(--accent-soft); color: var(--accent); }
+    .stage.done { background: var(--green-soft); color: var(--green); }
+
+    .status-wrap {
+      max-width: 1320px;
+      margin: 0 auto 14px;
+      padding: 0 clamp(14px, 4vw, 48px);
+    }
+
+    .status-live {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      padding: 9px 13px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--panel);
+      color: var(--muted);
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1.65fr) minmax(310px, 0.75fr);
+      gap: 18px;
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 clamp(14px, 4vw, 48px) 48px;
+      align-items: start;
+    }
+
+    .main-panel, .evidence-panel {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .main-panel { min-height: 620px; padding: clamp(18px, 3vw, 30px); }
+    .evidence-panel { min-height: 620px; padding: 18px; position: sticky; top: 12px; }
+
+    .panel-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 8px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .panel-kicker::before { content: ""; width: 8px; height: 8px; background: currentColor; border-radius: 50%; }
+
+    h2 { margin: 0 0 6px; font-size: clamp(21px, 3vw, 28px); line-height: 1.25; }
+    h3 { margin: 0; font-size: 15px; }
+    .subtle { margin: 0 0 18px; color: var(--muted); }
+
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .field { min-width: 0; }
+    .field.full { grid-column: 1 / -1; }
+    .field label { display: block; margin-bottom: 5px; font-size: 13px; font-weight: 700; }
+
+    input[type="text"], textarea {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 9px 11px;
+      background: #fcfbf8;
+      color: var(--ink);
+    }
+
+    textarea { min-height: 82px; resize: vertical; }
+    input[aria-invalid="true"] { border-color: var(--red); background: var(--red-soft); }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    .note { margin-top: 16px; padding: 11px 13px; border-radius: 6px; background: var(--soft); color: var(--muted); font-size: 13px; }
+
+    .run-summary, .claim, .gate-box, .review-row, .rework-item, .comment-card, .audit-card {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fcfbf8;
+    }
+
+    .run-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 18px 0; }
+    .run-summary > div { padding: 13px; border-right: 1px solid var(--line); }
+    .run-summary > div:last-child { border-right: 0; }
+    .run-summary strong { display: block; font-size: 18px; }
+    .run-summary span { color: var(--muted); font-size: 12px; }
+
+    .claim { margin: 16px 0; padding: 13px; border-left: 4px solid var(--amber); background: var(--amber-soft); }
+    .claim strong { color: var(--amber); }
+
+    .gate-box { margin: 16px 0; padding: 16px; border-color: #dfaaa6; background: var(--red-soft); }
+    .gate-box.pass { border-color: #a9c5b2; background: var(--green-soft); }
+    .gate-head { display: flex; align-items: center; gap: 10px; justify-content: space-between; }
+    .mark-fail { color: var(--red); font-weight: 900; }
+    .mark-pass { color: var(--green); font-weight: 900; }
+    .gate-log { margin: 10px 0 0; padding: 10px; background: rgba(255,255,255,.68); border-radius: 5px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; overflow-wrap: anywhere; }
+
+    .repair-list { display: grid; gap: 8px; margin: 16px 0; }
+    .repair-option {
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr);
+      gap: 9px;
+      align-items: start;
+      min-height: 48px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    .repair-option input { width: 20px; height: 20px; margin: 2px 0 0; }
+    .repair-option span { min-width: 0; }
+    .repair-option small { display: block; color: var(--muted); }
+    .repair-option.blocked { background: var(--soft); color: var(--muted); }
+
+    .gate-history { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+    .history-mark { display: inline-flex; align-items: center; min-height: 34px; padding: 5px 9px; border-radius: 5px; font-weight: 800; }
+    .history-mark[data-mark="fail"] { background: var(--red-soft); color: var(--red); }
+    .history-mark[data-mark="pass"] { background: var(--green-soft); color: var(--green); }
+
+    .review-list, .rework-list { display: grid; gap: 10px; margin-top: 16px; }
+    .review-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 13px; }
+    .review-copy { min-width: 0; }
+    .review-copy strong { display: block; }
+    .review-copy span { color: var(--muted); font-size: 12px; }
+    .segmented { display: grid; grid-template-columns: repeat(2, minmax(72px, 1fr)); gap: 5px; }
+    .segmented button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 800; }
+
+    .review-progress { margin-top: 12px; color: var(--muted); font-weight: 700; }
+    .rework-item { padding: 13px; }
+    .rework-item.frozen { border-color: #b9cabb; background: var(--green-soft); }
+    .rework-item.invalidated { border-color: #d7ae77; background: var(--amber-soft); }
+
+    .timeline {
+      position: relative;
+      height: 148px;
+      margin: 18px 0;
+      overflow: hidden;
+      border: 1px solid #252525;
+      border-radius: 7px;
+      background: #191919;
+      color: #fff;
+    }
+
+    .timeline-head { display: flex; justify-content: space-between; padding: 13px; font-size: 12px; color: #c8c8c8; }
+    .timeline-track { position: absolute; left: 18px; right: 18px; bottom: 35px; height: 12px; border-radius: 2px; background: linear-gradient(90deg, #735b4e 0 35%, #466a72 35% 63%, #756846 63%); }
+    .timeline-tick { position: absolute; left: 61.33%; bottom: 25px; width: 2px; height: 34px; background: #f2d66c; }
+    .timeline-tick::after { content: "18.4s"; position: absolute; left: 7px; top: -1px; white-space: nowrap; color: #f2d66c; font-size: 12px; font-weight: 800; }
+
+    .comment-card, .audit-card { margin-top: 14px; padding: 13px; }
+    .comment-card .meta { color: var(--accent); font-weight: 800; font-size: 12px; }
+    .audit-card.pending { border-color: #d7ae77; background: var(--amber-soft); }
+    .audit-card.done { border-color: #a9c5b2; background: var(--green-soft); }
+    .resolution { min-height: 24px; margin-top: 10px; padding-top: 9px; border-top: 1px dashed currentColor; color: var(--green); }
+
+    .evidence-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .progress-number { font-size: 22px; font-weight: 900; font-variant-numeric: tabular-nums; }
+    .progress-track { height: 8px; margin: 10px 0 16px; overflow: hidden; border-radius: 4px; background: var(--soft); }
+    .progress-track i { display: block; height: 100%; background: var(--accent); transition: width .25s ease; }
+
+    .segments { display: grid; gap: 7px; margin-bottom: 15px; }
+    .segment { display: flex; justify-content: space-between; gap: 8px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 5px; font-size: 12px; }
+    .segment span { color: var(--muted); }
+
+    .task-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; }
+    .task-card { min-width: 0; min-height: 38px; display: grid; place-items: center; padding: 4px; border: 1px solid var(--line); border-radius: 4px; font-size: 11px; text-align: center; background: #fff; }
+    .task-card.done { border-color: #aac3b0; background: var(--green-soft); color: var(--green); }
+    .task-card.fail { border-color: #dfa5a1; background: var(--red-soft); color: var(--red); font-weight: 800; }
+    .task-card.current { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+
+    .event-log { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+    .event-log h3 { margin-bottom: 8px; }
+    .event-log p { margin: 6px 0 0; color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
+
+    @media (max-width: 979px) {
+      .workspace { grid-template-columns: minmax(0, 1fr); }
+      .evidence-panel { position: static; min-height: 0; }
+      .main-panel { min-height: 560px; }
+      .intro { grid-template-columns: minmax(0, 1fr); }
+      .proof-line { max-width: none; }
+    }
+
+    @media (max-width: 620px) {
+      .topbar { align-items: flex-start; flex-wrap: wrap; }
+      .brand { flex: 1 1 100%; }
+      .top-actions { width: 100%; justify-content: stretch; }
+      .top-actions > * { flex: 1 1 auto; justify-content: center; }
+      .stage-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .form-grid, .run-summary { grid-template-columns: minmax(0, 1fr); }
+      .field.full { grid-column: auto; }
+      .run-summary > div { border-right: 0; border-bottom: 1px solid var(--line); }
+      .run-summary > div:last-child { border-bottom: 0; }
+      .review-row { grid-template-columns: minmax(0, 1fr); }
+      .segmented { width: 100%; }
+      .actions > button { flex: 1 1 100%; }
+      .task-grid { grid-template-columns: repeat(5, minmax(42px, 1fr)); overflow-x: auto; padding-bottom: 4px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main data-testid="demo-root" data-state="SETUP">
+    <header class="topbar">
+      <div class="brand">
+        <strong>悟空 · Agent 生产管线</strong>
+        <span>公开交互证据台</span>
+      </div>
+      <div class="top-actions">
+        <span class="mode" data-testid="mode-status">手动模式</span>
+        <a class="back-link" href="cases.html">返回作品集</a>
+        <button type="button" class="secondary" data-testid="auto-demo" data-action="auto">自动演示完整闭环</button>
+        <button type="button" data-testid="reset-demo" data-action="reset">重置演示</button>
+      </div>
+    </header>
+
+    <section class="intro">
+      <div>
+        <h1>让不可靠的执行体，沿着证据交付</h1>
+        <p>亲手走完任务卡、验证门、人工审校与审计回填。这里演示的是可恢复、可追责的 Agent 状态机，而不是一段“已完成”的聊天文本。</p>
+      </div>
+      <div class="proof-line">只有验证脚本输出算数，Agent 自述“已完成”不改变任务状态。</div>
+    </section>
+
+    <section class="privacy">
+      <div data-testid="privacy-note">静态脱敏演示 · 不连接生产环境 · 不含真实素材 · 不调用真实模型</div>
+    </section>
+
+    <nav class="stages" aria-label="生产管线阶段">
+      <ol class="stage-list" data-testid="stage-list"></ol>
+    </nav>
+
+    <div class="status-wrap">
+      <div class="status-live" data-testid="status-live" role="status" aria-live="polite">等待创建合成任务。</div>
+    </div>
+
+    <div class="workspace">
+      <section class="main-panel" data-testid="main-panel"></section>
+      <aside class="evidence-panel" data-testid="evidence-panel" aria-label="任务证据"></aside>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const STORAGE_KEY = 'wukong-demo-state';
+      const VALID_STATES = new Set([
+        'SETUP', 'RUNNING', 'GATE_FAILED', 'GATE_RECOVERED', 'REVIEW',
+        'REWORK', 'COMMENTS', 'AUDIT_PENDING', 'COMPLETE'
+      ]);
+      const NEXT = {
+        SETUP: 'RUNNING',
+        RUNNING: 'GATE_FAILED',
+        GATE_FAILED: 'GATE_RECOVERED',
+        GATE_RECOVERED: 'REVIEW',
+        REVIEW: ['REWORK', 'COMMENTS'],
+        REWORK: 'COMMENTS',
+        COMMENTS: 'AUDIT_PENDING',
+        AUDIT_PENDING: 'COMPLETE'
+      };
+      const PROGRESS = {
+        SETUP: 0,
+        RUNNING: 0,
+        GATE_FAILED: 11,
+        GATE_RECOVERED: 12,
+        REVIEW: 18,
+        REWORK: 21,
+        COMMENTS: 23,
+        AUDIT_PENDING: 24,
+        COMPLETE: 25
+      };
+      const STAGES = [
+        ['创建任务', ['SETUP']],
+        ['Agent 执行', ['RUNNING', 'GATE_FAILED', 'GATE_RECOVERED']],
+        ['人工耳审', ['REVIEW', 'REWORK']],
+        ['审计反馈', ['COMMENTS', 'AUDIT_PENDING', 'COMPLETE']]
+      ];
+      const SEGMENTS = [
+        ['①', '解构填表', 8],
+        ['②', '渲染过门', 9],
+        ['③', '耳审交付', 8]
+      ];
+      const REVIEW_TEXT = [
+        '课程亮点已经整理好了，点击下方即可查看。',
+        '现在领取体验名额，还能获得一份入门资料。',
+        '提交后由课程顾问为你解答具体问题。'
+      ];
+      const DEFAULT_COMMENT = Object.freeze({
+        time: '18.4s',
+        kind: '音频',
+        text: '这一句口播偏快，停顿再留半拍'
+      });
+
+      function initialModel() {
+        return {
+          state: 'SETUP',
+          reviewChoices: [null, null, null],
+          repair: 'clear-cache'
+        };
+      }
+
+      function restoreModel() {
+        try {
+          const raw = sessionStorage.getItem(STORAGE_KEY);
+          if (!raw) return initialModel();
+          const saved = JSON.parse(raw);
+          if (!VALID_STATES.has(saved.state)) throw new Error('invalid state');
+          return {
+            state: saved.state,
+            reviewChoices: Array.isArray(saved.reviewChoices) ? saved.reviewChoices.slice(0, 3) : [null, null, null],
+            repair: ['rerun', 'clear-cache', 'geometry'].includes(saved.repair) ? saved.repair : 'clear-cache'
+          };
+        } catch (error) {
+          sessionStorage.removeItem(STORAGE_KEY);
+          return initialModel();
+        }
+      }
+
+      let model = restoreModel();
+      let liveMessage = model.state === 'SETUP' ? '等待创建合成任务。' : '已从本标签页的演示断点恢复。';
+      let draftComment = null;
+      let submittedComment = null;
+      let autoActive = false;
+      let takeover = false;
+      let timers = [];
+
+      const root = document.querySelector('[data-testid="demo-root"]');
+      const main = document.querySelector('[data-testid="main-panel"]');
+      const evidence = document.querySelector('[data-testid="evidence-panel"]');
+      const live = document.querySelector('[data-testid="status-live"]');
+      const mode = document.querySelector('[data-testid="mode-status"]');
+      const stageList = document.querySelector('[data-testid="stage-list"]');
+
+      function saveModel() {
+        if (model.state === 'SETUP') return;
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+          state: model.state,
+          reviewChoices: model.reviewChoices,
+          repair: model.repair
+        }));
+      }
+
+      function progress() { return PROGRESS[model.state] || 0; }
+
+      function setMessage(message) {
+        liveMessage = message;
+        live.textContent = message;
+      }
+
+      function transition(next, message) {
+        const allowed = NEXT[model.state];
+        if (Array.isArray(allowed) ? !allowed.includes(next) : allowed !== next) return false;
+        model.state = next;
+        if (message) liveMessage = message;
+        saveModel();
+        render();
+        return true;
+      }
+
+      function phaseIndex() {
+        return STAGES.findIndex(([, states]) => states.includes(model.state));
+      }
+
+      function renderStages() {
+        const active = phaseIndex();
+        stageList.innerHTML = STAGES.map(([name], index) => {
+          const cls = index < active ? 'stage done' : index === active ? 'stage active' : 'stage';
+          const label = index < active ? '已完成' : index === active ? '当前阶段' : '待开始';
+          return `<li class="${cls}"><b>${index + 1}. ${name}</b><span>${label}</span></li>`;
+        }).join('');
+      }
+
+      function segmentStatus(segmentIndex) {
+        const p = progress();
+        const starts = [0, 8, 17];
+        const size = SEGMENTS[segmentIndex][2];
+        const done = Math.max(0, Math.min(size, p - starts[segmentIndex]));
+        if (model.state === 'GATE_FAILED' && segmentIndex === 1) return `${done}/${size} · 已停车`;
+        return `${done}/${size}`;
+      }
+
+      function taskStatus(index) {
+        const card = index + 1;
+        if (model.state === 'GATE_FAILED' && card === 12) return 'fail';
+        if (card <= progress()) return 'done';
+        if (card === progress() + 1 && model.state !== 'SETUP') return 'current';
+        return '';
+      }
+
+      function taskLabel(index) {
+        const card = index + 1;
+        if (card === 12) return '音频缓存门';
+        return `卡 ${String(card).padStart(2, '0')}`;
+      }
+
+      function renderEvidence() {
+        const p = progress();
+        const hasTask = model.state !== 'SETUP';
+        evidence.innerHTML = `
+          <div class="evidence-head">
+            <div><div class="panel-kicker">文件态证据</div><h3>course_demo_01</h3></div>
+            <div class="progress-number" data-testid="progress-summary">${p} / 25</div>
+          </div>
+          <div class="progress-track" aria-label="任务完成进度"><i style="width:${p * 4}%"></i></div>
+          ${hasTask ? `
+            <div class="segments">
+              ${SEGMENTS.map((segment, index) => `
+                <div class="segment" data-testid="segment"><b>${segment[0]} ${segment[1]}</b><span>${segmentStatus(index)}</span></div>
+              `).join('')}
+            </div>
+            <div class="task-grid" aria-label="25 张任务卡">
+              ${Array.from({ length: 25 }, (_, index) => `
+                <div class="task-card ${taskStatus(index)}" data-testid="task-card">${taskLabel(index)}</div>
+              `).join('')}
+            </div>
+          ` : '<div class="note">生成后，这里将以只读方式展示 3 段、25 张任务卡与最后一次验证标记。</div>'}
+          <div class="event-log">
+            <h3>状态原则</h3>
+            <p>进度来自任务卡最后一个验证标记，不来自 Agent 的聊天结论。</p>
+            <p>失败不会自动进入下一段；修复后从同一卡恢复。</p>
+            <p>刷新只恢复合成状态，不保存表单与留言正文。</p>
+          </div>
+        `;
+      }
+
+      function renderSetup() {
+        return `
+          <div class="panel-kicker">Setup</div>
+          <h2>创建一个合成生产任务</h2>
+          <p class="subtle">五个字段只用于本页状态机，不会离开浏览器标签页。</p>
+          <div class="form-grid">
+            <div class="field"><label for="source-a">A 源素材</label><input id="source-a" data-testid="source-a" type="text" value="课程素材 A"></div>
+            <div class="field"><label for="reference-b">B 参考素材</label><input id="reference-b" data-testid="reference-b" type="text" value="参考节奏 B"></div>
+            <div class="field"><label for="sku">新 SKU</label><input id="sku" data-testid="sku" type="text" value="兴趣课程体验包"></div>
+            <div class="field"><label for="brand">品牌</label><input id="brand" data-testid="brand" type="text" value="示例品牌"></div>
+            <div class="field full"><label for="job">任务代号</label><input id="job" data-testid="job" type="text" value="course_demo_01"></div>
+          </div>
+          <div class="actions"><button class="primary" type="button" data-testid="generate-task" data-action="generate">生成任务卡</button></div>
+          <div class="note">任务卡一经生成即成为文件态进度。重复使用同名任务时，已有卡会原样保留。</div>
+        `;
+      }
+
+      function renderRunning() {
+        return `
+          <div class="panel-kicker">Agent execution</div>
+          <h2>任务卡已生成，等待执行</h2>
+          <p class="subtle">执行体一次只处理一张卡，每张卡都写明命令、成功判据和报告格式。</p>
+          <div class="run-summary">
+            <div><strong>3 段</strong><span>解构 / 渲染 / 交付</span></div>
+            <div><strong>25 张</strong><span>一卡一脚本</span></div>
+            <div><strong>0 / 25</strong><span>当前完成</span></div>
+          </div>
+          <div class="note" data-testid="existing-job-note"><strong>同名任务不会覆盖既有卡。</strong> 断连或换模型后，从卡文件的最后标记继续。</div>
+          <div class="actions"><button class="primary" type="button" data-testid="run-to-gate" data-action="run-gate">运行至下一质检门</button></div>
+        `;
+      }
+
+      function gateHistory() {
+        return `
+          <div class="gate-history" data-testid="gate-history">
+            <span class="history-mark" data-mark="fail">FAIL · 首次验证</span>
+            ${model.state === 'GATE_RECOVERED' ? '<span aria-hidden="true">→</span><span class="history-mark" data-mark="pass">PASS · 原样重跑</span>' : ''}
+          </div>
+        `;
+      }
+
+      function renderGateFailed() {
+        return `
+          <div class="panel-kicker">Gate failed</div>
+          <h2>验证失败，流程已停车</h2>
+          <div class="claim" data-testid="agent-claim"><strong>Agent 自述：“任务已完成。”</strong><br>自述无效：文件态证据仍为失败，进度保持 11 / 25。</div>
+          <div class="gate-box" data-testid="gate-evidence">
+            <div class="gate-head"><h3>卡 12 · 音频缓存门</h3><span class="mark-fail">FAIL</span></div>
+            <div class="gate-log">缓存指纹与当前合成文案不一致 · 拒绝进入人工耳审</div>
+          </div>
+          ${gateHistory()}
+          <h3>选择一项自修白名单动作</h3>
+          <div class="repair-list">
+            <label class="repair-option"><input type="radio" name="repair" value="rerun" data-testid="repair-rerun" ${model.repair === 'rerun' ? 'checked' : ''}><span><b>重跑脚本</b><small>不改变输入与验证规则</small></span></label>
+            <label class="repair-option"><input type="radio" name="repair" value="clear-cache" data-testid="repair-clear-cache" ${model.repair === 'clear-cache' ? 'checked' : ''}><span><b>清缓存并原样重跑</b><small>本次演示的允许路径</small></span></label>
+            <label class="repair-option"><input type="radio" name="repair" value="geometry" data-testid="repair-geometry" ${model.repair === 'geometry' ? 'checked' : ''}><span><b>调整几何数值</b><small>仅用于位置、尺寸与边界参数</small></span></label>
+            <label class="repair-option blocked"><input type="radio" name="repair" value="modify-gate" data-testid="repair-modify-gate" disabled><span><b>修改门脚本</b><small data-testid="repair-modify-gate-note">验证规则不可由执行 Agent 改写</small></span></label>
+          </div>
+          <div class="actions">
+            <button class="primary" type="button" data-testid="apply-repair" data-action="apply-repair">执行白名单修复</button>
+            <button type="button" data-testid="continue-review" disabled>进入人工耳审</button>
+          </div>
+        `;
+      }
+
+      function renderGateRecovered() {
+        return `
+          <div class="panel-kicker">Gate recovered</div>
+          <h2>同一卡已由失败恢复为通过</h2>
+          <p class="subtle">清除旧缓存后原样重跑；验证规则和已批内容均未修改。</p>
+          <div class="gate-box pass" data-testid="gate-evidence">
+            <div class="gate-head"><h3>卡 12 · 音频缓存门</h3><span class="mark-pass">PASS</span></div>
+            <div class="gate-log">新缓存指纹与合成文案一致 · 允许进入人工耳审</div>
+          </div>
+          ${gateHistory()}
+          <div class="actions"><button class="primary" type="button" data-testid="continue-review" data-action="continue-review">进入人工耳审</button></div>
+        `;
+      }
+
+      function renderReview() {
+        const judged = model.reviewChoices.filter(Boolean).length;
+        return `
+          <div class="panel-kicker">Human review</div>
+          <h2>人工耳审契约</h2>
+          <p class="subtle">逐条判断内容、结尾与节奏。全部完成前，结果契约不能提交。</p>
+          <div class="review-progress" data-testid="review-progress">耳审 ${judged} / 3 已判</div>
+          <div class="review-list">
+            ${REVIEW_TEXT.map((text, index) => {
+              const value = model.reviewChoices[index];
+              return `
+                <div class="review-row" data-testid="review-item" data-review-index="${index + 1}">
+                  <div class="review-copy"><strong>${index + 1}. ${text}</strong><span>合成语音片段 · 无真人声音</span></div>
+                  <div class="segmented" aria-label="第 ${index + 1} 条判定">
+                    <button type="button" data-action="review-choice" data-index="${index}" data-choice="pass" aria-pressed="${value === 'pass'}">通过</button>
+                    <button type="button" data-action="review-choice" data-index="${index}" data-choice="redo" aria-pressed="${value === 'redo'}">重做</button>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+          <div class="actions"><button class="primary" type="button" data-testid="review-submit" data-action="submit-review" ${judged === 3 ? '' : 'disabled'}>提交人工判定</button></div>
+        `;
+      }
+
+      function renderRework() {
+        const redoIndexes = model.reviewChoices
+          .map((choice, index) => choice === 'redo' ? index : -1)
+          .filter(index => index >= 0);
+        const redoLabel = redoIndexes.map(index => index + 1).join('、');
+        const summary = redoIndexes.length === 1
+          ? `仅第 ${redoLabel} 条缓存失效`
+          : `第 ${redoLabel} 条缓存失效`;
+        return `
+          <div class="panel-kicker">Scoped rework</div>
+          <h2>局部重做，不覆盖已通过内容</h2>
+          <p class="subtle" data-testid="rework-summary"><strong>${summary}</strong>；已通过内容保持冻结。</p>
+          <div class="rework-list">
+            ${model.reviewChoices.map((choice, index) => choice === 'redo' ? `
+              <div class="rework-item invalidated" data-testid="invalidated-review-item" data-review-index="${index + 1}"><strong>第 ${index + 1} 条 · 缓存已失效</strong><br>只重做这一句并重新运行音频门。</div>
+            ` : `
+              <div class="rework-item frozen" data-testid="frozen-review-item"><strong>第 ${index + 1} 条 · 已冻结</strong><br>通过内容不会参与下一轮生成。</div>
+            `).join('')}
+          </div>
+          <div class="actions"><button class="primary" type="button" data-testid="run-rework" data-action="run-rework">局部重做并重新过门</button></div>
+        `;
+      }
+
+      function commentCard(comment, testId) {
+        const card = document.createElement('div');
+        card.className = 'comment-card';
+        if (testId) card.dataset.testid = testId;
+
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+        meta.textContent = `${comment.time} · ${comment.kind}`;
+        card.append(meta, document.createTextNode(comment.text));
+        return card;
+      }
+
+      function renderComments() {
+        return `
+          <div class="panel-kicker">Timestamped feedback</div>
+          <h2>按秒留言，先交审计者翻译</h2>
+          <p class="subtle">合成时间轴代表 30 秒成片，不加载任何真实媒体。</p>
+          <div class="timeline" data-testid="synthetic-timeline" role="img" aria-label="30 秒合成成片时间轴，当前位于 18.4 秒">
+            <div class="timeline-head"><span>合成成片</span><span>00:30.0</span></div>
+            <div class="timeline-track"></div><div class="timeline-tick"></div>
+          </div>
+          <div class="form-grid">
+            <div class="field"><label for="comment-time">时间点</label><input id="comment-time" data-testid="comment-time" type="text" value="18.4s" readonly></div>
+            <div class="field"><label for="comment-kind">类型</label><input id="comment-kind" type="text" value="音频" readonly></div>
+            <div class="field full"><label for="comment-text">留言</label><textarea id="comment-text" data-testid="comment-text">${DEFAULT_COMMENT.text}</textarea></div>
+          </div>
+          <div class="actions"><button type="button" data-testid="add-comment" data-action="add-comment">加入本批</button></div>
+          ${draftComment ? `
+            <div data-testid="comment-draft-slot"></div>
+            <div class="actions"><button class="primary" type="button" data-testid="submit-comments" data-action="submit-comments">提交给审计者</button></div>
+          ` : '<div class="note">留言只进入待审计队列，不会直接变成执行指令。</div>'}
+        `;
+      }
+
+      function renderAuditPending() {
+        return `
+          <div class="panel-kicker">Audit pending</div>
+          <h2>自由文本正在等待翻译</h2>
+          <div class="audit-card pending" data-testid="audit-status"><strong>等待审计</strong><br>留言不会直接发给执行 Agent；审计者需先把自然语言翻译成确定动作。</div>
+          <div data-testid="submitted-comment-slot"></div>
+          <div class="resolution" data-testid="audit-resolution"></div>
+          <div class="actions"><button class="primary" type="button" data-testid="audit-backfill" data-action="audit-backfill">模拟审计回填</button></div>
+        `;
+      }
+
+      function renderComplete() {
+        const redoCount = model.reviewChoices.filter(choice => choice === 'redo').length;
+        return `
+          <div class="panel-kicker">Complete</div>
+          <h2>交付闭环完成</h2>
+          <div class="audit-card done"><strong>审计动作已回填并执行</strong><br>留言先被翻译为确定动作，再由执行体按门重跑。</div>
+          <div class="resolution" data-testid="audit-resolution">拉长该句 0.4 秒并重跑音频门</div>
+          <div class="run-summary">
+            <div><strong>25 / 25</strong><span>任务卡完成</span></div>
+            <div><strong>8 道</strong><span>核心自动门</span></div>
+            <div><strong>${redoCount} 条</strong><span>局部返工</span></div>
+          </div>
+          <div class="note">这次完成由任务卡、验证结果、人工契约和审计回填共同证明。</div>
+        `;
+      }
+
+      const VIEW = {
+        SETUP: renderSetup,
+        RUNNING: renderRunning,
+        GATE_FAILED: renderGateFailed,
+        GATE_RECOVERED: renderGateRecovered,
+        REVIEW: renderReview,
+        REWORK: renderRework,
+        COMMENTS: renderComments,
+        AUDIT_PENDING: renderAuditPending,
+        COMPLETE: renderComplete
+      };
+
+      function render() {
+        root.dataset.state = model.state;
+        mode.textContent = autoActive ? '自动演示' : takeover ? '手动接管' : '手动模式';
+        live.textContent = liveMessage;
+        renderStages();
+        main.innerHTML = VIEW[model.state]();
+        const draftSlot = main.querySelector('[data-testid="comment-draft-slot"]');
+        if (draftSlot && draftComment) draftSlot.replaceWith(commentCard(draftComment, 'comment-draft'));
+        const submittedSlot = main.querySelector('[data-testid="submitted-comment-slot"]');
+        if (submittedSlot) submittedSlot.replaceWith(commentCard(submittedComment || DEFAULT_COMMENT, 'submitted-comment'));
+        renderEvidence();
+      }
+
+      function readSetupFields() {
+        return ['source-a', 'reference-b', 'sku', 'brand', 'job'].map(id => document.querySelector(`[data-testid="${id}"]`));
+      }
+
+      function validateSetup() {
+        const fields = readSetupFields();
+        const missing = fields.filter(field => !field.value.trim());
+        fields.forEach(field => field.setAttribute('aria-invalid', String(missing.includes(field))));
+        if (missing.length) {
+          setMessage('五个字段均为必填，请补齐后再生成任务卡。');
+          missing[0].focus();
+          return false;
+        }
+        return true;
+      }
+
+      function clearTimers() {
+        timers.forEach(timer => clearTimeout(timer));
+        timers = [];
+      }
+
+      function stopAutoForUser() {
+        if (!autoActive) return;
+        clearTimers();
+        autoActive = false;
+        takeover = true;
+        liveMessage = '已停止自动编排，保留当前状态并交还用户。';
+        render();
+      }
+
+      function resetDemo() {
+        clearTimers();
+        autoActive = false;
+        takeover = false;
+        draftComment = null;
+        submittedComment = null;
+        model = initialModel();
+        sessionStorage.removeItem(STORAGE_KEY);
+        liveMessage = '演示已重置，等待创建合成任务。';
+        render();
+      }
+
+      function autoDelay() {
+        return matchMedia('(prefers-reduced-motion: reduce)').matches ? 280 : 700;
+      }
+
+      function startAuto() {
+        resetDemo();
+        autoActive = true;
+        takeover = false;
+        transition('RUNNING', '自动演示已创建 25 张任务卡。');
+        const steps = [
+          () => transition('GATE_FAILED', '音频缓存门 FAIL，流程已停车。'),
+          () => transition('GATE_RECOVERED', '清缓存并原样重跑，同一卡恢复为 PASS。'),
+          () => transition('REVIEW', '进入三条人工耳审契约。'),
+          () => { model.reviewChoices = ['pass', 'redo', 'pass']; transition('REWORK', '仅第 2 条进入局部重做。'); },
+          () => transition('COMMENTS', '局部重做已重新过门，进入按秒留言。'),
+          () => { submittedComment = { ...DEFAULT_COMMENT }; transition('AUDIT_PENDING', '留言已提交，等待审计者翻译。'); },
+          () => { transition('COMPLETE', '审计动作已回填，25 / 25 完成。'); autoActive = false; render(); }
+        ];
+        let index = 0;
+        const advance = () => {
+          if (!autoActive || index >= steps.length) return;
+          steps[index++]();
+          if (index < steps.length && autoActive) timers.push(setTimeout(advance, autoDelay()));
+        };
+        timers.push(setTimeout(advance, autoDelay()));
+      }
+
+      root.addEventListener('click', event => {
+        const control = event.target.closest('[data-action]');
+        if (!control || control.disabled) return;
+        const action = control.dataset.action;
+
+        if (action === 'reset') { resetDemo(); return; }
+        if (action === 'auto') { startAuto(); return; }
+        if (action === 'generate') {
+          if (!validateSetup()) return;
+          transition('RUNNING', '已生成 3 段、25 张任务卡；等待执行。');
+          return;
+        }
+        if (action === 'run-gate') {
+          transition('GATE_FAILED', '音频缓存门 FAIL，流程已停车。');
+          return;
+        }
+        if (action === 'apply-repair') {
+          const selected = document.querySelector('input[name="repair"]:checked');
+          if (!selected || selected.disabled) { setMessage('请选择一项允许的自修动作。'); return; }
+          model.repair = selected.value;
+          saveModel();
+          if (selected.value === 'clear-cache') {
+            transition('GATE_RECOVERED', '清缓存并原样重跑：同一卡最后标记已由 FAIL 变为 PASS。');
+          } else if (selected.value === 'rerun') {
+            setMessage('已重跑脚本，但缓存指纹仍不一致；流程继续停车。');
+          } else {
+            setMessage('几何数值修复不适用于音频缓存门；流程继续停车。');
+          }
+          return;
+        }
+        if (action === 'continue-review') {
+          transition('REVIEW', '进入人工耳审；全部判定完成前不能提交。');
+          return;
+        }
+        if (action === 'review-choice') {
+          const index = Number(control.dataset.index);
+          const choice = control.dataset.choice;
+          model.reviewChoices[index] = choice;
+          saveModel();
+          liveMessage = `已完成 ${model.reviewChoices.filter(Boolean).length} / 3 条耳审判定。`;
+          render();
+          main.querySelector(`[data-action="review-choice"][data-index="${index}"][data-choice="${choice}"]`)?.focus({ preventScroll: true });
+          return;
+        }
+        if (action === 'submit-review') {
+          if (model.reviewChoices.filter(Boolean).length !== 3) return;
+          const redoIndexes = model.reviewChoices
+            .map((choice, index) => choice === 'redo' ? index + 1 : null)
+            .filter(Boolean);
+          if (!redoIndexes.length) {
+            transition('COMMENTS', '人工耳审全部通过，无需局部返工。');
+          } else {
+            transition('REWORK', `已写回人工契约：第 ${redoIndexes.join('、')} 条需要重做。`);
+          }
+          return;
+        }
+        if (action === 'run-rework') {
+          const redoLabel = model.reviewChoices
+            .map((choice, index) => choice === 'redo' ? index + 1 : null)
+            .filter(Boolean)
+            .join('、');
+          transition('COMMENTS', `第 ${redoLabel} 条已局部重做并重新过门，冻结项未改动。`);
+          return;
+        }
+        if (action === 'add-comment') {
+          const text = document.querySelector('[data-testid="comment-text"]').value.trim();
+          if (!text) { setMessage('请先填写留言内容。'); return; }
+          draftComment = { time: '18.4s', kind: '音频', text };
+          liveMessage = '留言已加入本批，尚未提交给审计者。';
+          render();
+          return;
+        }
+        if (action === 'submit-comments') {
+          if (!draftComment) return;
+          submittedComment = { ...draftComment };
+          draftComment = null;
+          transition('AUDIT_PENDING', '留言已进入等待审计状态，不会直接发给执行 Agent。');
+          return;
+        }
+        if (action === 'audit-backfill') {
+          transition('COMPLETE', '审计动作已回填并重新过门，交付闭环完成。');
+        }
+      });
+
+      document.addEventListener('pointerdown', event => {
+        if (autoActive && event.isTrusted) stopAutoForUser();
+      }, true);
+      document.addEventListener('keydown', event => {
+        if (autoActive && event.isTrusted) stopAutoForUser();
+      }, true);
+
+      render();
+    })();
+  </script>
+</body>
+</html>

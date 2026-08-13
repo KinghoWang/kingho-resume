@@ -308,7 +308,7 @@ test('navigation links meet the 44px touch target on mobile', async ({ page }) =
   expect(backBox.height).toBeGreaterThanOrEqual(44);
 
   await page.goto(`${BASE}/cases.html#case-lianlu`);
-  const demoBox = await page.getByRole('link', { name: '打开交互 Demo' }).boundingBox();
+  const demoBox = await page.locator('#case-lianlu').getByRole('link', { name: '打开交互 Demo' }).boundingBox();
   expect(demoBox.height).toBeGreaterThanOrEqual(44);
 });
 

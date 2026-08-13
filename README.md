@@ -17,20 +17,23 @@
 
 ## 🚀 作品集
 
-**① 自建 AI / 数据产品 · 在线 Demo**（跑真实工具引擎 / 看板本体 + 合成脱敏数据，而非简化复刻）
+**① 三组核心项目**：数分机器人 × Eval 质量闭环、悟空 Agent 生产管线、adquery-lite 取数与财务对账。
+
+**② 5 个 AI / 数据产品 · 在线 Demo**（四个运行真实工具引擎 / 看板的脱敏版本；悟空复现真实任务契约与状态机，不连接生产环境）
 
 | Demo | 一句话 | 打开 |
 |---|---|---|
 | 数分机器人 | 规则引擎 + LLM 归因的广告日报，数值全由代码算、模型只做叙述以防幻觉 | [demo-shufen.html](https://kinghowang.github.io/kingho-resume/demo-shufen.html) |
+| 悟空 Agent 生产管线 | 任务卡、验证门、白名单自修、人工审校与审计回填的可交互脱敏状态机 | [demo-wukong.html](https://kinghowang.github.io/kingho-resume/demo-wukong.html) |
 | 竞品广告情报引擎 | 多源竞品广告采集 + 结构化检索，秒级时序 / 多模态标签 / 受众下钻 | [demo-advideo.html](https://kinghowang.github.io/kingho-resume/demo-advideo.html) |
-| 创意分段诊断中台 | 素材逐秒拆解，定位流失点与转化话术，支持双素材 A/B 对比 | [demo-creative.html](https://kinghowang.github.io/kingho-resume/demo-creative.html) |
+| 创意分段诊断 Demo | 素材逐秒拆解，定位流失点与转化话术，支持双素材 A/B 对比 | [demo-creative.html](https://kinghowang.github.io/kingho-resume/demo-creative.html) |
 | 归因质量 Eval 评测 | 黄金集 + 代码指标 + LLM-as-judge，量化数值忠实率与机制编造率，作回归门禁 | [demo-eval.html](https://kinghowang.github.io/kingho-resume/demo-eval.html) |
 
-**② 数据分析 & 工程化案例**（脱敏复刻）：多维下钻分析框架 · 算法vs保量 CPM 倒挂洞察、自建取数工具 + 财务对账、跨行业流量质量归因方法论 —— 见 [cases.html](https://kinghowang.github.io/kingho-resume/cases.html)。
+**③ 策略产品 & 数据分析案例**（脱敏复刻）：企微获客链路改造、多维下钻分析框架、取数工具 + 财务对账、跨行业流量质量归因方法论 —— 见 [cases.html](https://kinghowang.github.io/kingho-resume/cases.html)。
 
 ## 🔒 脱敏声明
 
-所有客户 / 代理商名称、内部数据表名、看板地址与具体数值均已**脱敏或示意化**处理。Demo 跑的是真实工具的引擎与看板本体、仅替换数据，不代表任何企业真实经营数据。
+所有客户 / 代理商名称、内部数据表名、看板地址与具体数值均已**脱敏或示意化**处理。悟空 Demo 不连接生产环境，其余 Demo 仅使用合成数据或脱敏版本，不代表任何企业真实经营数据。
 
 ## 🛠 技术
 

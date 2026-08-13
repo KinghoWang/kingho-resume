@@ -1,0 +1,69 @@
+const { test, expect } = require('playwright/test');
+
+const BASE = process.env.DEMO_BASE_URL || 'http://127.0.0.1:52784';
+
+test('portfolio separates three core projects from two extension demos', async ({ page }) => {
+  await page.goto(`${BASE}/cases.html`);
+
+  await expect(page.getByRole('heading', { name: /3 组核心项目/ })).toBeVisible();
+  await expect(page.locator('[data-testid="core-project"]')).toHaveCount(3);
+
+  const core = page.locator('[data-testid="core-project"]');
+  await expect(core.nth(0)).toContainText('数分机器人 × Eval');
+  await expect(core.nth(0).locator('a[href="demo-shufen.html"]')).toHaveCount(1);
+  await expect(core.nth(0).locator('a[href="demo-eval.html"]')).toHaveCount(1);
+
+  await expect(core.nth(1)).toContainText('悟空');
+  await expect(core.nth(1).locator('a[href="demo-wukong.html"]')).toHaveCount(1);
+
+  await expect(core.nth(2)).toContainText('adquery-lite');
+  await expect(core.nth(2).locator('a[href="#case2"]')).toHaveCount(1);
+
+  await expect(page.getByRole('heading', { name: /扩展在线 Demo/ })).toBeVisible();
+  const extensions = page.locator('[data-testid="extension-demo"]');
+  await expect(extensions).toHaveCount(2);
+  await expect(extensions.nth(0)).toContainText('竞品广告情报引擎');
+  await expect(extensions.nth(0).locator('a[href="demo-advideo.html"]')).toHaveCount(1);
+  await expect(extensions.nth(1)).toContainText('创意分段诊断 Demo');
+  await expect(extensions.nth(1).locator('a[href="demo-creative.html"]')).toHaveCount(1);
+
+  await expect(page.locator('body')).toContainText('5 个 AI / 数据在线 Demo');
+});
+
+for (const viewport of [
+  { name: 'narrow mobile', width: 360, height: 800 },
+  { name: 'mobile', width: 390, height: 844 },
+  { name: 'laptop', width: 1024, height: 768 },
+  { name: 'desktop', width: 1440, height: 900 },
+]) {
+  test(`${viewport.name} keeps the portfolio project hierarchy within the viewport`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await page.goto(`${BASE}/cases.html`);
+    const geometry = await page.evaluate(() => ({
+      documentWidth: document.documentElement.scrollWidth,
+      viewportWidth: document.documentElement.clientWidth,
+    }));
+    expect(geometry.documentWidth).toBeLessThanOrEqual(geometry.viewportWidth);
+    await expect(page.locator('[data-testid="core-project"]')).toHaveCount(3);
+    await expect(page.locator('[data-testid="extension-demo"]')).toHaveCount(2);
+  });
+}
+
+test('mobile wide data tables remain horizontally reachable inside their panels', async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 800 });
+  await page.goto(`${BASE}/cases.html`);
+
+  for (const title of ['头部客户异常监控', '同客户内 · 算法流量 vs 保量流量 到客率对照']) {
+    const body = page.locator('.panel').filter({ hasText: title }).locator('.panel-body');
+    const geometry = await body.evaluate(element => ({
+      clientWidth: element.clientWidth,
+      scrollWidth: element.scrollWidth,
+      overflowX: getComputedStyle(element).overflowX,
+    }));
+
+    expect(geometry.scrollWidth).toBeGreaterThan(geometry.clientWidth);
+    expect(geometry.overflowX).toBe('auto');
+    await body.evaluate(element => { element.scrollLeft = element.scrollWidth; });
+    expect(await body.evaluate(element => element.scrollLeft)).toBeGreaterThan(0);
+  }
+});
