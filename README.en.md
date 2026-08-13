@@ -21,9 +21,11 @@
 
 **① Two core projects**: Analytics Agent × embedded Eval and the Wukong Agent production pipeline.
 
-**② Strategy-product and data-analysis cases** (sanitized): WeCom acquisition-flow redesign, multi-level drill-down framework, query and financial reconciliation, and cross-industry traffic-quality attribution. adquery-lite remains available as Case 03; see [cases.html](https://kinghowang.github.io/kingho-resume/cases.html).
+**② Three strategy-product and data-analysis cases** (sanitized): WeCom acquisition-flow redesign, an algorithmic-traffic decision reversal, and financial-reconciliation data integrity. adquery-lite remains available as Case 03; see [cases.html](https://kinghowang.github.io/kingho-resume/cases.html).
 
-**③ Five AI / data live demos** (core-project demos come first; competitor intelligence and creative diagnostics sit at the bottom of the portfolio page; Wukong reproduces the real task contract and state machine without connecting to production)
+**③ Two extension live demos**: competitor intelligence and creative diagnostics, placed at the bottom of the portfolio page. The core and extension sections contain **five AI / data product demos** in total; Wukong reproduces the real task contract and state machine without connecting to production.
+
+**Live demo index (5 total)**
 
 | Demo | One-liner | Open |
 |---|---|---|

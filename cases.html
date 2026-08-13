@@ -291,31 +291,18 @@
   <div class="case-head">
     <div class="case-no">02</div>
     <div>
-      <h2>多维下钻分析框架 · 算法 vs 保量流量洞察</h2>
-      <span class="kind">分析框架 ｜ 大盘 → 行业 → 代理商 → 客户 四级下钻 · 统一口径 ｜ 数据源：广告投放主表</span>
+      <h2>算法流量存废之争 · 一次决策反转</h2>
+      <span class="kind">策略归因 ｜ 竞价机制 → 混淆变量排除 → 决策反转 ｜ 数据源：广告投放主表</span>
     </div>
   </div>
 
   <div class="story">
-    <div class="story-card bg"><div class="lab">背景</div><p>服务 <strong>60+ 客户</strong>、年消耗规模 <strong>3 亿+</strong>，海量投放数据里要快速定位异常并归因，人工逐维度看数效率低、易漏判，且「看哪些维度、怎么比」全凭个人经验。</p></div>
-    <div class="story-card act"><div class="lab">动作</div><p>设计「大盘 → 行业 → 代理商 → 客户」四级下钻框架，统一 <strong>效率 CPM / 超成本 / CTCVR / 曝光比 DAU</strong> 口径，用<strong>双基线</strong>（前 1 日 + 前 7 日均值）异常检测触发下钻——把分析路径<strong>标准化、可复用</strong>。</p></div>
-    <div class="story-card res"><div class="lab">成果</div><p>沉淀为部门标准<strong>分析框架 / SOP</strong>；并据此挖出「<strong>知识付费算法 CPM 倒挂</strong>」等结构性洞察，指导出价与流量结构调整（见下方图表）。</p></div>
+    <div class="story-card bg"><div class="lab">背景</div><p>客户甲、乙的算法流量千次到客比保量低约 <strong>23%</strong>，业务方据此提出「算法流量质量差、应当砍量」。但算法流量占比约 <strong>50%+</strong>，若表观判断有误，一刀切会直接影响半数流量盘。</p></div>
+    <div class="story-card act"><div class="lab">动作</div><p>不接受跨客户均值的表观结论，按两步归因：① 分行业对照 CPM，定位知识付费唯一的<strong>算法 CPM 倒挂</strong>，先排查竞价位置与流量结构；② 改用<strong>同客户内对照</strong>，同时检查到客率与付费率，控制客户差异。</p></div>
+    <div class="story-card res"><div class="lab">成果</div><p><strong>决策从一刀切砍量改为分客户评估</strong>：客户丙算法到客率虽低 12%，正价课付费率却为 <strong>1.67% vs 保量 1.62%</strong>，证明至少部分算法流量不能仅凭到客率一刀切砍量；客户间到客率差异也不可聚合成单一「行业到客率」。</p></div>
   </div>
 
-  <p class="demo-pointer">🔗 这套下钻框架的口径与异常规则，正是 <a href="demo-shufen.html">① 数分机器人 Demo</a> 的规则底座 —— <strong>本案例讲方法沉淀，Demo 讲自动化产品化</strong>，一体两面。</p>
-
-  <div class="panel">
-    <div class="panel-bar"><span class="dot"></span><span class="ttl">大盘核心指标（含 7 日基线对比）</span><span class="src">示意数据 · 已脱敏</span></div>
-    <div class="panel-body">
-      <div class="kpi-row">
-        <div class="kpi"><div class="k-lab">大盘日曝光</div><div class="k-val">4.6 亿</div><span class="k-delta up">▲ 3.2% vs 前7日</span></div>
-        <div class="kpi"><div class="k-lab">效率 CPM</div><div class="k-val">¥182</div><span class="k-delta down">▼ 6.1% vs 前1日</span></div>
-        <div class="kpi"><div class="k-lab">超成本比例</div><div class="k-val">+12.4%</div><span class="k-delta warn">▲ 偏高需关注</span></div>
-        <div class="kpi"><div class="k-lab">业务收入</div><div class="k-val">¥83.5 万</div><span class="k-delta up">▲ 2.8% vs 前7日</span></div>
-      </div>
-      <p class="note"><b>口径：</b>效率CPM = 效率收入/曝光次数×1000；超成本 = 业务收入/效率收入 − 1；广告DAU = 去重广告触达用户（非全小程序 DAU）。</p>
-    </div>
-  </div>
+  <p class="demo-pointer">🔗 这套下钻框架的口径与异常规则，正是 <a href="demo-shufen.html">① 数分机器人 Demo</a> 的规则底座 —— <strong>本案例讲业务决策，Demo 讲自动化产品化</strong>，一体两面。</p>
 
   <div class="panel">
     <div class="panel-bar"><span class="dot"></span><span class="ttl">分行业 · 算法流量 vs 保量流量 CPM 对照</span><span class="src">示意数据 · 已脱敏</span></div>
@@ -335,7 +322,35 @@
         </div>
       </div>
       <div class="legend"><span><i class="l-algo"></i>算法模型流量 CPM</span><span><i class="l-gua"></i>保量流量 CPM</span></div>
-      <p class="note"><b>分析洞察：</b>知识付费是唯一「算法 CPM &lt; 保量 CPM」倒挂的行业，意味着它在 eCPM 竞价中输给高出价的健康养生类，只能竞得次优流量——这正是该行业「算法流量到客率反而低于保量」的根因。<b>结论指向调整出价策略与流量结构，而非单纯归咎素材。</b></p>
+      <p class="note"><b>分析洞察：</b>知识付费是唯一「算法 CPM &lt; 保量 CPM」倒挂的行业，提示其竞价位置与流量结构需要先排查，不能把较低到客率直接归咎于素材或算法流量本身。<b>结论指向进一步控制客户差异、核对后端付费质量。</b></p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-bar"><span class="dot"></span><span class="ttl">同客户内 · 算法流量 vs 保量流量 到客率对照</span><span class="src">示意数据 · 已脱敏</span></div>
+    <div class="panel-body">
+      <table class="dash-table">
+        <thead><tr><th>客户</th><th class="num">算法占比</th><th class="num">算法千次到客</th><th class="num">保量千次到客</th><th class="num">算法 / 保量</th></tr></thead>
+        <tbody>
+          <tr><td>客户 甲</td><td class="num">56.8%</td><td class="num">0.678</td><td class="num">0.882</td><td class="num"><span class="pill red">−23%</span></td></tr>
+          <tr><td>客户 乙</td><td class="num">49.9%</td><td class="num">0.506</td><td class="num">0.659</td><td class="num"><span class="pill red">−23%</span></td></tr>
+          <tr><td>客户 丙</td><td class="num">55.8%</td><td class="num">0.411</td><td class="num">0.468</td><td class="num"><span class="pill amber">−12%</span></td></tr>
+          <tr><td>客户 丁</td><td class="num">50.8%</td><td class="num">0.363</td><td class="num">0.356</td><td class="num"><span class="pill green">+2%</span></td></tr>
+        </tbody>
+      </table>
+      <p class="note"><b>反直觉发现：</b>客户丙的算法流量到客率虽低 12%，但<b>正价课付费率 1.67% 高于保量 1.62%</b>——低到客率不等于低价值，至少该客户不能只看前端到客率砍算法量。<b>决策由一刀切砍量改为按客户核对后端价值。</b>同时既有分析显示客户间到客率最高差 1.75 倍，<b>不可加权聚合成「行业到客率」</b>。</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-bar"><span class="dot"></span><span class="ttl">归因方法论 · 四条纪律</span><span class="src">方法论</span></div>
+    <div class="panel-body">
+      <div class="feat-grid" style="grid-template-columns:repeat(2,1fr)">
+        <div class="feat"><h5>① 混淆变量排查</h5><p>「A 组比 B 组高/低」→ 先控制行业 / 分层再对比，避免把结构差异误读为质量差异。</p></div>
+        <div class="feat"><h5>② 因果方向验证</h5><p>得出「A 导致 B」→ 按结果分位反查原因指标分布，确认方向而非相关。</p></div>
+        <div class="feat"><h5>③ 结构效应分解</h5><p>CPM/CPA 组间差异 → 拆解为「结构效应（占比变化）+ 水平效应（单价变化）」。</p></div>
+        <div class="feat"><h5>④ 行业不可跨比</h5><p>不同行业转化目标不同（扫码加微 vs 付费下单），到客 / 付费口径不可直接横比。</p></div>
+      </div>
     </div>
   </div>
 
@@ -361,25 +376,25 @@
         </tr></thead>
         <tbody id="custBody"></tbody>
       </table>
-      <p class="note"><b>下钻逻辑：</b>对超成本 &gt;10% 的客户继续拆解——广告行为分层占比 → 分层内效率 CPM → 出价 / 调价记录 → 真实 CTCVR，区分是「结构占比变化」还是「竞价效率恶化」。<b>（本表为脱敏示意数据，可实时筛选 / 排序）</b></p>
+      <p class="note"><b>本案例的发现由该四级下钻框架产出：</b>对超成本 &gt;10% 的客户继续拆解——广告行为分层占比 → 分层内效率 CPM → 出价 / 调价记录 → 真实 CTCVR，区分是「结构占比变化」还是「竞价效率恶化」。<b>（本表为脱敏示意数据，可实时筛选 / 排序）</b></p>
     </div>
   </div>
 </section>
 
-<!-- ============ CASE 03 · 取数工具+对账 ============ -->
+<!-- ============ CASE 03 · 财务数据可信性 ============ -->
 <section class="case" id="case2" data-reveal>
   <div class="case-head">
     <div class="case-no">03</div>
     <div>
-      <h2>自建广告数据取数工具 &amp; 财务对账模块</h2>
-      <span class="kind">自建工具 ｜ Python(Flask) + 单文件前端 ｜ 替代通用 BI 面板的 ad-hoc 取数 REPL</span>
+      <h2>财务对账数据可信性 · 自建工具与三条业务铁律</h2>
+      <span class="kind">数据治理 ｜ 口径写进代码 · 金额级风险拦截 ｜ 数据源：资金流水 + 广告投放主表</span>
     </div>
   </div>
 
   <div class="story">
-    <div class="story-card bg"><div class="lab">背景</div><p>通用 BI 表格面板渲染 20+ 列 × 数千行经常卡崩，维度 / 指标靠链式下拉迭代极慢；月度财务对账长期靠人工 Excel，易错且耗时。</p></div>
-    <div class="story-card act"><div class="lab">动作</div><p>独立开发<strong>键盘流取数工具</strong>：经授权复用既有登录态访问公司数仓查询通道，<strong>55 维度 + 32 指标 + 33 衍生比率</strong>口径与原面板 1:1 对齐；并切出<strong>财务对账子模块</strong>，资金流水自动对账并对齐 Excel 模板。</p></div>
-    <div class="story-card res"><div class="lab">成果</div><p>取数从「点选下拉」变为「敲快捷键」，端到端体验显著提速；财务对账月度结果与人工模板<strong>完全吻合</strong>；沉淀多条业务铁律（审批状态过滤、映射去重防 25× 放大）。</p></div>
+    <div class="story-card bg"><div class="lab">背景</div><p>月度财务对账长期依赖人工 Excel，不只耗时：资金流水状态、广告主映射和重复计费的口径若处理不稳，会<strong>直接算错金额</strong>，且人工核账难以持续发现。</p></div>
+    <div class="story-card act"><div class="lab">动作</div><p>自建取数工具并切出财务对账子模块，把口径写进代码而非留在个人经验里：统一 <strong>55 维度 / 32 指标 / 33 衍生比率</strong>，四张对账 Tab 覆盖月度、日维度、分账户和广告主余额。</p></div>
+    <div class="story-card res"><div class="lab">成果</div><p>拦下三类金额级错误：① 广告主→代理商映射未去重会让金额放大 <strong>25×</strong>；② 资金流水未按「<strong>审批通过</strong>」过滤会误算未通过流水；③ 重复计费金额藏进余额调整后无法追溯。月度结果与人工 Excel 模板<strong>逐格吻合</strong>，一次性核账变为常态机制。</p></div>
   </div>
 
   <div class="panel">
@@ -440,8 +455,6 @@
     <div class="panel-bar"><span class="dot"></span><span class="ttl">核心能力矩阵</span><span class="src">功能概览</span></div>
     <div class="panel-body">
       <div class="feat-grid">
-        <div class="feat"><h5>键盘流取数 <span class="kbd">⌘K</span></h5><p>分类 picker + 模糊命令面板 + chip 拖拽重排，告别链式下拉。</p></div>
-        <div class="feat"><h5>查询历史/收藏 <span class="kbd">⌘H/⌘S</span></h5><p>最近查询与常用看板一键重放，固定看板秒级复现。</p></div>
         <div class="feat"><h5>口径 1:1 对齐</h5><p>55 维度 / 32 指标 / 33 衍生比率，含企微切换日 case-when，改一处常量联动 5 个加微指标。</p></div>
         <div class="feat"><h5>字段时效探测</h5><p>一条大 SQL 探测各列最早/最新有数日期，ETL 漏刷一眼可见，避免空数据误判。</p></div>
         <div class="feat"><h5>模糊匹配过滤</h5><p>LIKE ANY / REGEXP 解决简称的异形字 / 形近字（如「涛↔濤」）匹配难题。</p></div>
@@ -462,80 +475,7 @@
           <tr><td>广告主余额</td><td>广告主 × 日</td><td class="num">9</td><td>每日快照窄窗口取数，免自连接</td></tr>
         </tbody>
       </table>
-      <p class="note"><b>沉淀的业务铁律：</b>① 资金流水必须按「审批通过」状态过滤，否则误算审核不通过流水；② 广告主→代理商映射必须去重，直接 JOIN 会让金额放大 25×；③ 计费重复金额必须独立列展示，绝不藏进余额调整。<b>月度对账结果与人工 Excel 模板逐格吻合。</b></p>
-    </div>
-  </div>
-</section>
-
-<!-- ============ CASE 04 · 跨行业归因 ============ -->
-<section class="case" id="case3" data-reveal>
-  <div class="case-head">
-    <div class="case-no">04</div>
-    <div>
-      <h2>跨行业流量质量归因 · 分析方法论</h2>
-      <span class="kind">深度分析 ｜ 混淆变量控制 · 因果方向验证 · 结构效应分解</span>
-    </div>
-  </div>
-
-  <div class="story">
-    <div class="story-card bg"><div class="lab">背景</div><p>业务方常问「哪个行业 / 哪种流量质量更好」，但直接对均值排序、把客户到客率加权成「行业到客率」，会得出<strong>看似合理、实则错误</strong>的结论。</p></div>
-    <div class="story-card act"><div class="lab">动作</div><p>建立一套<strong>归因纪律</strong>：任何「A 比 B 高/低」先控制混淆变量，任何「A 导致 B」按结果分位反查原因分布，组间差异先拆「结构效应 + 水平效应」，并坚持<strong>同客户内对照</strong>。</p></div>
-    <div class="story-card res"><div class="lab">成果</div><p>纠正了「算法流量质量差、应砍量」的错误决策——证明<strong>算法流量是「低到客率、高付费率」的强意向用户</strong>，砍掉等于砍掉高价值客户。</p></div>
-  </div>
-
-  <div class="panel">
-    <div class="panel-bar"><span class="dot"></span><span class="ttl">归因方法论 · 四条纪律</span><span class="src">方法论</span></div>
-    <div class="panel-body">
-      <div class="feat-grid" style="grid-template-columns:repeat(2,1fr)">
-        <div class="feat"><h5>① 混淆变量排查</h5><p>「A 组比 B 组高/低」→ 先控制行业 / 分层再对比，避免把结构差异误读为质量差异。</p></div>
-        <div class="feat"><h5>② 因果方向验证</h5><p>得出「A 导致 B」→ 按结果分位反查原因指标分布，确认方向而非相关。</p></div>
-        <div class="feat"><h5>③ 结构效应分解</h5><p>CPM/CPA 组间差异 → 拆解为「结构效应（占比变化）+ 水平效应（单价变化）」。</p></div>
-        <div class="feat"><h5>④ 行业不可跨比</h5><p>不同行业转化目标不同（扫码加微 vs 付费下单），到客 / 付费口径不可直接横比。</p></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="panel">
-    <div class="panel-bar"><span class="dot"></span><span class="ttl">同客户内 · 算法流量 vs 保量流量 到客率对照</span><span class="src">示意数据 · 已脱敏</span></div>
-    <div class="panel-body">
-      <table class="dash-table">
-        <thead><tr><th>客户</th><th class="num">算法占比</th><th class="num">算法千次到客</th><th class="num">保量千次到客</th><th class="num">算法 / 保量</th></tr></thead>
-        <tbody>
-          <tr><td>客户 甲</td><td class="num">56.8%</td><td class="num">0.678</td><td class="num">0.882</td><td class="num"><span class="pill red">−23%</span></td></tr>
-          <tr><td>客户 乙</td><td class="num">49.9%</td><td class="num">0.506</td><td class="num">0.659</td><td class="num"><span class="pill red">−23%</span></td></tr>
-          <tr><td>客户 丙</td><td class="num">55.8%</td><td class="num">0.411</td><td class="num">0.468</td><td class="num"><span class="pill amber">−12%</span></td></tr>
-          <tr><td>客户 丁</td><td class="num">50.8%</td><td class="num">0.363</td><td class="num">0.356</td><td class="num"><span class="pill green">+2%</span></td></tr>
-        </tbody>
-      </table>
-      <p class="note"><b>反直觉发现：</b>客户丙的算法流量到客率虽低 12%，但<b>正价课付费率 1.67% 反而高于保量 1.62%</b>——算法投放的是「到客谨慎、但付费意向强」的高价值用户。<b>结论：砍算法流量 = 砍强意向客户，决策反转。</b>同时四个客户到客率最高差 1.75 倍，<b>不可加权聚合成「行业到客率」</b>。</p>
-    </div>
-  </div>
-
-  <div class="panel">
-    <div class="panel-bar"><span class="dot"></span><span class="ttl">混淆变量实例 · 别把「结构差异」误判为「流量变差」</span><span class="src">示意 · 脱敏</span></div>
-    <div class="panel-body">
-      <div class="twocol">
-        <div>
-          <table class="dash-table">
-            <thead><tr><th>网络</th><th class="num">占比</th><th class="num">千次到客</th></tr></thead>
-            <tbody>
-              <tr><td>WiFi</td><td class="num">83%</td><td class="num">0.598</td></tr>
-              <tr><td>4G</td><td class="num">8.7%</td><td class="num"><span class="pill amber">0.326</span></td></tr>
-            </tbody>
-          </table>
-          <p class="note">4G 效率仅 WiFi 的 <b>55%</b>——若不控制网络占比，会把网络结构变化误读为流量整体变差。</p>
-        </div>
-        <div>
-          <table class="dash-table">
-            <thead><tr><th>地域</th><th class="num">效率 vs 大盘</th><th>处置</th></tr></thead>
-            <tbody>
-              <tr><td>头部省份</td><td class="num">−9.5%</td><td><span class="pill green">保留</span></td></tr>
-              <tr><td>未知地域（空省份）</td><td class="num"><span class="pill red">−54%</span></td><td><span class="pill red">剔除</span></td></tr>
-            </tbody>
-          </table>
-          <p class="note">「未知地域」效率比大盘低 <b>54%</b>，是最该优先剔除的劣质流量——定位到它才能避免拉低整体出价效率。</p>
-        </div>
-      </div>
+      <p class="note"><b>对账口径：</b>只纳入审批通过的资金流水；广告主→代理商映射先去重；重复计费金额独立列示，不并入余额调整。<b>三条规则均进入固定查询逻辑与月度核对流程。</b></p>
     </div>
   </div>
 </section>

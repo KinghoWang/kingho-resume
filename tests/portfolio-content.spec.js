@@ -1,6 +1,22 @@
 const { test, expect } = require('playwright/test');
+const fs = require('fs');
+const path = require('path');
 
 const BASE = process.env.DEMO_BASE_URL || 'http://127.0.0.1:52784';
+
+test('README hierarchy matches the portfolio section counts', () => {
+  const chinese = fs.readFileSync(path.join(__dirname, '..', 'README.md'), 'utf8');
+  const english = fs.readFileSync(path.join(__dirname, '..', 'README.en.md'), 'utf8');
+
+  expect(chinese).toContain('**② 3 个策略产品 & 数据分析案例**');
+  expect(chinese).toContain('**③ 2 个扩展在线 Demo**');
+  expect(chinese).toContain('核心与扩展区合计 **5 个 AI / 数据产品在线 Demo**');
+  expect(chinese).toContain('**在线 Demo 总表（5 个）**');
+  expect(english).toContain('**② Three strategy-product and data-analysis cases**');
+  expect(english).toContain('**③ Two extension live demos**');
+  expect(english).toContain('The core and extension sections contain **five AI / data product demos** in total');
+  expect(english).toContain('**Live demo index (5 total)**');
+});
 
 test('portfolio separates two core projects from two extension demos', async ({ page }) => {
   await page.goto(`${BASE}/cases.html`);
@@ -29,7 +45,7 @@ test('portfolio separates two core projects from two extension demos', async ({ 
   await expect(page.locator('.demo-lead')).toContainText('企微交互演示另见 ② 案例 01');
   await expect(page.locator('.demo-lead')).toContainText('取数与财务对账见 ② 案例 03');
   const reconciliationCase = page.locator('#case2');
-  await expect(reconciliationCase).toContainText('自建广告数据取数工具 & 财务对账模块');
+  await expect(reconciliationCase).toContainText('财务对账数据可信性 · 自建工具与三条业务铁律');
   await expect(page.locator('[data-testid="core-project"]').filter({ hasText: 'adquery-lite' })).toHaveCount(0);
 });
 
@@ -54,6 +70,46 @@ test('portfolio places extension demos after the strategy and analysis cases', a
     return Boolean(extension && footer && (extension.compareDocumentPosition(footer) & Node.DOCUMENT_POSITION_FOLLOWING));
   });
   expect(footerFollowsExtensions).toBe(true);
+});
+
+test('portfolio focuses the strategy section on three outcome-led cases', async ({ page }) => {
+  await page.goto(`${BASE}/cases.html`);
+
+  const cases = page.locator('section.case');
+  await expect(cases).toHaveCount(3);
+  await expect(cases.locator('.case-no')).toHaveText(['01', '02', '03']);
+  await expect(page.locator('#case3')).toHaveCount(0);
+
+  const decisionCase = page.locator('#case1');
+  await expect(decisionCase.locator('h2').first()).toHaveText('算法流量存废之争 · 一次决策反转');
+  await expect(decisionCase.locator('.story-card.res')).toContainText('1.67% vs 保量 1.62%');
+  await expect(decisionCase.locator('.story-card.res')).toContainText('不能仅凭到客率一刀切砍量');
+  await expect(decisionCase.locator('.demo-pointer')).toContainText('本案例讲业务决策');
+  await expect(decisionCase).not.toContainText('大盘核心指标（含 7 日基线对比）');
+  await expect(decisionCase).not.toContainText('混淆变量实例');
+
+  const reconciliationCase = page.locator('#case2');
+  await expect(reconciliationCase.locator('h2').first()).toHaveText('财务对账数据可信性 · 自建工具与三条业务铁律');
+  await expect(reconciliationCase.locator('.story-card.res')).toContainText('25×');
+  await expect(reconciliationCase.locator('.story-card.res')).toContainText('审批通过');
+  await expect(reconciliationCase.locator('.feat-grid')).not.toContainText('键盘流取数');
+  await expect(reconciliationCase).not.toContainText('查询历史/收藏');
+  await expect(page.locator('body')).not.toContainText('跨行业流量质量归因 · 分析方法论');
+});
+
+test('customer monitor remains filterable and sortable after the case merge', async ({ page }) => {
+  await page.goto(`${BASE}/cases.html`);
+
+  await page.locator('#indFilters .chip', { hasText: '知识付费' }).click();
+  await expect(page.locator('#custBody tr')).toHaveCount(4);
+  await expect(page.locator('#custBody tr td:nth-child(2)')).toHaveText([
+    '知识付费', '知识付费', '知识付费', '知识付费',
+  ]);
+
+  await page.locator('#custTable th[data-key="ctcvr"]').click();
+  await expect(page.locator('#custBody tr').first().locator('td').nth(4)).toHaveText('1.75%');
+  await page.locator('#custTable th[data-key="ctcvr"]').click();
+  await expect(page.locator('#custBody tr').first().locator('td').nth(4)).toHaveText('1.40%');
 });
 
 for (const viewport of [
