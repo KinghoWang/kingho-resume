@@ -19,9 +19,11 @@
 
 ## 🚀 Portfolio
 
-**① Two core projects**: Analytics Agent × embedded Eval and the Wukong Agent production pipeline. adquery-lite query & financial reconciliation remains available as Case 03 in section ③.
+**① Two core projects**: Analytics Agent × embedded Eval and the Wukong Agent production pipeline.
 
-**② Five AI / data live demos** (four sanitized versions of real engines or dashboards; Wukong reproduces the real task contract and state machine without connecting to production)
+**② Strategy-product and data-analysis cases** (sanitized): WeCom acquisition-flow redesign, multi-level drill-down framework, query and financial reconciliation, and cross-industry traffic-quality attribution. adquery-lite remains available as Case 03; see [cases.html](https://kinghowang.github.io/kingho-resume/cases.html).
+
+**③ Five AI / data live demos** (core-project demos come first; competitor intelligence and creative diagnostics sit at the bottom of the portfolio page; Wukong reproduces the real task contract and state machine without connecting to production)
 
 | Demo | One-liner | Open |
 |---|---|---|
@@ -30,8 +32,6 @@
 | Competitor Ad Intelligence | Multi-source competitor ad collection + structured retrieval: second-level timelines, multimodal tags, audience drill-down | [demo-advideo.html](https://kinghowang.github.io/kingho-resume/demo-advideo.html) |
 | Creative Segment Diagnostics | Second-by-second video breakdown to locate drop-off points and conversion hooks; dual-creative A/B compare | [demo-creative.html](https://kinghowang.github.io/kingho-resume/demo-creative.html) |
 | Attribution Quality Eval | Golden set + code metrics + LLM-as-judge; quantifies numeric fidelity and mechanism-hallucination rate as a regression gate | [demo-eval.html](https://kinghowang.github.io/kingho-resume/demo-eval.html) |
-
-**③ Strategy-product and data-analysis cases** (sanitized): WeCom acquisition-flow redesign, multi-level drill-down framework, query and financial reconciliation, and cross-industry traffic-quality attribution — see [cases.html](https://kinghowang.github.io/kingho-resume/cases.html).
 
 **④ Methodology write-ups**:
 - [Ad Ops Analysis Playbook](https://github.com/KinghoWang/ad-ops-analysis-playbook) — the rule base behind the analytics agent

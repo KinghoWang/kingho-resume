@@ -25,10 +25,33 @@ test('portfolio separates two core projects from two extension demos', async ({ 
   await expect(extensions.nth(1).locator('a[href="demo-creative.html"]')).toHaveCount(1);
 
   await expect(page.locator('body')).toContainText('5 个 AI / 数据在线 Demo');
-  await expect(page.locator('.demo-lead')).toContainText('取数与财务对账见 ③ 案例 03');
+  await expect(page.locator('.demo-lead')).toContainText('企微链路与取数对账见 ② 案例');
   const reconciliationCase = page.locator('#case2');
   await expect(reconciliationCase).toContainText('自建广告数据取数工具 & 财务对账模块');
   await expect(page.locator('[data-testid="core-project"]').filter({ hasText: 'adquery-lite' })).toHaveCount(0);
+});
+
+test('portfolio places extension demos after the strategy and analysis cases', async ({ page }) => {
+  await page.goto(`${BASE}/cases.html`);
+
+  await expect(page.locator('.page-head .sub')).toContainText('② 策略产品与数据分析案例');
+  await expect(page.locator('.page-head .sub')).toContainText('③ 扩展在线 Demo');
+
+  const order = await page.locator('.section-divider h2').evaluateAll(headings =>
+    headings.map(heading => heading.textContent.trim())
+  );
+  expect(order).toEqual([
+    expect.stringMatching(/^① .*2 组核心项目/),
+    expect.stringMatching(/^② 策略产品 & 数据分析案例/),
+    expect.stringMatching(/^③ 扩展在线 Demo/),
+  ]);
+
+  const footerFollowsExtensions = await page.evaluate(() => {
+    const extension = document.querySelector('[data-section="extension-demos"]');
+    const footer = document.querySelector('footer');
+    return Boolean(extension && footer && (extension.compareDocumentPosition(footer) & Node.DOCUMENT_POSITION_FOLLOWING));
+  });
+  expect(footerFollowsExtensions).toBe(true);
 });
 
 for (const viewport of [

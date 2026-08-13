@@ -17,9 +17,11 @@
 
 ## 🚀 作品集
 
-**① 两组核心项目**：数分机器人 × Eval 质量闭环、悟空 Agent 生产管线。adquery-lite 取数与财务对账保留在 ③ 案例 03。
+**① 两组核心项目**：数分机器人 × Eval 质量闭环、悟空 Agent 生产管线。
 
-**② 5 个 AI / 数据产品 · 在线 Demo**（四个运行真实工具引擎 / 看板的脱敏版本；悟空复现真实任务契约与状态机，不连接生产环境）
+**② 策略产品 & 数据分析案例**（脱敏复刻）：企微获客链路改造、多维下钻分析框架、取数工具 + 财务对账、跨行业流量质量归因方法论。adquery-lite 保留在案例 03，详见 [cases.html](https://kinghowang.github.io/kingho-resume/cases.html)。
+
+**③ 5 个 AI / 数据产品 · 在线 Demo**（核心项目 Demo 优先，竞品情报与创意诊断置于作品集页底；悟空复现真实任务契约与状态机，不连接生产环境）
 
 | Demo | 一句话 | 打开 |
 |---|---|---|
@@ -28,8 +30,6 @@
 | 竞品广告情报引擎 | 多源竞品广告采集 + 结构化检索，秒级时序 / 多模态标签 / 受众下钻 | [demo-advideo.html](https://kinghowang.github.io/kingho-resume/demo-advideo.html) |
 | 创意分段诊断 Demo | 素材逐秒拆解，定位流失点与转化话术，支持双素材 A/B 对比 | [demo-creative.html](https://kinghowang.github.io/kingho-resume/demo-creative.html) |
 | 归因质量 Eval 评测 | 黄金集 + 代码指标 + LLM-as-judge，量化数值忠实率与机制编造率，作回归门禁 | [demo-eval.html](https://kinghowang.github.io/kingho-resume/demo-eval.html) |
-
-**③ 策略产品 & 数据分析案例**（脱敏复刻）：企微获客链路改造、多维下钻分析框架、取数工具 + 财务对账、跨行业流量质量归因方法论 —— 见 [cases.html](https://kinghowang.github.io/kingho-resume/cases.html)。
 
 ## 🔒 脱敏声明
 
