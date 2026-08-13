@@ -242,41 +242,41 @@
   <div class="case-head">
     <div class="case-no">01</div>
     <div>
-      <h2>企微获客链路改造 · 绕开小程序环境限制</h2>
+      <h2>企微获客链路改造 · 移除中老年用户长按门槛</h2>
       <span class="kind">产品案例 ｜ 链路设计 · 已上线 · 回收数据验证 ｜ 场景：小程序广告 → 企微私域获客</span>
     </div>
   </div>
 
   <div class="story">
-    <div class="story-card bg"><div class="lab">背景</div><p>小程序环境<strong>无法调起企业微信「获客助手」一键加微</strong>，原链路只能跳 H5 落地页让用户「长按识别二维码」——对中老年主力用户是跨 App、多步操作的<strong>高摩擦断点</strong>，加微/留资流失严重。</p></div>
-    <div class="story-card act"><div class="lab">动作</div><p>发现小程序<strong>可以原生唤起「企微客服会话」</strong> → 以会话为桥：广告点击直接拉起客服会话，会话内<strong>自动下发获客助手链接</strong>，把「长按识别」替换为<strong>两次点击</strong>，一键加微 + 留资闭环，全程不出微信生态。</p></div>
+    <div class="story-card bg"><div class="lab">背景</div><p>小程序环境<strong>无法调起企业微信「获客助手」一键加微</strong>，原链路只能让用户到 H5「长按识别二维码」。不少中老年主力用户<strong>不熟悉长按识别二维码</strong>，容易卡在持续按住和弹出菜单后的下一步，加微/留资流失严重。</p></div>
+    <div class="story-card act"><div class="lab">动作</div><p>改造<strong>不是为了单纯少一步</strong>，而是移除不符合目标用户习惯的操作：利用小程序可原生唤起的<strong>企微客服会话</strong>，在会话内自动下发获客链接，让用户点击文案或卡片即可继续。</p></div>
     <div class="story-card res"><div class="lab">成果</div><p>回收数据：<strong>曝光-加微率 +50%+</strong>、<strong>曝光-地址率 +40%+</strong>；广告主<strong>后转无损</strong>（前端放量不稀释后端质量），效率 CPM 提升。</p></div>
   </div>
 
-  <p class="demo-pointer"><a href="demo-wecom-flow.html">▶ 打开交互 Demo</a> · 从同一广告起点亲手走完原链路与新链路；全部界面虚构重绘，不含真实素材或链接。</p>
+  <p class="demo-pointer"><a href="demo-wecom-flow.html">▶ 打开交互 Demo</a> · 亲手体验普通点击为何无法通过原链路，以及文案 / 卡片点击如何移除操作门槛；全部界面虚构重绘，不含真实素材或链接。</p>
 
   <div class="panel">
-    <div class="panel-bar"><span class="dot"></span><span class="ttl">链路对比 · 原链路 vs 客服会话桥</span><span class="src">示意重绘 · 已脱敏</span></div>
+    <div class="panel-bar"><span class="dot"></span><span class="ttl">操作门槛对比 · 需学会长按 vs 直接点击</span><span class="src">示意重绘 · 已脱敏</span></div>
     <div class="panel-body">
       <div class="flowgrp">
-        <div class="flow-label old">原链路 ｜ 高摩擦断点</div>
+        <div class="flow-label old">原链路 ｜ 用户必须学会长按识别</div>
         <div class="flowrow">
           <span class="fnode">小程序内广告</span><span class="farr">→</span>
           <span class="fnode">跳转 H5 落地页</span><span class="farr">→</span>
-          <span class="fnode bad">长按识别二维码<small>跨 App · 多步操作 · 断点</small></span><span class="farr">→</span>
+          <span class="fnode bad">长按识别二维码<small>持续按住 · 再从菜单选择</small></span><span class="farr">→</span>
           <span class="fnode">加微 / 留资</span>
         </div>
-        <p class="note">🔒 <b>环境限制</b>：小程序内调不起企业微信「获客助手」一键加微，只能退回「长按识别二维码」——识别成功率低，中老年用户流失集中在这一步。</p>
+        <p class="note">🔒 <b>核心痛点</b>：小程序内调不起企业微信「获客助手」一键加微，只能退回长按方案；中老年主力用户不熟悉长按识别二维码，容易在这一步无法继续。</p>
       </div>
       <div class="flowgrp">
         <div class="flow-label new">新链路 ｜ 客服会话为桥（已上线）</div>
         <div class="flowrow">
           <span class="fnode">小程序内广告</span><span class="farr">→</span>
           <span class="fnode ok">唤起企微客服会话<small>小程序原生支持</small></span><span class="farr">→</span>
-          <span class="fnode ok">会话内自动下发获客链接</span><span class="farr">→</span>
-          <span class="fnode ok">一键加微 + 留资</span>
+          <span class="fnode ok">自动下发文案 + 卡片</span><span class="farr">→</span>
+          <span class="fnode ok">点击任一入口加微 + 留资</span>
         </div>
-        <p class="note">💡 <b>机制</b>：获客助手调不起，但客服会话<b>调得起</b>——把获客助手链接放进会话消息下发，高摩擦动作变两次点击。<b>用平台开放能力绕开平台限制，而非硬闯。</b></p>
+        <p class="note">💡 <b>机制</b>：改造目标不是为了单纯少一步，而是把用户不熟悉的长按与菜单判断，换成更熟悉的点击。获客助手调不起，但客服会话<b>调得起</b>——<b>用平台开放能力绕开平台限制，而非硬闯。</b></p>
       </div>
     </div>
   </div>

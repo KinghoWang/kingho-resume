@@ -117,11 +117,13 @@ test('new contact redraw follows the compact dark profile shown in the reference
   expect(actionBox.y - (sectionBox.y + sectionBox.height)).toBeLessThanOrEqual(24);
 });
 
-test('transition metadata reports standard path counts from ad to added', async ({ page }) => {
-  await expect(page.getByTestId('old-standard-actions')).toHaveText('4');
-  await expect(page.getByTestId('old-friction-actions')).toHaveText('2');
-  await expect(page.getByTestId('new-standard-actions')).toHaveText('3');
-  await expect(page.getByTestId('new-friction-actions')).toHaveText('0');
+test('frames the value as removing the long-press barrier for older users', async ({ page }) => {
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('长按识别');
+  await expect(page.locator('.lede')).toContainText('不是单纯少一步');
+  await expect(page.getByRole('heading', { name: '关键不是少一步，而是移除长按识别门槛' })).toBeVisible();
+  await expect(page.locator('.comparison')).toContainText('需要学会长按识别');
+  await expect(page.locator('.comparison')).toContainText('沿用熟悉的点击操作');
+  await expect(page.locator('.comparison')).not.toContainText('必需用户操作');
 });
 
 test('step rails highlight the screen currently shown on each phone', async ({ page }) => {
@@ -158,6 +160,7 @@ test('old flow rejects a short press and keeps menu side actions non-progressing
   await page.mouse.up();
   await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_H5');
   await expect(page.getByTestId('feedback')).toContainText('请长按二维码');
+  await expect(page.getByTestId('feedback')).toContainText('中老年用户容易卡住');
 
   qrBox = await page.getByTestId('old-qr').boundingBox();
   qrCenter = { x: qrBox.x + qrBox.width / 2, y: qrBox.y + qrBox.height / 2 };
@@ -245,7 +248,7 @@ test('new-flow clicks do not cancel an active old-flow hold', async ({ page }) =
   await expect(page.getByTestId('old-phone')).toHaveAttribute('data-state', 'OLD_MENU');
 });
 
-test('autoplay counts down, starts together, and finishes the new lane first', async ({ page }) => {
+test('autoplay contrasts the click path with the remaining long-press barrier', async ({ page }) => {
   await page.getByTestId('auto-mode').click();
   await expect(page.getByTestId('countdown')).toHaveText('3');
   await expect(page.getByTestId('new-phone')).toHaveAttribute('data-state', 'NEW_ADDED', { timeout: 8500 });
@@ -330,6 +333,8 @@ test('Case 01 links to the demo and preserves the published evidence', async ({ 
   await expect(caseOne).toContainText('曝光-加微率 +50%+');
   await expect(caseOne).toContainText('曝光-地址率 +40%+');
   await expect(caseOne).toContainText('后转无损');
+  await expect(caseOne).toContainText('不熟悉长按识别二维码');
+  await expect(caseOne).toContainText('不是为了单纯少一步');
 
   await page.goto(`${BASE}/demo-wecom-flow.html`);
   await expect(page.getByRole('link', { name: '返回企微获客案例' }))

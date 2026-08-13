@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="企微获客链路改造交互模拟：对照体验原链路长按识别与新链路客服会话双入口。">
+  <meta name="description" content="企微获客链路改造交互模拟：解决中老年用户不熟悉长按识别二维码的操作门槛。">
   <title>企微获客链路交互模拟</title>
   <style>
     :root {
@@ -589,8 +589,8 @@
     <section class="intro" aria-labelledby="page-title">
       <div>
         <p class="eyebrow">企微获客链路改造 · 交互模拟</p>
-        <h1 id="page-title">同一起点，走完两条加微路径</h1>
-        <p class="lede">从同一条虚构广告出发，分别体验原链路的长按识别与新链路的客服会话双入口。</p>
+        <h1 id="page-title">把中老年用户容易卡住的“长按识别”，改成直接点击</h1>
+        <p class="lede">重点不是单纯少一步，而是把用户不熟悉的“持续长按 + 菜单选择”，换成更熟悉的点击文案或卡片。</p>
       </div>
       <div class="controls" aria-label="演示控制">
         <div class="segment" aria-label="操作模式">
@@ -609,7 +609,7 @@
       <article class="lane old" aria-labelledby="old-lane-title">
         <div class="lane-heading">
           <h2 id="old-lane-title">原链路</h2>
-          <p>长按与系统菜单形成高摩擦断点</p>
+          <p>不熟悉长按识别的用户容易卡在这里</p>
         </div>
         <div class="lane-workspace">
           <div class="phone" data-testid="old-phone" data-state="OLD_AD" aria-label="原链路手机模拟"></div>
@@ -620,7 +620,7 @@
       <article class="lane new" aria-labelledby="new-lane-title">
         <div class="lane-heading">
           <h2 id="new-lane-title">新链路</h2>
-          <p>客服会话自动下发文案与卡片双入口</p>
+          <p>文案和卡片都能直接点击，无需学会长按</p>
         </div>
         <div class="lane-workspace">
           <div class="phone" data-testid="new-phone" data-state="NEW_AD" aria-label="新链路手机模拟"></div>
@@ -629,16 +629,16 @@
       </article>
     </section>
 
-    <div class="feedback" data-testid="feedback" role="status" aria-live="polite">两条链路可独立操作。</div>
+    <div class="feedback" data-testid="feedback" role="status" aria-live="polite">核心对比：需要学会长按识别，还是沿用熟悉的点击操作。</div>
 
     <section class="comparison" aria-labelledby="comparison-title">
-      <h2 id="comparison-title">从广告到已添加 · 标准路径对比</h2>
+      <h2 id="comparison-title">关键不是少一步，而是移除长按识别门槛</h2>
       <div class="metrics">
         <table class="metric-table old">
           <caption>原链路</caption>
           <tbody>
-            <tr><th scope="row">必需用户操作</th><td data-testid="old-standard-actions"></td></tr>
-            <tr><th scope="row">高摩擦动作</th><td data-testid="old-friction-actions"></td></tr>
+            <tr><th scope="row">核心操作门槛</th><td>需要学会长按识别</td></tr>
+            <tr><th scope="row">识别后还要</th><td>从系统菜单选对入口</td></tr>
             <tr><th scope="row">获客入口</th><td>二维码</td></tr>
             <tr><th scope="row">当前状态</th><td data-testid="old-completion"></td></tr>
           </tbody>
@@ -646,14 +646,14 @@
         <table class="metric-table new">
           <caption>新链路</caption>
           <tbody>
-            <tr><th scope="row">必需用户操作</th><td data-testid="new-standard-actions"></td></tr>
-            <tr><th scope="row">高摩擦动作</th><td data-testid="new-friction-actions"></td></tr>
+            <tr><th scope="row">核心操作方式</th><td>沿用熟悉的点击操作</td></tr>
+            <tr><th scope="row">入口选择</th><td>文案或卡片都可点击</td></tr>
             <tr><th scope="row">获客入口</th><td>文案 + 卡片</td></tr>
             <tr><th scope="row">当前状态</th><td data-testid="new-completion"></td></tr>
           </tbody>
         </table>
       </div>
-      <p class="metric-note">操作数按标准成功路径计算；短按失败、取消菜单等尝试不计入。页面不连接真实企业微信，也不提交任何信息。</p>
+      <p class="metric-note">客服会话只是实现路径，核心价值是把“需要学习的手势”换成目标用户已经熟悉的点击。页面不连接真实企业微信，也不提交任何信息。</p>
     </section>
   </main>
 
@@ -663,51 +663,37 @@
       countdown: null,
       oldLane: 'OLD_AD',
       newLane: 'NEW_AD',
-      feedback: '两条链路可独立操作。'
+      feedback: '核心对比：需要学会长按识别，还是沿用熟悉的点击操作。'
     });
 
     const TRANSITIONS = Object.freeze({
       old: {
-        OLD_AD: { CLAIM_CLICK: { to: 'OLD_H5', userAction: 1, highFriction: 0 } },
-        OLD_H5: { HOLD_START: { to: 'OLD_HOLDING', userAction: 0, highFriction: 0 } },
+        OLD_AD: { CLAIM_CLICK: { to: 'OLD_H5' } },
+        OLD_H5: { HOLD_START: { to: 'OLD_HOLDING' } },
         OLD_HOLDING: {
-          HOLD_COMPLETE: { to: 'OLD_MENU', userAction: 1, highFriction: 1 },
-          HOLD_ABORT: { to: 'OLD_H5', userAction: 0, highFriction: 0 }
+          HOLD_COMPLETE: { to: 'OLD_MENU' },
+          HOLD_ABORT: { to: 'OLD_H5' }
         },
         OLD_MENU: {
-          MENU_OPEN_CONTACT: { to: 'OLD_CONTACT', userAction: 1, highFriction: 1 },
-          MENU_CANCEL: { to: 'OLD_H5', userAction: 0, highFriction: 0 },
-          MENU_SHARE: { to: 'OLD_MENU', userAction: 0, highFriction: 0 },
-          MENU_FAVORITE: { to: 'OLD_MENU', userAction: 0, highFriction: 0 },
-          MENU_SAVE: { to: 'OLD_MENU', userAction: 0, highFriction: 0 }
+          MENU_OPEN_CONTACT: { to: 'OLD_CONTACT' },
+          MENU_CANCEL: { to: 'OLD_H5' },
+          MENU_SHARE: { to: 'OLD_MENU' },
+          MENU_FAVORITE: { to: 'OLD_MENU' },
+          MENU_SAVE: { to: 'OLD_MENU' }
         },
-        OLD_CONTACT: { ADD_CONTACT: { to: 'OLD_ADDED', userAction: 1, highFriction: 0 } }
+        OLD_CONTACT: { ADD_CONTACT: { to: 'OLD_ADDED' } }
       },
       new: {
-        NEW_AD: { CLAIM_CLICK: { to: 'NEW_CHAT', userAction: 1, highFriction: 0 } },
-        NEW_CHAT: { SEND_TEXT: { to: 'NEW_TEXT_SENT', userAction: 0, highFriction: 0 } },
+        NEW_AD: { CLAIM_CLICK: { to: 'NEW_CHAT' } },
+        NEW_CHAT: { SEND_TEXT: { to: 'NEW_TEXT_SENT' } },
         NEW_TEXT_SENT: {
-          SEND_CARD: { to: 'NEW_BOTH_SENT', userAction: 0, highFriction: 0 },
-          ACQUISITION_CLICK: { to: 'NEW_LINK_LOADING', userAction: 1, highFriction: 0 }
+          SEND_CARD: { to: 'NEW_BOTH_SENT' },
+          ACQUISITION_CLICK: { to: 'NEW_LINK_LOADING' }
         },
-        NEW_BOTH_SENT: { ACQUISITION_CLICK: { to: 'NEW_LINK_LOADING', userAction: 1, highFriction: 0 } },
-        NEW_LINK_LOADING: { LINK_RESOLVE: { to: 'NEW_CONTACT', userAction: 0, highFriction: 0 } },
-        NEW_CONTACT: { ADD_CONTACT: { to: 'NEW_ADDED', userAction: 1, highFriction: 0 } }
+        NEW_BOTH_SENT: { ACQUISITION_CLICK: { to: 'NEW_LINK_LOADING' } },
+        NEW_LINK_LOADING: { LINK_RESOLVE: { to: 'NEW_CONTACT' } },
+        NEW_CONTACT: { ADD_CONTACT: { to: 'NEW_ADDED' } }
       }
-    });
-
-    const STANDARD_PATHS = Object.freeze({
-      old: [
-        ['OLD_AD', 'CLAIM_CLICK'],
-        ['OLD_HOLDING', 'HOLD_COMPLETE'],
-        ['OLD_MENU', 'MENU_OPEN_CONTACT'],
-        ['OLD_CONTACT', 'ADD_CONTACT']
-      ],
-      new: [
-        ['NEW_AD', 'CLAIM_CLICK'],
-        ['NEW_BOTH_SENT', 'ACQUISITION_CLICK'],
-        ['NEW_CONTACT', 'ADD_CONTACT']
-      ]
     });
 
     const OLD_STEPS = Object.freeze([
@@ -784,12 +770,6 @@
       state[stateKey] = transition.to;
       render();
       return true;
-    }
-
-    function sumPath(lane, field) {
-      return STANDARD_PATHS[lane].reduce((sum, [from, event]) => {
-        return sum + TRANSITIONS[lane][from][event][field];
-      }, 0);
     }
 
     function deviceStatus(theme = 'light', time = '17:34') {
@@ -1032,10 +1012,6 @@
     }
 
     function renderMetrics() {
-      document.querySelector('[data-testid="old-standard-actions"]').textContent = sumPath('old', 'userAction');
-      document.querySelector('[data-testid="old-friction-actions"]').textContent = sumPath('old', 'highFriction');
-      document.querySelector('[data-testid="new-standard-actions"]').textContent = sumPath('new', 'userAction');
-      document.querySelector('[data-testid="new-friction-actions"]').textContent = sumPath('new', 'highFriction');
       document.querySelector('[data-testid="old-completion"]').textContent = completionLabel(state.oldLane);
       document.querySelector('[data-testid="new-completion"]').textContent = completionLabel(state.newLane);
     }
@@ -1105,9 +1081,9 @@
       if (lane === 'new' && event === 'SEND_CARD') state.feedback = '新链路已补齐含同一链接的卡片，两个入口均可点击。';
       if (lane === 'new' && event === 'ACQUISITION_CLICK') state.feedback = '新链路正在打开获客入口。';
       if (lane === 'new' && event === 'LINK_RESOLVE') state.feedback = '获客入口已打开联系人资料。';
-      if (lane === 'new' && event === 'ADD_CONTACT') state.feedback = '新链路已先完成，原链路仍在继续。';
+      if (lane === 'new' && event === 'ADD_CONTACT') state.feedback = '新链路通过点击完成添加；原链路仍卡在长按与菜单选择。';
       if (lane === 'old' && event === 'HOLD_COMPLETE') state.feedback = '原链路完成长按，仍需在系统菜单中选择联系人。';
-      if (lane === 'old' && event === 'ADD_CONTACT') state.feedback = '自动演示完成：两条链路均已添加。';
+      if (lane === 'old' && event === 'ADD_CONTACT') state.feedback = '对比完成：原链路要求掌握长按和菜单选择，新链路只需点击。';
       feedback.textContent = state.feedback;
     }
 
@@ -1174,7 +1150,7 @@
       return true;
     }
 
-    function abortHold(message = '请长按二维码 0.8 秒。') {
+    function abortHold(message = '点击没有反应，请长按二维码 0.8 秒。这正是中老年用户容易卡住的操作。') {
       if (!hold.active) return false;
       clearTimer(hold.timer);
       hold.active = false;
