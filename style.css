@@ -60,11 +60,27 @@ body{
 .contact-row a{color:inherit;text-decoration:underline;text-decoration-color:rgba(192,57,43,.45);text-underline-offset:3px}
 .contact-row a:hover{color:var(--accent);text-decoration-color:var(--accent)}
 .contact-row a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
-.wechat-contact{flex:0 0 104px;margin:0;text-align:center;color:var(--muted);font-size:.72rem;line-height:1.35}
-.wechat-contact img{display:block;width:96px;height:96px;margin:0 auto 7px;object-fit:contain;background:#fff}
-.wechat-contact figcaption{max-width:104px}
-.wechat-contact figcaption > *{display:block}
-.wechat-contact .wechat-id{color:var(--ink);font-size:.74rem;font-weight:600;overflow-wrap:anywhere}
+/* 微信：contact-row 内联入口 + 点击弹层 */
+.wechat-trigger{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;
+  text-decoration:underline;text-decoration-color:rgba(192,57,43,.45);text-underline-offset:3px}
+.wechat-trigger:hover{color:var(--accent);text-decoration-color:var(--accent)}
+.wechat-trigger:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+.wechat-dialog{border:0;padding:0;margin:auto;background:transparent;width:min(92vw,320px);max-width:none}
+.wechat-dialog::backdrop{background:rgba(25,34,46,.55)}
+.wechat-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);
+  padding:22px 24px 18px;text-align:center;box-shadow:0 18px 48px rgba(0,0,0,.18)}
+.wechat-card img{display:block;width:230px;height:230px;padding:20px;margin:0 auto 12px;object-fit:contain;background:#fff;border-radius:8px}
+.wechat-card .wc-cap{font-size:.78rem;color:var(--muted);margin-bottom:8px}
+.wechat-card .wechat-id{display:block;font-family:var(--mono,'SFMono-Regular',Consolas,monospace);
+  font-size:.95rem;font-weight:700;color:var(--ink);letter-spacing:0;overflow-wrap:anywhere;margin-bottom:14px}
+.wechat-card .wc-actions{display:flex;gap:10px;justify-content:center}
+.wechat-card button{font:inherit;font-size:.8rem;padding:7px 16px;border-radius:7px;cursor:pointer;
+  border:1px solid var(--border);background:#fff;color:#444;transition:all .18s}
+.wechat-card #wechatCopy{min-width:140px}
+.wechat-card #wechatClose{min-width:64px}
+.wechat-card button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.wechat-card button:hover{opacity:.86}
+.wechat-card button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 /* Section */
 .section{max-width:960px;margin:0 auto;padding:0 48px 56px;opacity:0;transform:translateY(32px)}
@@ -151,9 +167,7 @@ body{
 @media(max-width:640px){
   .hero{flex-direction:column;text-align:center;padding:28px 20px 20px;gap:14px}
   .contact-row{justify-content:center}
-  .wechat-contact{flex-basis:auto;max-width:140px}
-  .wechat-contact img{width:128px;height:128px}
-  .wechat-contact figcaption{max-width:140px}
+  .wechat-card img{width:min(calc(92vw - 48px),230px);height:min(calc(92vw - 48px),230px)}
   .bento{grid-template-columns:1fr}
   .info-grid{grid-template-columns:1fr}
   .section{padding:0 20px 40px}

@@ -23,14 +23,15 @@
 
 **② Three strategy-product and data-analysis cases** (sanitized): WeCom acquisition-flow redesign, an algorithmic-traffic decision reversal, and financial-reconciliation data integrity. adquery-lite remains available as Case 03; see [cases.html](https://kinghowang.github.io/kingho-resume/cases.html).
 
-**③ Two extension live demos**: competitor intelligence and creative diagnostics, placed at the bottom of the portfolio page. The core and extension sections contain **five AI / data product demos** in total; Wukong reproduces the real task contract and state machine without connecting to production.
+**③ Two extension live demos**: competitor intelligence and creative diagnostics, placed at the bottom of the portfolio page. The site contains **six live demos** in total: analytics, Eval, Wukong, the WeCom acquisition flow, competitor intelligence and creative diagnostics. Wukong reproduces the real task contract and state machine without connecting to production.
 
-**Live demo index (5 total)**
+**Live demo index (6 total)**
 
 | Demo | One-liner | Open |
 |---|---|---|
 | Analytics Agent | Ad daily report with rule engine + LLM attribution; all numbers computed by code, model only narrates — anti-hallucination by architecture | [demo-shufen.html](https://kinghowang.github.io/kingho-resume/demo-shufen.html) |
 | Wukong Agent Pipeline | Interactive sanitized state machine for task cards, verification gates, allowlisted repair, human review, and audit backfill | [demo-wukong.html](https://kinghowang.github.io/kingho-resume/demo-wukong.html) |
+| WeCom Acquisition Flow | Contrasts unfamiliar long-press QR recognition with familiar text and card taps for older users | [demo-wecom-flow.html](https://kinghowang.github.io/kingho-resume/demo-wecom-flow.html) |
 | Competitor Ad Intelligence | Multi-source competitor ad collection + structured retrieval: second-level timelines, multimodal tags, audience drill-down | [demo-advideo.html](https://kinghowang.github.io/kingho-resume/demo-advideo.html) |
 | Creative Segment Diagnostics | Second-by-second video breakdown to locate drop-off points and conversion hooks; dual-creative A/B compare | [demo-creative.html](https://kinghowang.github.io/kingho-resume/demo-creative.html) |
 | Attribution Quality Eval | Golden set + code metrics + LLM-as-judge; quantifies numeric fidelity and mechanism-hallucination rate as a regression gate | [demo-eval.html](https://kinghowang.github.io/kingho-resume/demo-eval.html) |

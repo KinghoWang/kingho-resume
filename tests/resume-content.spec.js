@@ -11,11 +11,15 @@ test('resume contact details use real email and phone links', async ({ page }) =
     await expect(contacts.locator('a[href^="mailto:"]')).toHaveCount(1);
     await expect(contacts.locator('a[href^="tel:"]')).toHaveCount(1);
 
-    const wechat = page.locator('[data-testid="wechat-contact"]');
-    const qr = wechat.locator('img[src="wechat-qr.png"]');
-    await expect(wechat).toHaveCount(1);
-    await expect(wechat).toContainText(/微信扫码联系|Scan to connect on WeChat/);
-    await expect(wechat.locator('.wechat-id')).toHaveText('WJH748247724');
+    const trigger = page.locator('[data-testid="wechat-trigger"]');
+    const dialog = page.locator('[data-testid="wechat-dialog"]');
+    const qr = dialog.locator('img[src="wechat-qr.png"]');
+    await expect(trigger).toBeVisible();
+    await expect(dialog).not.toBeVisible();
+    await trigger.click();
+    await expect(dialog).toBeVisible();
+    await expect(dialog).toContainText(/微信扫码添加|Scan to connect/);
+    await expect(dialog.locator('.wechat-id')).toHaveText('WJH748247724');
     await expect(page.getByText('WJH748247724', { exact: true })).toHaveCount(1);
     await expect(qr).toBeVisible();
     const qrGeometry = await qr.evaluate((image) => ({
@@ -26,9 +30,55 @@ test('resume contact details use real email and phone links', async ({ page }) =
     }));
     expect(qrGeometry.naturalWidth).toBe(720);
     expect(qrGeometry.naturalHeight).toBe(720);
-    expect(qrGeometry.width).toBeGreaterThanOrEqual(88);
-    expect(qrGeometry.height).toBeGreaterThanOrEqual(88);
+    expect(qrGeometry.width).toBeGreaterThanOrEqual(180);
+    expect(qrGeometry.height).toBeGreaterThanOrEqual(180);
+    await dialog.locator('#wechatClose').click();
+    await expect(dialog).not.toBeVisible();
+    await trigger.click();
+    await page.keyboard.press('Escape');
+    await expect(dialog).not.toBeVisible();
   }
+});
+
+test('mobile WeChat dialog is centered and contained within the viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 800 });
+  await page.goto(`${BASE}/index.html`);
+  await page.locator('[data-testid="wechat-trigger"]').click();
+  const geometry = await page.locator('[data-testid="wechat-dialog"]').evaluate((dialog) => {
+    const box = dialog.getBoundingClientRect();
+    return {
+      horizontalOffset: Math.abs((box.left + box.right) / 2 - innerWidth / 2),
+      verticalOffset: Math.abs((box.top + box.bottom) / 2 - innerHeight / 2),
+      inside: box.left >= 0 && box.top >= 0 && box.right <= innerWidth && box.bottom <= innerHeight,
+      documentWidth: document.documentElement.scrollWidth,
+    };
+  });
+  expect(geometry.horizontalOffset).toBeLessThanOrEqual(1);
+  expect(geometry.verticalOffset).toBeLessThanOrEqual(1);
+  expect(geometry.inside).toBe(true);
+  expect(geometry.documentWidth).toBeLessThanOrEqual(360);
+});
+
+test('WeChat dialog copies the ID and reports clipboard failures honestly', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: BASE });
+  await page.goto(`${BASE}/index.html`);
+  await page.locator('[data-testid="wechat-trigger"]').click();
+  const copy = page.locator('#wechatCopy');
+  await copy.click();
+  await expect(copy).toHaveText('已复制');
+  await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe('WJH748247724');
+
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: () => Promise.reject(new Error('blocked')) },
+    });
+    document.execCommand = () => false;
+  });
+  await page.goto(`${BASE}/en.html`);
+  await page.locator('[data-testid="wechat-trigger"]').click();
+  await page.locator('#wechatCopy').click();
+  await expect(page.locator('#wechatCopy')).toHaveText('Copy manually');
 });
 
 test('Chinese resume presents four product, AI and data projects with WeCom first', async ({ page }) => {
@@ -103,23 +153,28 @@ test('English resume presents four product, AI and data projects with WeCom firs
   await expect(page.getByRole('link', { name: '中文版简历' })).toHaveAttribute('href', 'index.html');
 });
 
-test('resume heroes distinguish five AI/data demos from one WeCom interaction demo', async ({ page }) => {
+test('resume heroes use the unified six-demo count', async ({ page }) => {
   await page.goto(`${BASE}/index.html`);
-  await expect(page.locator('.hero-links a[href="cases.html"]')).toContainText('5 个 AI / 数据 Demo + 1 个企微交互演示');
+  await expect(page.locator('.hero-links a[href="cases.html"]')).toContainText('6 个在线 Demo');
 
   await page.goto(`${BASE}/en.html`);
-  await expect(page.locator('.hero-links a[href="cases.html"]')).toContainText('5 AI/data demos + 1 interactive WeCom flow');
+  await expect(page.locator('.hero-links a[href="cases.html"]')).toContainText('6 live demos');
 });
 
-test('portfolio publishes five live AI and data demo cards', async ({ page }) => {
+test('portfolio publishes six unique online demos', async ({ page }) => {
   await page.goto(`${BASE}/cases.html`);
   await expect(page.locator('.section-divider').first()).toContainText('自建 AI 产品');
-  await expect(page.locator('.demo-lead')).toContainText('5 个 AI / 数据在线 Demo');
+  await expect(page.locator('.demo-lead')).toContainText('6 个在线 Demo');
   await expect(page.locator('[data-testid="core-project"]')).toHaveCount(2);
   await expect(page.locator('[data-testid="extension-demo"]')).toHaveCount(2);
   await expect(page.locator('.demo-gallery a[href="demo-wukong.html"]')).toHaveCount(1);
-  for (const href of ['demo-shufen.html', 'demo-eval.html', 'demo-wukong.html', 'demo-advideo.html', 'demo-creative.html']) {
-    await expect(page.locator(`.demo-gallery a[href="${href}"]`)).toHaveCount(1);
+  const expected = ['demo-advideo.html', 'demo-creative.html', 'demo-eval.html', 'demo-shufen.html', 'demo-wecom-flow.html', 'demo-wukong.html'];
+  const published = await page.locator('a[href^="demo-"][href$=".html"]').evaluateAll((links) =>
+    [...new Set(links.map((link) => link.getAttribute('href')))].sort()
+  );
+  expect(published).toEqual(expected);
+  for (const href of expected) {
+    await expect(page.locator(`a[href="${href}"]`).first()).toBeVisible();
   }
 });
 

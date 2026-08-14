@@ -10,12 +10,14 @@ test('README hierarchy matches the portfolio section counts', () => {
 
   expect(chinese).toContain('**② 3 个策略产品 & 数据分析案例**');
   expect(chinese).toContain('**③ 2 个扩展在线 Demo**');
-  expect(chinese).toContain('核心与扩展区合计 **5 个 AI / 数据产品在线 Demo**');
-  expect(chinese).toContain('**在线 Demo 总表（5 个）**');
+  expect(chinese).toContain('全站共 **6 个在线 Demo**');
+  expect(chinese).toContain('**在线 Demo 总表（6 个）**');
+  expect(chinese).toContain('demo-wecom-flow.html');
   expect(english).toContain('**② Three strategy-product and data-analysis cases**');
   expect(english).toContain('**③ Two extension live demos**');
-  expect(english).toContain('The core and extension sections contain **five AI / data product demos** in total');
-  expect(english).toContain('**Live demo index (5 total)**');
+  expect(english).toContain('The site contains **six live demos** in total');
+  expect(english).toContain('**Live demo index (6 total)**');
+  expect(english).toContain('demo-wecom-flow.html');
 });
 
 test('portfolio separates two core projects from two extension demos', async ({ page }) => {
@@ -40,10 +42,9 @@ test('portfolio separates two core projects from two extension demos', async ({ 
   await expect(extensions.nth(1)).toContainText('创意分段诊断 Demo');
   await expect(extensions.nth(1).locator('a[href="demo-creative.html"]')).toHaveCount(1);
 
-  await expect(page.locator('body')).toContainText('5 个 AI / 数据在线 Demo');
-  await expect(page.locator('.demo-lead')).toContainText('核心与扩展区共 5 个 AI / 数据在线 Demo');
-  await expect(page.locator('.demo-lead')).toContainText('企微交互演示另见 ② 案例 01');
-  await expect(page.locator('.demo-lead')).toContainText('取数与财务对账见 ② 案例 03');
+  await expect(page.locator('body')).toContainText('6 个在线 Demo');
+  await expect(page.locator('.demo-lead')).toContainText('全站共 6 个在线 Demo');
+  await expect(page.locator('.demo-lead')).toContainText('企微交互演示见 ② 案例 01');
   const reconciliationCase = page.locator('#case2');
   await expect(reconciliationCase).toContainText('财务对账数据可信性 · 自建工具与三条业务铁律');
   await expect(page.locator('[data-testid="core-project"]').filter({ hasText: 'adquery-lite' })).toHaveCount(0);
