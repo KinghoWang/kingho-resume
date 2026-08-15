@@ -1,0 +1,7 @@
+# 允许抓取全站（简历页 + 作品集 + 各 Demo 均为对外展示内容）。
+# 已删除页面需要让爬虫重新抓取并看到 404；历史跳转页也需要让爬虫读取 canonical。
+
+User-agent: *
+Allow: /
+
+Sitemap: https://kinghowang.github.io/kingho-resume/sitemap.xml

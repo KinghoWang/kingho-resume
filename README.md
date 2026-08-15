@@ -13,7 +13,8 @@
 | 版本 | 定位 | 链接 |
 |---|---|---|
 | 主页（默认） | **AI 商业化产品经理** | [index.html](https://kinghowang.github.io/kingho-resume/) |
-| 商业化广告运营版 | 面向广告运营 / 增长岗 | [resume-adops.html](https://kinghowang.github.io/kingho-resume/resume-adops.html) |
+| English | 同一份简历的英文版 | [en.html](https://kinghowang.github.io/kingho-resume/en.html) |
+| PDF | 投递版（单页） | [下载](https://kinghowang.github.io/kingho-resume/kingho-resume-ai-pm.pdf) |
 
 ## 🚀 作品集
 

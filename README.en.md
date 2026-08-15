@@ -6,7 +6,7 @@
 
 **Live site 👉 https://kinghowang.github.io/kingho-resume/**
 
-*Note: the site content is currently in Chinese (targeting domestic roles). This README provides the English overview.*
+*Note: the site targets roles in China, so the default page is in Chinese. A full English résumé is available at [en.html](https://kinghowang.github.io/kingho-resume/en.html); the demos remain in Chinese.*
 
 ---
 
@@ -14,8 +14,9 @@
 
 | Version | Positioning | Link |
 |---|---|---|
-| Home (default) | **AI Commercialization Product Manager** | [index.html](https://kinghowang.github.io/kingho-resume/) |
-| Ad-ops version | For ad operations / growth roles | [resume-adops.html](https://kinghowang.github.io/kingho-resume/resume-adops.html) |
+| Home (default) | **AI Commercialization Product Manager** (Chinese) | [index.html](https://kinghowang.github.io/kingho-resume/) |
+| English | Same résumé, English | [en.html](https://kinghowang.github.io/kingho-resume/en.html) |
+| PDF | One-page version for applications | [Download](https://kinghowang.github.io/kingho-resume/kingho-resume-ai-pm.pdf) |
 
 ## 🚀 Portfolio
 
