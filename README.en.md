@@ -1,4 +1,4 @@
-# Kingho Wang — AI Commercialization PM · Resume & Portfolio
+# Kingho Wang — Commercial Strategy / AI Commercialization PM · Resume & Portfolio
 
 **English** | [中文](./README.md)
 
@@ -14,7 +14,7 @@
 
 | Version | Positioning | Link |
 |---|---|---|
-| Home (default) | **AI Commercialization Product Manager** (Chinese) | [index.html](https://kinghowang.github.io/kingho-resume/) |
+| Home (default) | **Commercial Strategy / AI Commercialization PM** (Chinese) | [index.html](https://kinghowang.github.io/kingho-resume/) |
 | English | Same résumé, English | [en.html](https://kinghowang.github.io/kingho-resume/en.html) |
 | PDF | One-page version for applications | [Download](https://kinghowang.github.io/kingho-resume/kingho-resume-ai-pm.pdf) |
 

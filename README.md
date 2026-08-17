@@ -1,4 +1,4 @@
-# 王钧灏 · AI 商业化产品 / 数据驱动增长 — 简历 & 作品集
+# 王钧灏 · 商业化策略 / AI 商业化产品 — 简历 & 作品集
 
 **中文** | [English](./README.en.md)
 
@@ -12,7 +12,7 @@
 
 | 版本 | 定位 | 链接 |
 |---|---|---|
-| 主页（默认） | **AI 商业化产品经理** | [index.html](https://kinghowang.github.io/kingho-resume/) |
+| 主页（默认） | **商业化策略 / AI 商业化产品经理** | [index.html](https://kinghowang.github.io/kingho-resume/) |
 | English | 同一份简历的英文版 | [en.html](https://kinghowang.github.io/kingho-resume/en.html) |
 | PDF | 投递版（单页） | [下载](https://kinghowang.github.io/kingho-resume/kingho-resume-ai-pm.pdf) |
 
