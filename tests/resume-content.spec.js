@@ -96,6 +96,7 @@ test('Chinese resume presents three product, AI and data projects with WeCom fir
   const creative = cards.nth(1);
   await expect(creative.locator('h3')).toContainText('基于广告数据的 AI 素材生产与投放验证');
   await expect(creative).toContainText('逐秒行为及分段聚合数据');
+  await expect(creative).toContainText('人工判断');
   await expect(creative).toContainText('grok-built');
   await expect(creative).toContainText('非多模态模型');
   await expect(creative).toContainText('自动质检');
@@ -108,6 +109,8 @@ test('Chinese resume presents three product, AI and data projects with WeCom fir
   await expect(reporting.locator('h3')).toContainText('AI 广告日报与数据排查流程');
   await expect(reporting).toContainText('小时级缩短至分钟级');
   await expect(reporting).toContainText('公司内部大数据看板 Grafana-Lite');
+  await expect(reporting).toContainText(/运营(?:人员)?[\s\S]{0,100}下钻验证/);
+  await expect(reporting).toContainText(/不(?:是)?直接(?:采用|接受)\s*AI\s*结论/);
   await expect(reporting).toContainText('每周向产研提交 1 至 2 份');
   await expect(reporting.locator('a[href="demo-shufen.html"]')).toHaveCount(1);
   await expect(reporting.locator('a[href="demo-eval.html"]')).toHaveCount(1);
@@ -132,11 +135,13 @@ test('English resume presents three product, AI and data projects with WeCom fir
   const creative = cards.nth(1);
   await expect(creative.locator('h3')).toContainText('Data-Led AI Ad-Creative Production and Validation');
   await expect(creative).toContainText('second-by-second behavior and segment-level aggregates');
+  await expect(creative).toContainText(/\bmanual(?:ly)?\b/i);
   await expect(creative).toContainText('grok-built');
   await expect(creative).toContainText('non-multimodal model');
   await expect(creative).toContainText('automated QA');
   await expect(creative).toContainText('human spot checks');
   await expect(creative).toContainText('same-period, same-SKU full creative set');
+  await expect(creative).toContainText('upper-middle');
   await expect(creative.locator('a[href="demo-creative.html"]')).toHaveCount(1);
   await expect(creative.locator('a[href="demo-wukong.html"]')).toHaveCount(1);
 
@@ -144,6 +149,8 @@ test('English resume presents three product, AI and data projects with WeCom fir
   await expect(reporting.locator('h3')).toContainText('AI Ad Reporting and Data Investigation Workflow');
   await expect(reporting).toContainText('from hours to minutes');
   await expect(reporting).toContainText('internal big-data dashboard Grafana-Lite');
+  await expect(reporting).toContainText(/operators?[\s\S]{0,120}\bverify\b/i);
+  await expect(reporting).toContainText(/(?:instead of|rather than|do not)\s+(?:directly\s+)?accept(?:ing)?\s+(?:the\s+)?AI conclusions?(?:\s+directly)?/i);
   await expect(reporting).toContainText('one to two MRDs per week');
   await expect(reporting.locator('a[href="demo-shufen.html"]')).toHaveCount(1);
   await expect(reporting.locator('a[href="demo-eval.html"]')).toHaveCount(1);
@@ -195,7 +202,7 @@ test('resume keeps contribution claims tied to their verified evidence', async (
     await expect(page.locator('.statwall')).toHaveCount(0);
     await expect(page.locator('.ai-grid > .ai-card')).toHaveCount(3);
     await expect(page.locator('body')).toContainText(/5%\s*(?:→|to)\s*90%\+/);
-    await expect(page.locator('body')).toContainText(/低于大盘.*14%|14%\s*below.*benchmark/i);
+    await expect(page.locator('body')).toContainText(/低于大盘.*14%|较大盘低\s*14%|14%\s*below.*benchmark/i);
     await expect(page.locator('body')).toContainText(/20%\s*(?:→|to)\s*60%/i);
     await expect(page.locator('body')).not.toContainText('+287%');
     await expect(page.locator('body')).not.toContainText('opening a new closed-loop');
