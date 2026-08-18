@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Validate the public creative demo's aliases, references, and synthetic metrics."""
 import collections
+import hashlib
 import json
 import math
 import re
@@ -9,6 +10,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent.parent
+SAMPLE_VIDEO = ROOT / "demo-creative-sample.mp4"
+SAMPLE_VIDEO_SHA256 = "7d3b35ef6bca4c9399690b22ad73463af69ddee233d505047168828cfb2f3c6d"
 
 
 def load_db(path: Path):
@@ -67,10 +70,14 @@ def verify(path: Path):
         check(item.get("creative_id") in merged_ids, f"{key}: representative creative is not in merged_ids")
         check(item.get("md5") in ("", None), f"{key}: md5 was not cleared")
         check(item.get("material_id") in ("", None), f"{key}: material_id was not cleared")
-        check(item.get("video_url") in ("", None), f"{key}: video_url was not cleared")
+        if key == "MAT_045":
+            check(item.get("video_url") == SAMPLE_VIDEO.name, f"{key}: unexpected sample video")
+            check(item.get("title") == "素材045 ▶ 含示意视频", f"{key}: unexpected sample-video title")
+        else:
+            check(item.get("video_url") in ("", None), f"{key}: video_url was not cleared")
+            check(bool(re.fullmatch(r"素材\d{3}", item.get("title", ""))), f"{key}: invalid title alias")
         check(item.get("post_url") in ("", None), f"{key}: post_url was not cleared")
         check(bool(re.fullmatch(r"VIDEO_DEMO_\d{3}", item.get("post_id", ""))), f"{key}: invalid post_id alias")
-        check(bool(re.fullmatch(r"素材\d{3}", item.get("title", ""))), f"{key}: invalid title alias")
 
         performance = item.get("performance", {})
         view = performance.get("total_view", 0)
@@ -135,6 +142,10 @@ def verify(path: Path):
 
     check(segment_total == 1100, f"segments: expected 1100, got {segment_total}")
     check(len(uid_owner) == segment_total, "segment UIDs are not unique")
+    check(SAMPLE_VIDEO.exists(), f"sample video is missing: {SAMPLE_VIDEO.name}")
+    if SAMPLE_VIDEO.exists():
+        sample_hash = hashlib.sha256(SAMPLE_VIDEO.read_bytes()).hexdigest()
+        check(sample_hash == SAMPLE_VIDEO_SHA256, "sample video hash changed without review")
 
     seconds = db.get("seconds", {})
     check(set(seconds) == material_keys, "seconds keys do not exactly match material keys")
