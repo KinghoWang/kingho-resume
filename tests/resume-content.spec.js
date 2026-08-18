@@ -96,7 +96,7 @@ test('Chinese resume presents three product, AI and data projects with WeCom fir
   const creative = cards.nth(1);
   await expect(creative.locator('h3')).toContainText('基于广告数据的 AI 素材生产与投放验证');
   await expect(creative).toContainText('逐秒行为及分段聚合数据');
-  await expect(creative).toContainText('人工判断');
+  await expect(creative).toContainText(/逐秒行为及分段聚合数据(?:[\s，,；;：:]|并|再|后|由我|通过){0,16}人工判断/);
   await expect(creative).toContainText('grok-built');
   await expect(creative).toContainText('非多模态模型');
   await expect(creative).toContainText('自动质检');
@@ -135,7 +135,9 @@ test('English resume presents three product, AI and data projects with WeCom fir
   const creative = cards.nth(1);
   await expect(creative.locator('h3')).toContainText('Data-Led AI Ad-Creative Production and Validation');
   await expect(creative).toContainText('second-by-second behavior and segment-level aggregates');
-  await expect(creative).toContainText(/\bmanual(?:ly)?\b/i);
+  await expect(creative).toContainText(
+    /(?:manual analysis|manually analy[sz](?:e[sd]?|ing))(?:\s|[,;:-]|\bof\b|\bthe\b){1,12}second-by-second behavior and segment-level aggregates/i
+  );
   await expect(creative).toContainText('grok-built');
   await expect(creative).toContainText('non-multimodal model');
   await expect(creative).toContainText('automated QA');
