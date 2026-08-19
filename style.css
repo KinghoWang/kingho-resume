@@ -120,7 +120,7 @@ body{
 .resume-project__rail span{writing-mode:vertical-rl;color:var(--muted);font-size:.68rem}
 .resume-project__main{min-width:0;padding:22px 24px 18px}
 .resume-project__header h3{font-family:var(--font-display);font-size:1.22rem;line-height:1.35;font-weight:700}
-.resume-project__meta{margin-top:4px;color:var(--muted);font-size:.75rem}
+.resume-project__meta{margin-top:4px;color:#657274;font-size:.75rem}
 .resume-project__steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:18px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
 .resume-project__step{min-width:0;padding:15px 18px 15px 0}
 .resume-project__step+.resume-project__step{border-left:1px solid var(--border);padding-left:18px}
