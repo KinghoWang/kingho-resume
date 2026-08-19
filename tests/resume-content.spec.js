@@ -493,7 +493,7 @@ for (const viewport of [
         expectWithinOnePixel(box.width, listBox.width);
       }
 
-      await expect(page.locator('footer')).toBeVisible();
+      await expect(page.locator('body > footer.footer')).toBeVisible();
     }
   });
 }
