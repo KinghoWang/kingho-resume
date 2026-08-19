@@ -36,6 +36,20 @@ const unaffectedCards = {
   'en.html': { currentEmployer: 'Beijing Taizi Liudong', currentHeight: 356.421875, educationHeight: 89.375 },
 };
 
+const compactFontSizes = {
+  h3: '17.28px',
+  li: '14.4px',
+  '.company-tag': '12px',
+  '.date-tag': '13.12px',
+  '.tag': '11.52px',
+};
+
+const projectRails = [
+  { number: '01', category: 'PRODUCT' },
+  { number: '02', category: 'AI CREATIVE' },
+  { number: '03', category: 'ANALYTICS' },
+];
+
 const projectContracts = {
   'index.html': {
     projects: [
@@ -48,6 +62,10 @@ const projectContracts = {
           ['上线结果', '曝光-加微率提升 50% 以上，曝光-地址率提升 40% 以上；广告主后续转化未下降，CPM 同步提升。'],
         ],
         boundary: '相对提升，绝对值已脱敏',
+        links: [
+          ['demo-wecom-flow.html', '体验企微链路 Demo'],
+          ['cases.html#case-lianlu', '查看完整案例'],
+        ],
       },
       {
         title: '用广告数据指导 AI 生产新素材，再用投放结果验证',
@@ -58,6 +76,10 @@ const projectContracts = {
           ['最后看投放', '新素材的 CPM 与 CTCVR 综合表现，处于同期同 SKU 全量素材中上游；减少人工逐条跟进和重复制作。'],
         ],
         boundary: '人工判断方向，Agent 负责执行',
+        links: [
+          ['demo-creative.html', '体验创意分析 Demo'],
+          ['demo-wukong.html', '体验悟空生产流程'],
+        ],
       },
       {
         title: 'AI 广告日报与问题排查',
@@ -68,6 +90,10 @@ const projectContracts = {
           ['反馈产研', '把确认的问题和数据证据整理成 MRD，每周向产研提交 1 至 2 份。'],
         ],
         boundary: 'AI 提供线索，人工核验并最终判断',
+        links: [
+          ['demo-shufen.html', '体验数分机器人'],
+          ['demo-eval.html', '查看 Eval 证据'],
+        ],
       },
     ],
     excludedTitle: /^广告归因质量 Eval 评测体系$/,
@@ -84,6 +110,10 @@ const projectContracts = {
           ['Post-launch result', 'Impression-to-WeCom-contact conversion rose 50%+, and impression-to-address conversion rose 40%+. Downstream advertiser conversion held flat while CPM improved.'],
         ],
         boundary: 'Relative lifts; absolute values sanitized',
+        links: [
+          ['demo-wecom-flow.html', 'Try the WeCom flow demo'],
+          ['cases.html#case-lianlu', 'View the full case'],
+        ],
       },
       {
         title: 'Using ad data to guide AI creative production, then validating it in delivery',
@@ -94,6 +124,10 @@ const projectContracts = {
           ['Validate in delivery', 'Combined CPM and CTCVR performance ranked upper-middle within the same-period, same-SKU full creative set, while reducing manual follow-up and repeat production.'],
         ],
         boundary: 'People set the direction; the Agent executes',
+        links: [
+          ['demo-creative.html', 'Try the creative analysis demo'],
+          ['demo-wukong.html', 'Try the Wukong production workflow'],
+        ],
       },
       {
         title: 'AI ad reporting and issue investigation',
@@ -104,21 +138,16 @@ const projectContracts = {
           ['Feed back to product and engineering', 'I turn confirmed issues and supporting data into one to two MRDs per week for product and engineering review.'],
         ],
         boundary: 'AI provides leads; people verify and make the final call',
+        links: [
+          ['demo-shufen.html', 'Try the analytics agent'],
+          ['demo-eval.html', 'View Eval evidence'],
+        ],
       },
     ],
     excludedTitle: /^Attribution Quality Eval Harness$/,
     languageLink: { name: '中文版简历', href: 'index.html' },
   },
 };
-
-const projectHrefs = [
-  'demo-wecom-flow.html',
-  'cases.html#case-lianlu',
-  'demo-creative.html',
-  'demo-wukong.html',
-  'demo-shufen.html',
-  'demo-eval.html',
-];
 
 async function expectProjectContract(page, file) {
   await page.goto(`${BASE}/${file}`);
@@ -142,11 +171,13 @@ async function expectProjectContract(page, file) {
     }
 
     await expect(project.locator('.resume-project__boundary')).toHaveText(expectedProject.boundary);
+    await expect(project.locator('.project-link')).toHaveCount(2);
+    for (const [href, label] of expectedProject.links) {
+      await expect(project.locator(`a.project-link[href="${href}"]`)).toHaveText(label);
+    }
   }
 
-  for (const href of projectHrefs) {
-    await expect(projects.locator(`a[href="${href}"]`)).toHaveCount(1);
-  }
+  await expect(projects.locator('.project-link')).toHaveCount(6);
   await expect(projects.locator('h3').filter({ hasText: 'adquery-lite' })).toHaveCount(0);
   await expect(projects.locator('h3').filter({ hasText: contract.excludedTitle })).toHaveCount(0);
   await expect(page.getByRole('link', { name: contract.languageLink.name })).toHaveAttribute('href', contract.languageLink.href);
@@ -307,12 +338,11 @@ test('only Baidu and Yike use the compact work layout without losing copy', asyn
       expect(normalize(await card.innerText())).toBe(job.text);
       const height = await card.evaluate((node) => node.getBoundingClientRect().height);
       expect(height).toBeLessThanOrEqual(job.baseline * 0.75);
-      expect(await card.locator('h3').evaluate((node) => getComputedStyle(node).fontSize)).toBe(
-        await current.locator('h3').evaluate((node) => getComputedStyle(node).fontSize)
-      );
-      expect(await card.locator('li').first().evaluate((node) => getComputedStyle(node).fontSize)).toBe(
-        await current.locator('li').first().evaluate((node) => getComputedStyle(node).fontSize)
-      );
+      for (const [selector, baseline] of Object.entries(compactFontSizes)) {
+        const sizes = await card.locator(selector).evaluateAll((nodes) => nodes.map((node) => getComputedStyle(node).fontSize));
+        expect(sizes.length).toBeGreaterThan(0);
+        expect(sizes).toEqual(sizes.map(() => baseline));
+      }
     }
   }
 });
@@ -371,7 +401,15 @@ for (const viewport of [
       await expect(projects).toHaveCount(3);
 
       for (let projectIndex = 0; projectIndex < 3; projectIndex += 1) {
-        const stepBoxes = await projects.nth(projectIndex).locator('.resume-project__step').evaluateAll((steps) =>
+        const project = projects.nth(projectIndex);
+        const rail = project.locator('.resume-project__rail');
+        const expectedRail = projectRails[projectIndex];
+        await expect(rail).toHaveCount(1);
+        await expect(rail.locator('strong')).toHaveText(expectedRail.number);
+        await expect(rail.locator('span')).toHaveText(expectedRail.category);
+        expect(await rail.evaluate((node) => getComputedStyle(node).flexDirection)).toBe(viewport.width <= 520 ? 'row' : 'column');
+
+        const stepBoxes = await project.locator('.resume-project__step').evaluateAll((steps) =>
           steps.map((step) => {
             const box = step.getBoundingClientRect();
             return { left: box.left, top: box.top };
@@ -391,20 +429,18 @@ for (const viewport of [
         }
       }
 
-      if (viewport.width === 1440) {
-        const listBox = await page.locator('.resume-project-list').evaluate((list) => {
-          const box = list.getBoundingClientRect();
-          return { left: box.left, right: box.right, width: box.width };
-        });
-        const projectBoxes = await projects.evaluateAll((items) => items.map((item) => {
-          const box = item.getBoundingClientRect();
-          return { left: box.left, right: box.right, width: box.width };
-        }));
-        for (const box of projectBoxes) {
-          expect(box.left).toBeCloseTo(listBox.left, 1);
-          expect(box.right).toBeCloseTo(listBox.right, 1);
-          expect(box.width).toBeCloseTo(listBox.width, 1);
-        }
+      const listBox = await page.locator('.resume-project-list').evaluate((list) => {
+        const box = list.getBoundingClientRect();
+        return { left: box.left, right: box.right, width: box.width };
+      });
+      const projectBoxes = await projects.evaluateAll((items) => items.map((item) => {
+        const box = item.getBoundingClientRect();
+        return { left: box.left, right: box.right, width: box.width };
+      }));
+      for (const box of projectBoxes) {
+        expect(box.left).toBeCloseTo(listBox.left, 1);
+        expect(box.right).toBeCloseTo(listBox.right, 1);
+        expect(box.width).toBeCloseTo(listBox.width, 1);
       }
 
       await expect(page.locator('footer')).toBeVisible();
