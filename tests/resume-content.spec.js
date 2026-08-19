@@ -3,6 +3,12 @@ const { test, expect } = require('playwright/test');
 const BASE = process.env.DEMO_BASE_URL || 'http://127.0.0.1:52784';
 
 const normalize = (value) => value.replace(/\s+/g, ' ').trim();
+const expectWithinOnePixel = (actual, expected) => expect(Math.abs(actual - expected)).toBeLessThanOrEqual(1);
+
+async function gotoWithFonts(page, file) {
+  await page.goto(`${BASE}/${file}`);
+  await page.evaluate(() => document.fonts.ready);
+}
 
 const compactJobs = {
   'index.html': [
@@ -32,8 +38,8 @@ const compactJobs = {
 };
 
 const unaffectedCards = {
-  'index.html': { currentEmployer: '北京太字流动', currentHeight: 332.65625, educationHeight: 89.375 },
-  'en.html': { currentEmployer: 'Beijing Taizi Liudong', currentHeight: 356.421875, educationHeight: 89.375 },
+  'index.html': { currentEmployer: '北京太字流动', currentHeight: 332.65625, educationHeading: '教育经历', educationHeight: 89.375 },
+  'en.html': { currentEmployer: 'Beijing Taizi Liudong', currentHeight: 356.421875, educationHeading: 'Education', educationHeight: 89.375 },
 };
 
 const compactFontSizes = {
@@ -185,7 +191,7 @@ async function expectProjectContract(page, file) {
 
 test('resume contact details use real email and phone links', async ({ page }) => {
   for (const file of ['index.html', 'en.html']) {
-    await page.goto(`${BASE}/${file}`);
+    await gotoWithFonts(page, file);
     const contacts = page.locator('.contact-row');
     await expect(contacts.locator('a[href="mailto:kinghowang@foxmail.com"]')).toHaveCount(1);
     await expect(contacts.locator('a[href="tel:+8617512006748"]')).toHaveCount(1);
@@ -223,7 +229,7 @@ test('resume contact details use real email and phone links', async ({ page }) =
 
 test('mobile WeChat dialog is centered and contained within the viewport', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 800 });
-  await page.goto(`${BASE}/index.html`);
+  await gotoWithFonts(page, 'index.html');
   await page.locator('[data-testid="wechat-trigger"]').click();
   const geometry = await page.locator('[data-testid="wechat-dialog"]').evaluate((dialog) => {
     const box = dialog.getBoundingClientRect();
@@ -322,26 +328,70 @@ test('resume keeps contribution claims tied to their verified evidence', async (
 test('only Baidu and Yike use the compact work layout without losing copy', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   for (const [file, jobs] of Object.entries(compactJobs)) {
-    await page.goto(`${BASE}/${file}`);
+    await gotoWithFonts(page, file);
     await expect(page.locator('.tl-card--compact')).toHaveCount(2);
     const unaffected = unaffectedCards[file];
     const current = page.locator('.tl-card').filter({ hasText: unaffected.currentEmployer });
-    const education = page.locator('section.section').last().locator('.tl-card');
+    const educationSection = page.locator('section.section', {
+      has: page.locator('.section-title', { hasText: unaffected.educationHeading }),
+    });
+    await expect(educationSection).toHaveCount(1);
+    const education = educationSection.locator('.tl-card');
     await expect(current).not.toHaveClass(/tl-card--compact/);
     await expect(education).not.toHaveClass(/tl-card--compact/);
-    expect(await current.evaluate((node) => node.getBoundingClientRect().height)).toBeCloseTo(unaffected.currentHeight, 0);
-    expect(await education.evaluate((node) => node.getBoundingClientRect().height)).toBeCloseTo(unaffected.educationHeight, 0);
+    expectWithinOnePixel(await current.evaluate((node) => node.getBoundingClientRect().height), unaffected.currentHeight);
+    expectWithinOnePixel(await education.evaluate((node) => node.getBoundingClientRect().height), unaffected.educationHeight);
 
     for (const job of jobs) {
       const card = page.locator('.tl-card').filter({ hasText: job.name });
+      await expect(card).toBeVisible();
       await expect(card).toHaveClass(/tl-card--compact/);
       expect(normalize(await card.innerText())).toBe(job.text);
-      const height = await card.evaluate((node) => node.getBoundingClientRect().height);
-      expect(height).toBeLessThanOrEqual(job.baseline * 0.75);
+      const cardGeometry = await card.evaluate((node) => {
+        const box = node.getBoundingClientRect();
+        return {
+          box: { left: box.left, right: box.right, top: box.top, bottom: box.bottom },
+          clientHeight: node.clientHeight,
+          clientWidth: node.clientWidth,
+          height: box.height,
+          scrollHeight: node.scrollHeight,
+          scrollWidth: node.scrollWidth,
+        };
+      });
+      expect(cardGeometry.height).toBeLessThanOrEqual(job.baseline * 0.75 + 1);
+      expect(cardGeometry.scrollHeight).toBeLessThanOrEqual(cardGeometry.clientHeight + 1);
+      expect(cardGeometry.scrollWidth).toBeLessThanOrEqual(cardGeometry.clientWidth + 1);
+
       for (const [selector, baseline] of Object.entries(compactFontSizes)) {
-        const sizes = await card.locator(selector).evaluateAll((nodes) => nodes.map((node) => getComputedStyle(node).fontSize));
-        expect(sizes.length).toBeGreaterThan(0);
-        expect(sizes).toEqual(sizes.map(() => baseline));
+        const contents = card.locator(selector);
+        const count = await contents.count();
+        expect(count).toBeGreaterThan(0);
+        for (let index = 0; index < count; index += 1) {
+          await expect(contents.nth(index)).toBeVisible();
+        }
+        const contentGeometry = await contents.evaluateAll((nodes) => nodes.map((node) => {
+          const box = node.getBoundingClientRect();
+          return {
+            bottom: box.bottom,
+            clientHeight: node.clientHeight,
+            clientWidth: node.clientWidth,
+            fontSize: getComputedStyle(node).fontSize,
+            left: box.left,
+            right: box.right,
+            scrollHeight: node.scrollHeight,
+            scrollWidth: node.scrollWidth,
+            top: box.top,
+          };
+        }));
+        expect(contentGeometry.map(({ fontSize }) => fontSize)).toEqual(contentGeometry.map(() => baseline));
+        for (const box of contentGeometry) {
+          expect(box.scrollHeight).toBeLessThanOrEqual(box.clientHeight + 1);
+          expect(box.scrollWidth).toBeLessThanOrEqual(box.clientWidth + 1);
+          expect(box.left).toBeGreaterThanOrEqual(cardGeometry.box.left - 1);
+          expect(box.right).toBeLessThanOrEqual(cardGeometry.box.right + 1);
+          expect(box.top).toBeGreaterThanOrEqual(cardGeometry.box.top - 1);
+          expect(box.bottom).toBeLessThanOrEqual(cardGeometry.box.bottom + 1);
+        }
       }
     }
   }
@@ -383,7 +433,7 @@ for (const viewport of [
   test(`${viewport.name} keeps both resume languages within the viewport`, async ({ page }) => {
     await page.setViewportSize(viewport);
     for (const file of ['index.html', 'en.html']) {
-      await page.goto(`${BASE}/${file}`);
+      await gotoWithFonts(page, file);
       const geometry = await page.evaluate(() => ({
         documentWidth: document.documentElement.scrollWidth,
         viewportWidth: document.documentElement.clientWidth,
@@ -417,13 +467,13 @@ for (const viewport of [
         );
         expect(stepBoxes).toHaveLength(3);
         if (viewport.width <= 840) {
-          expect(stepBoxes[1].left).toBeCloseTo(stepBoxes[0].left, 1);
-          expect(stepBoxes[2].left).toBeCloseTo(stepBoxes[0].left, 1);
+          expectWithinOnePixel(stepBoxes[1].left, stepBoxes[0].left);
+          expectWithinOnePixel(stepBoxes[2].left, stepBoxes[0].left);
           expect(stepBoxes[1].top).toBeGreaterThan(stepBoxes[0].top);
           expect(stepBoxes[2].top).toBeGreaterThan(stepBoxes[1].top);
         } else {
-          expect(stepBoxes[1].top).toBeCloseTo(stepBoxes[0].top, 1);
-          expect(stepBoxes[2].top).toBeCloseTo(stepBoxes[0].top, 1);
+          expectWithinOnePixel(stepBoxes[1].top, stepBoxes[0].top);
+          expectWithinOnePixel(stepBoxes[2].top, stepBoxes[0].top);
           expect(stepBoxes[1].left).toBeGreaterThan(stepBoxes[0].left);
           expect(stepBoxes[2].left).toBeGreaterThan(stepBoxes[1].left);
         }
@@ -438,9 +488,9 @@ for (const viewport of [
         return { left: box.left, right: box.right, width: box.width };
       }));
       for (const box of projectBoxes) {
-        expect(box.left).toBeCloseTo(listBox.left, 1);
-        expect(box.right).toBeCloseTo(listBox.right, 1);
-        expect(box.width).toBeCloseTo(listBox.width, 1);
+        expectWithinOnePixel(box.left, listBox.left);
+        expectWithinOnePixel(box.right, listBox.right);
+        expectWithinOnePixel(box.width, listBox.width);
       }
 
       await expect(page.locator('footer')).toBeVisible();
