@@ -598,3 +598,34 @@ for (const viewport of [
     }
   });
 }
+
+test('site favicon uses the approved KW folded optical masters', async ({ page, request }) => {
+  const svgResponse = await request.get(`${BASE}/favicon.svg`);
+  expect(svgResponse.ok()).toBe(true);
+  const svg = await svgResponse.text();
+  expect(svg).toContain('xmlns="http://www.w3.org/2000/svg"');
+  expect(svg).toContain('viewBox="0 0 16 16"');
+  expect(svg).toContain('<rect width="16" height="16" rx="2" fill="#18211e"/>');
+  expect(svg).toContain('d="M4 3V13 M4 8L8 4 M4 8L8 12L10 5L12 12L14 4"');
+  expect(svg).toContain('fill="#18211e"');
+  expect(svg).toContain('stroke="#ffffff"');
+  expect(svg).toContain('stroke-width="2"');
+  expect(svg).toContain('stroke-linecap="square"');
+  expect(svg).toContain('stroke-linejoin="miter"');
+  expect(svg).toContain('fill="#c0392b"');
+  expect(svg).toContain('<rect x="7" y="7" width="2" height="2" fill="#c0392b"/>');
+  expect(svg.replace('http://www.w3.org/2000/svg', '')).not.toMatch(/<text|<script|font-family|https?:\/\/|(?:href|xlink:href)=/i);
+  for (const file of ['index.html', 'en.html', 'cases.html']) {
+    await page.goto(`${BASE}/${file}`);
+    const icons = await page.locator('link[rel="icon"]').evaluateAll((nodes) => nodes.map((node) => ({ href: node.getAttribute('href'), type: node.getAttribute('type'), sizes: node.getAttribute('sizes') })));
+    expect(icons).toEqual([{ href: 'favicon.svg', type: 'image/svg+xml', sizes: null }, { href: 'favicon.png', type: 'image/png', sizes: '256x256' }]);
+  }
+  await page.goto(`${BASE}/favicon.png`);
+  const png = await page.locator('img').evaluate((image) => {
+    const canvas = document.createElement('canvas'); canvas.width = image.naturalWidth; canvas.height = image.naturalHeight;
+    const context = canvas.getContext('2d'); context.drawImage(image, 0, 0);
+    const pixel = (x, y) => Array.from(context.getImageData(x, y, 1, 1).data);
+    return { width: image.naturalWidth, height: image.naturalHeight, corner: pixel(0, 0), background: pixel(128, 230), whiteStroke: pixel(60, 80), redHinge: pixel(124, 128) };
+  });
+  expect(png).toEqual({ width: 256, height: 256, corner: [0, 0, 0, 0], background: [24, 33, 30, 255], whiteStroke: [255, 255, 255, 255], redHinge: [192, 57, 43, 255] });
+});
