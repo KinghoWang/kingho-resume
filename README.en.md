@@ -20,11 +20,11 @@
 
 ## 🚀 Portfolio
 
-**① Two core projects**: Analytics Agent × embedded Eval and the Wukong Agent production pipeline.
+**① Three project cases (in the same order as the résumé)**: WeCom acquisition-flow redesign, AI creative production and delivery validation, and AI ad reporting and issue investigation. Each starts with the problem → action → result, followed by its relevant demos.
 
-**② Three strategy-product and data-analysis cases** (sanitized): WeCom acquisition-flow redesign, an algorithmic-traffic decision reversal, and financial-reconciliation data integrity. adquery-lite remains available as Case 03; see [cases.html](https://kinghowang.github.io/kingho-resume/cases.html).
+**② Three complete strategy-product and data-analysis cases** (sanitized): WeCom acquisition-flow redesign, an algorithmic-traffic decision reversal, and financial-reconciliation data integrity; see [cases.html](https://kinghowang.github.io/kingho-resume/cases.html).
 
-**③ Two extension live demos**: competitor intelligence and creative diagnostics, placed at the bottom of the portfolio page. The site contains **six live demos** in total: analytics, Eval, Wukong, the WeCom acquisition flow, competitor intelligence and creative diagnostics. Wukong reproduces the real task contract and state machine without connecting to production.
+**③ Six live demos**: grouped by project, with the exploratory demo at the bottom. Wukong reproduces the real task contract and state machine without connecting to production.
 
 **Live demo index (6 total)**
 

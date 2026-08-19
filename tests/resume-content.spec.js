@@ -347,11 +347,12 @@ test('resume heroes use the unified six-demo count', async ({ page }) => {
 
 test('portfolio publishes six unique online demos', async ({ page }) => {
   await page.goto(`${BASE}/cases.html`);
-  await expect(page.locator('.section-divider').first()).toContainText('自建 AI 产品');
-  await expect(page.locator('.demo-lead')).toContainText('6 个在线 Demo');
-  await expect(page.locator('[data-testid="core-project"]')).toHaveCount(2);
-  await expect(page.locator('[data-testid="extension-demo"]')).toHaveCount(2);
-  await expect(page.locator('.demo-gallery a[href="demo-wukong.html"]')).toHaveCount(1);
+  await expect(page.locator('.section-divider').first()).toContainText('项目案例 · 按简历顺序阅读');
+  await expect(page.locator('.demo-lead').first()).toContainText('6 个在线 Demo');
+  await expect(page.locator('[data-testid="project-case"]')).toHaveCount(3);
+  await expect(page.locator('[data-testid="project-demo"]')).toHaveCount(5);
+  await expect(page.locator('[data-testid="extension-demo"]')).toHaveCount(1);
+  await expect(page.locator('[data-section="demo-directory"] a[href="demo-wukong.html"]')).toHaveCount(1);
   const expected = ['demo-advideo.html', 'demo-creative.html', 'demo-eval.html', 'demo-shufen.html', 'demo-wecom-flow.html', 'demo-wukong.html'];
   const published = await page.locator('a[href^="demo-"][href$=".html"]').evaluateAll((links) =>
     [...new Set(links.map((link) => link.getAttribute('href')))].sort()

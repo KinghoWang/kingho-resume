@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>王钧灏 - 作品集：AI/数据产品 + 数据分析案例</title>
-  <meta name="description" content="王钧灏作品集：数分机器人与 Eval 质量闭环、悟空 Agent 生产管线两组核心项目，6 个在线 Demo 与脱敏策略产品案例。">
+  <meta name="description" content="王钧灏作品集：按简历顺序阅读企微获客链路、AI 创意生产与 AI 广告日报三个项目案例，6 个在线 Demo 与脱敏策略产品案例。">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="favicon.png" type="image/png" sizes="256x256">
   <meta property="og:type" content="website">
   <meta property="og:title" content="王钧灏 · 作品集：AI/数据产品 + 数据分析案例">
-  <meta property="og:description" content="2 组核心项目、6 个在线 Demo，以及脱敏策略产品与数据分析案例。">
+  <meta property="og:description" content="3 个按简历顺序的项目案例、6 个在线 Demo，以及脱敏策略产品与数据分析案例。">
   <meta property="og:image" content="https://kinghowang.github.io/kingho-resume/og-image.png">
   <meta property="og:url" content="https://kinghowang.github.io/kingho-resume/cases.html">
   <meta name="twitter:card" content="summary_large_image">
@@ -167,6 +167,33 @@
     .demo-pointer a:hover{text-decoration:underline}
     .demo-pointer strong{color:var(--accent);font-weight:600}
 
+    /* ===== 与简历同序的项目入口 ===== */
+    .case-index{max-width:960px;margin:6px auto 8px;padding:0 48px;display:grid;gap:14px}
+    .case-index-card{display:grid;grid-template-columns:70px minmax(0,1fr);background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;opacity:0;transform:translateY(24px)}
+    .case-index-card.visible{animation:fadeUp .55s ease forwards}
+    .case-index-no{display:flex;align-items:flex-start;justify-content:center;padding:22px 10px;background:#fbfcfc;border-right:1px solid var(--border);font-family:var(--font-display);font-size:1.65rem;font-weight:700;color:var(--accent)}
+    .case-index-body{min-width:0;padding:18px 20px 16px}
+    .case-index-body h3{font-family:var(--font-display);font-size:1.12rem;font-weight:700;line-height:1.35}
+    .case-index-role{margin-top:4px;color:var(--muted);font-size:.74rem}
+    .case-index-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:14px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+    .case-index-step{min-width:0;padding:12px 14px 12px 0}
+    .case-index-step+.case-index-step{border-left:1px solid var(--border);padding-left:14px}
+    .case-index-step h4{margin-bottom:5px;color:var(--accent);font-size:.72rem;font-weight:700}
+    .case-index-step p{color:#3a444c;font-size:.8rem;line-height:1.6}
+    .case-index-footer{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:11px}
+    .case-index-boundary{font-size:.76rem;color:var(--c-green);font-weight:600}
+    .case-index-links{display:flex;flex-wrap:wrap;gap:12px;justify-content:flex-end}
+    .case-index-links a{min-height:36px;display:inline-flex;align-items:center;color:var(--accent);font-size:.78rem;font-weight:700;text-decoration:none;border-bottom:1px solid #dfa39b}
+    .case-index-links a:hover{text-decoration:underline}
+
+    /* ===== 全部 Demo 目录 ===== */
+    .demo-directory{max-width:960px;margin:6px auto 8px;padding:0 48px}
+    .demo-group{margin-bottom:22px}
+    .demo-group:last-child{margin-bottom:0}
+    .demo-group h3{font-family:var(--font-display);font-size:.92rem;font-weight:700;color:#333;margin:0 0 9px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+    .demo-group .demo-gallery{max-width:none;margin:0;padding:0}
+    .demo-group .demo-card{opacity:1;transform:none}
+
     /* ===== 链路对比示意 ===== */
     .flowgrp{margin-bottom:16px}
     .flow-label{font-size:.8rem;font-weight:700;margin:2px 0 8px}
@@ -187,6 +214,13 @@
       .panel-body{overflow-x:auto;-webkit-overflow-scrolling:touch}
       .demo-gallery{grid-template-columns:1fr;padding:0 20px}
       .section-divider,.demo-lead{padding:0 20px}
+      .case-index,.demo-directory{padding:0 20px}
+      .case-index-card{grid-template-columns:52px minmax(0,1fr)}
+      .case-index-steps{grid-template-columns:1fr}
+      .case-index-step{padding:11px 0}
+      .case-index-step+.case-index-step{border-left:0;border-top:1px solid var(--border);padding-left:0}
+      .case-index-footer{align-items:flex-start;flex-direction:column}
+      .case-index-links{justify-content:flex-start}
       .demo-card h3{padding-right:80px}
     }
   </style>
@@ -196,37 +230,60 @@
 <header class="page-head" data-reveal>
   <a class="back-link" href="index.html">← 返回简历主页</a>
   <h1>作品集 · AI/数据产品 + 数据分析案例</h1>
-  <p class="sub">三层结构：<strong>①</strong> 两组核心项目；<strong>②</strong> 策略产品与数据分析案例；<strong>③</strong> 扩展在线 Demo。项目讲完整闭环，Demo 提供可操作证据。</p>
+  <p class="sub">按简历顺序先看 3 个项目闭环；每个项目旁直接进入对应 Demo，完整策略案例与全部 Demo 目录放在后面。</p>
 </header>
 
 <div class="disclaimer" data-reveal>
   <strong>脱敏说明：</strong>本页案例结构与分析方法为真实工作沉淀，所有客户 / 代理商名称、内部数据表名、看板地址与具体数值均已做<strong>脱敏与扰动</strong>处理（客户以 A–L / 甲乙丙代称）。其中四个 Demo 运行真实工具引擎 / 看板的脱敏版本；悟空 Demo 复现真实任务契约与状态机，但不连接生产环境。
 </div>
 
-<!-- ============ ① 核心项目 ============ -->
-<div class="section-divider" data-reveal><h2>① 自建 AI 产品 · 2 组核心项目 <span class="sd-tag">从产品落地到质量闭环</span></h2></div>
-<p class="demo-lead" data-reveal>全站共 <strong style="color:var(--accent)">6 个在线 Demo</strong>：数分机器人、Eval、悟空为核心项目证据；竞品情报与创意诊断见页底 ③；企微交互演示见 ② 案例 01。</p>
-<div class="demo-gallery core-gallery">
-  <div class="demo-card core-feature" data-testid="core-project" data-reveal>
-    <span class="dc-badge">生产产品 + 质量门禁</span>
-    <h3>数分机器人 × Eval · 广告归因分析闭环</h3>
-    <div class="dc-kind">规则引擎 + LLM 归因 ｜ 22 例黄金集 · Prompt 回归门禁</div>
-    <p class="dc-desc">规则引擎自动完成<strong>阈值异常检出</strong>与<strong>结构 / 效率效应分解</strong>，LLM 只把代码证据组织成「现象 → 根因 → 建议」。配套 Eval 以代码指标 + LLM-as-judge 衡量数值忠实、归因质量与机制编造率，形成<strong>生产 → 量化 → 回归</strong>闭环。</p>
-    <div class="dc-meta">团队 3 人日常使用 · 日报 30-60min → 分钟级复核 · 3 模型 × 2 配置跑分</div>
-    <div class="dc-actions"><a class="dc-open" href="demo-shufen.html">▶ 体验数分机器人</a><a class="dc-open secondary" href="demo-eval.html">查看 Eval 证据</a></div>
-  </div>
-  <div class="demo-card" data-testid="core-project" data-reveal>
-    <span class="dc-badge">可交互脱敏演示</span>
-    <h3>悟空 · Agent 视频生产管线</h3>
-    <div class="dc-kind">任务卡 ｜ 验证门 · 白名单自修 · 人工契约</div>
-    <p class="dc-desc">把不可靠执行体约束成可交付管线：<strong>只有验证脚本输出算数</strong>，失败必须停车；自修仅限三项白名单，开放式判断交给人工。文件化进度支持断连续跑，留言经审计翻译后才进入执行。</p>
-    <div class="dc-meta">37 个 Python 脚本 / 约 3.7k 行（含验证与测试）· 4 个 job 产出主成片</div>
-    <a class="dc-open" href="demo-wukong.html">▶ 打开交互 Demo</a>
-  </div>
+<!-- ============ ① 与简历同序的项目入口 ============ -->
+<div class="section-divider" data-reveal><h2>① 项目案例 · 按简历顺序阅读 <span class="sd-tag">先理解闭环，再打开 Demo</span></h2></div>
+<p class="demo-lead" data-reveal>每个项目先用三步说明问题、动作和结果；感兴趣后可直接打开对应 Demo。全站共 <strong style="color:var(--accent)">6 个在线 Demo</strong>，完整分析案例与 Demo 目录在下方。</p>
+<div class="case-index">
+  <article class="case-index-card" data-testid="project-case" data-reveal>
+    <div class="case-index-no" aria-hidden="true">01</div>
+    <div class="case-index-body">
+      <h3>企微获客链路改造：把长按识别改成点击</h3>
+      <p class="case-index-role">产品改造 · 已上线 · 数据验证</p>
+      <div class="case-index-steps">
+        <section class="case-index-step"><h4>用户卡在哪</h4><p>原链路要求用户在 H5 长按二维码，再从系统菜单选择识别。中老年主力用户不熟悉这一步，容易中途退出。</p></section>
+        <section class="case-index-step"><h4>我怎么改</h4><p>用小程序可以打开的企微客服会话做中转，自动发送文案和卡片，两者都指向同一获客链接。用户点击任一入口即可继续添加微信。</p></section>
+        <section class="case-index-step"><h4>上线结果</h4><p>曝光-加微率提升 50% 以上，曝光-地址率提升 40% 以上；广告主后续转化未下降，CPM 同步提升。</p></section>
+      </div>
+      <div class="case-index-footer"><p class="case-index-boundary">相对提升，绝对值已脱敏</p><div class="case-index-links"><a href="demo-wecom-flow.html">体验企微链路 Demo ↗</a><a href="cases.html#case-lianlu">查看完整案例 ↗</a></div></div>
+    </div>
+  </article>
+  <article class="case-index-card" data-testid="project-case" data-reveal>
+    <div class="case-index-no" aria-hidden="true">02</div>
+    <div class="case-index-body">
+      <h3>用广告数据指导 AI 生产新素材，再用投放结果验证</h3>
+      <p class="case-index-role">人工分析 · Agent 执行 · 人工抽检</p>
+      <div class="case-index-steps">
+        <section class="case-index-step"><h4>先看数据</h4><p>查看广告素材的逐秒表现和分段数据，人工找出值得复用和需要优化的部分，再形成新 SKU 的制作建议。</p></section>
+        <section class="case-index-step"><h4>再做素材</h4><p>基于 grok-built 自建悟空 Agent，把剪辑拆成任务卡，用剪辑脚本和自动质检约束非多模态模型；基本能一次生成待抽检成片，再由人工抽检。</p></section>
+        <section class="case-index-step"><h4>最后看投放</h4><p>新素材的 CPM 与 CTCVR 综合表现，处于同期同 SKU 全量素材中上游；减少人工逐条跟进和重复制作。</p></section>
+      </div>
+      <div class="case-index-footer"><p class="case-index-boundary">人工判断方向，Agent 负责执行</p><div class="case-index-links"><a href="demo-creative.html">体验创意分析 Demo ↗</a><a href="demo-wukong.html">体验悟空生产流程 ↗</a></div></div>
+    </div>
+  </article>
+  <article class="case-index-card" data-testid="project-case" data-reveal>
+    <div class="case-index-no" aria-hidden="true">03</div>
+    <div class="case-index-body">
+      <h3>AI 广告日报与问题排查</h3>
+      <p class="case-index-role">AI 初筛 · 人工核验 · MRD 反馈</p>
+      <div class="case-index-steps">
+        <section class="case-index-step"><h4>AI 先找线索</h4><p>数分机器人每天按固定指标口径汇总核心表现、异常变化和待排查线索，把日报整理和数据排查从小时级缩短到分钟级。</p></section>
+        <section class="case-index-step"><h4>运营再核验</h4><p>运营进入公司内部大数据看板 Grafana-Lite 下钻，用明细数据确认问题及其影响范围，不直接采用 AI 结论。</p></section>
+        <section class="case-index-step"><h4>反馈产研</h4><p>把确认的问题和数据证据整理成 MRD，每周向产研提交 1 至 2 份。</p></section>
+      </div>
+      <div class="case-index-footer"><p class="case-index-boundary">AI 提供线索，人工核验并最终判断</p><div class="case-index-links"><a href="demo-shufen.html">体验数分机器人 ↗</a><a href="demo-eval.html">查看 Eval 证据 ↗</a></div></div>
+    </div>
+  </article>
 </div>
 
-<!-- ============ ② 数据分析 & 工程化案例 ============ -->
-<div class="section-divider" data-reveal style="margin-top:44px"><h2>② 策略产品 &amp; 数据分析案例 <span class="sd-tag">脱敏复刻 · 链路改造 + 分析框架与方法论</span></h2></div>
+<!-- ============ ② 完整策略产品 & 数据分析案例 ============ -->
+<div class="section-divider" data-reveal style="margin-top:44px"><h2>② 策略产品 &amp; 数据分析案例 <span class="sd-tag">完整展开 · 链路改造 + 分析框架与方法论</span></h2></div>
 
 <!-- ============ CASE 01 · 企微获客链路改造 ============ -->
 <section class="case" id="case-lianlu" data-reveal>
@@ -480,25 +537,81 @@
   </div>
 </section>
 
-<!-- ============ ③ 扩展在线 DEMO ============ -->
-<section data-section="extension-demos" aria-labelledby="extension-heading">
-  <div class="section-divider" data-reveal style="margin-top:44px"><h2 id="extension-heading">③ 扩展在线 Demo <span class="sd-tag">产品广度与交互能力</span></h2></div>
-  <div class="demo-gallery">
-    <div class="demo-card extension" data-testid="extension-demo" data-reveal>
-      <span class="dc-badge">真实库 schema</span>
-      <h3>竞品广告情报引擎</h3>
-      <div class="dc-kind">竞品侦察 ｜ 多源采集 + 结构化检索 · 分源分桶</div>
-      <p class="dc-desc">统一多平台竞品广告 schema 与周度快照；按行业 / 曝光量 / 标签检索，查看秒级时序、多模态标签与受众下钻，严守不同曝光口径不混排。</p>
-      <div class="dc-meta">扩展探索 · 不计入核心项目</div>
-      <a class="dc-open" href="demo-advideo.html">▶ 打开在线 Demo</a>
+<!-- ============ ③ 全部在线 DEMO ============ -->
+<section data-section="demo-directory" aria-labelledby="demo-heading">
+  <div class="section-divider" data-reveal style="margin-top:44px"><h2 id="demo-heading">③ 全部在线 Demo <span class="sd-tag">按项目归档，扩展探索置底</span></h2></div>
+  <p class="demo-lead" data-reveal>Demo 不再抢在案例前面；按项目分组，读完对应闭环后再打开，最后保留一个扩展探索入口。</p>
+  <div class="demo-directory">
+    <div class="demo-group">
+      <h3>项目 01 · 企微获客链路改造</h3>
+      <div class="demo-gallery">
+        <div class="demo-card" data-testid="project-demo" data-reveal>
+          <span class="dc-badge">交互模拟</span>
+          <h3>企微获客链路</h3>
+          <div class="dc-kind">原链路 vs 新链路 ｜ 长按识别 vs 文案 / 卡片点击</div>
+          <p class="dc-desc">对比陌生的长按识别与熟悉的文案 / 卡片点击，复现中老年用户在关键操作上的门槛。</p>
+          <div class="dc-meta">全部界面为脱敏重绘，不含真实素材或链接</div>
+          <a class="dc-open" href="demo-wecom-flow.html">▶ 打开在线 Demo</a>
+        </div>
+      </div>
     </div>
-    <div class="demo-card extension" data-testid="extension-demo" data-reveal>
-      <span class="dc-badge">真实看板本体</span>
-      <h3>创意分段诊断 Demo</h3>
-      <div class="dc-kind">素材诊断 ｜ 分秒级 CTR 归因 + A/B 对比</div>
-      <p class="dc-desc">逐秒拆解素材，定位流失点与转化话术；支持双素材逐段 A/B 对比，并叠加话术、画面与受众标签做归因。</p>
-      <div class="dc-meta">78 素材 · 数据量较大（约 7MB），建议 WiFi / 宽带环境打开</div>
-      <a class="dc-open" href="demo-creative.html">▶ 打开在线 Demo</a>
+
+    <div class="demo-group">
+      <h3>项目 02 · AI 创意生产与投放验证</h3>
+      <div class="demo-gallery">
+        <div class="demo-card" data-testid="project-demo" data-reveal>
+          <span class="dc-badge">真实看板本体</span>
+          <h3>创意分段诊断 Demo</h3>
+          <div class="dc-kind">素材诊断 ｜ 分秒级 CTR 归因 + A/B 对比</div>
+          <p class="dc-desc">逐秒拆解素材，定位流失点与转化话术；支持双素材逐段 A/B 对比，并叠加话术、画面与受众标签做归因。</p>
+          <div class="dc-meta">78 素材 · 数据量较大（约 7MB），建议 WiFi / 宽带环境打开</div>
+          <a class="dc-open" href="demo-creative.html">▶ 打开在线 Demo</a>
+        </div>
+        <div class="demo-card" data-testid="project-demo" data-reveal>
+          <span class="dc-badge">状态机演示</span>
+          <h3>悟空 · Agent 视频生产管线</h3>
+          <div class="dc-kind">任务卡 ｜ 验证门 · 白名单自修 · 人工契约</div>
+          <p class="dc-desc">把不可靠执行体约束成可交付管线：只有验证脚本输出算数，失败必须停车；自修仅限三项白名单，开放式判断交给人工。</p>
+          <div class="dc-meta">37 个 Python 脚本 / 约 3.7k 行 · 4 个 job 产出主成片</div>
+          <a class="dc-open" href="demo-wukong.html">▶ 打开交互 Demo</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-group">
+      <h3>项目 03 · AI 广告日报与问题排查</h3>
+      <div class="demo-gallery">
+        <div class="demo-card" data-testid="project-demo" data-reveal>
+          <span class="dc-badge">规则引擎 + LLM</span>
+          <h3>数分机器人</h3>
+          <div class="dc-kind">广告日报 ｜ 异常检出 · 归因下钻 · 结果复核</div>
+          <p class="dc-desc">规则引擎完成阈值异常检出与结构 / 效率效应分解，模型只组织代码证据，展示从日报线索到人工核验的过程。</p>
+          <div class="dc-meta">日报整理与问题排查从小时级缩短至分钟级</div>
+          <a class="dc-open" href="demo-shufen.html">▶ 体验数分机器人</a>
+        </div>
+        <div class="demo-card" data-testid="project-demo" data-reveal>
+          <span class="dc-badge">质量回归证据</span>
+          <h3>归因质量 Eval 评测</h3>
+          <div class="dc-kind">黄金集 ｜ 代码指标 + LLM-as-judge ｜ 回归门禁</div>
+          <p class="dc-desc">量化数值忠实率、归因质量与机制编造率，作为数分机器人从生产到量化再到回归的质量证据。</p>
+          <div class="dc-meta">22 例黄金集 · 3 模型 × 2 配置跑分</div>
+          <a class="dc-open" href="demo-eval.html">▶ 查看 Eval 证据</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-group">
+      <h3>扩展探索 · 不计入核心项目</h3>
+      <div class="demo-gallery">
+        <div class="demo-card extension" data-testid="extension-demo" data-reveal>
+          <span class="dc-badge">真实库 schema</span>
+          <h3>竞品广告情报引擎</h3>
+          <div class="dc-kind">竞品侦察 ｜ 多源采集 + 结构化检索 · 分源分桶</div>
+          <p class="dc-desc">统一多平台竞品广告 schema 与周度快照；按行业 / 曝光量 / 标签检索，查看秒级时序、多模态标签与受众下钻，严守不同曝光口径不混排。</p>
+          <div class="dc-meta">扩展探索 · 不计入核心项目</div>
+          <a class="dc-open" href="demo-advideo.html">▶ 打开在线 Demo</a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
