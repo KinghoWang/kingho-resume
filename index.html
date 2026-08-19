@@ -22,20 +22,7 @@
     .lead{max-width:960px;margin:0 auto;padding:4px 48px 20px}
     .lead p{font-size:1.02rem;line-height:1.85;color:#3a3a3a;border-left:3px solid var(--accent);padding:8px 0 8px 20px}
     .lead strong{color:var(--accent);font-weight:600}
-    .ai-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr);gap:16px}
-    .ai-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;transition:transform .25s ease,box-shadow .25s ease}
-    .ai-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
-    .ai-card.feat{grid-column:1/-1;border-left:3px solid var(--accent);background:linear-gradient(180deg,#fff,#fdf8f7)}
-    .ai-card h3{font-family:var(--font-display);font-size:1.08rem;font-weight:600;margin-bottom:3px}
-    .ai-card.feat h3{color:var(--accent)}
-    .ai-card .role{font-size:.75rem;color:var(--muted);margin-bottom:10px}
-    .project-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
-    .project-link{display:inline-flex;align-items:center;min-height:44px;padding:8px 13px;border:1px solid var(--accent);border-radius:6px;color:var(--accent);font-size:.82rem;font-weight:700;text-decoration:none}
-    .project-link.primary{background:var(--accent);color:#fff}
-    .project-link:hover{opacity:.82}
-    .sec-note{max-width:960px;margin:-14px auto 18px;padding:0 48px;font-size:.82rem;color:var(--muted)}
-    @media(max-width:820px){.ai-grid{grid-template-columns:1fr}}
-    @media(max-width:640px){.lead{padding:4px 20px 20px}.sec-note{padding:0 20px}}
+    @media(max-width:640px){.lead{padding:4px 20px 20px}}
   </style>
 </head>
 <body>
@@ -80,37 +67,44 @@
 </section>
 <div class="sec-note">现任期间（太字流动）主导：企微获客链路改造、AI 素材生产验证与 AI 日报 / 数据排查流程</div>
 <section class="section" data-reveal style="padding-top:0">
-  <div class="ai-grid">
-    <div class="ai-card feat">
-      <h3>01 企微获客链路改造 · 移除长按识别门槛</h3>
-      <div class="role">产品改造 · 已上线 · 回收数据验证</div>
-      <ul class="tl-list">
-        <li><strong>问题</strong>：小程序环境无法直接唤起企微获客助手；原链路需在 H5 长按识别二维码并选择系统菜单，<strong>中老年主力用户不熟悉该操作</strong>、易在此流失</li>
-        <li><strong>方案</strong>：以小程序可唤起的<strong>企微客服会话</strong>为桥，自动下发含同一获客链接的文案与卡片，将陌生的「长按识别」替换为点击</li>
-        <li><strong>结果</strong>：北极星曝光-加微率 <strong>+50%+</strong>，辅助漏斗曝光-地址率 <strong>+40%+</strong>；质量护栏为广告主后转无损，平台效率 CPM 提升（相对提升，绝对值脱敏）</li>
-      </ul>
-      <div class="project-links"><a class="project-link primary" href="demo-wecom-flow.html">体验企微链路 Demo</a><a class="project-link" href="cases.html#case-lianlu">查看完整案例</a></div>
-    </div>
-    <div class="ai-card" style="border-left:3px solid var(--accent)">
-      <h3>02 基于广告数据的 AI 素材生产与投放验证</h3>
-      <div class="role">素材分析 · Agent 生产 · 投放验证</div>
-      <ul class="tl-list">
-        <li><strong>素材洞察</strong>：基于广告素材逐秒行为及分段聚合数据，人工判断可复用结构与待优化环节，形成新 SKU 制作建议</li>
-        <li><strong>Agent 生产</strong>：基于 grok-built 框架自建悟空 Agent，以任务卡、剪辑脚本和自动质检约束非多模态模型执行音视频剪辑，基本一次生成待抽检成片，再由人工抽检</li>
-        <li><strong>投放结果</strong>：新素材 CPM 与 CTCVR 综合表现处于同期同 SKU 全量素材中上游，减少人工逐条跟进与重复制作投入</li>
-      </ul>
-      <div class="project-links"><a class="project-link primary" href="demo-creative.html">体验创意分析 Demo</a><a class="project-link" href="demo-wukong.html">体验悟空生产流程</a></div>
-    </div>
-    <div class="ai-card">
-      <h3>03 AI 广告日报与数据排查流程</h3>
-      <div class="role">日报自动化 · 数据下钻 · MRD 反馈</div>
-      <ul class="tl-list">
-        <li><strong>每日分析</strong>：数分机器人按固定指标口径生成每日分析，汇总核心表现、异常变化与待排查线索，将日报整理及数据排查从小时级缩短至分钟级</li>
-        <li><strong>人工复核</strong>：运营通过公司内部大数据看板 Grafana-Lite 下钻验证，不直接采用 AI 结论；将确认问题与数据证据整理成 MRD，每周向产研提交 1 至 2 份</li>
-      </ul>
-      <div class="project-links"><a class="project-link primary" href="demo-shufen.html">体验数分机器人</a><a class="project-link" href="demo-eval.html">查看 Eval 证据</a></div>
-    </div>
+  <div class="resume-project-list">
+    <article class="resume-project">
+      <div class="resume-project__rail" aria-hidden="true"><strong>01</strong><span>PRODUCT</span></div>
+      <div class="resume-project__main">
+        <header class="resume-project__header"><h3>企微获客链路改造：把长按识别改成点击</h3><p class="resume-project__meta">产品改造 · 已上线 · 数据验证</p></header>
+        <div class="resume-project__steps">
+          <section class="resume-project__step"><h4>用户卡在哪</h4><p>原链路要求用户在 H5 长按二维码，再从系统菜单选择识别。中老年主力用户不熟悉这一步，容易中途退出。</p></section>
+          <section class="resume-project__step"><h4>我怎么改</h4><p>用小程序可以打开的企微客服会话做中转，自动发送文案和卡片，两者都指向同一获客链接。用户点击任一入口即可继续添加微信。</p></section>
+          <section class="resume-project__step"><h4>上线结果</h4><p>曝光-加微率提升 50% 以上，曝光-地址率提升 40% 以上；广告主后续转化未下降，CPM 同步提升。</p></section>
         </div>
+        <footer class="resume-project__footer"><p class="resume-project__boundary">相对提升，绝对值已脱敏</p><div class="project-links"><a class="project-link" href="demo-wecom-flow.html">体验企微链路 Demo</a><a class="project-link" href="cases.html#case-lianlu">查看完整案例</a></div></footer>
+      </div>
+    </article>
+    <article class="resume-project">
+      <div class="resume-project__rail" aria-hidden="true"><strong>02</strong><span>AI CREATIVE</span></div>
+      <div class="resume-project__main">
+        <header class="resume-project__header"><h3>用广告数据指导 AI 生产新素材，再用投放结果验证</h3><p class="resume-project__meta">人工分析 · Agent 执行 · 人工抽检</p></header>
+        <div class="resume-project__steps">
+          <section class="resume-project__step"><h4>先看数据</h4><p>查看广告素材的逐秒表现和分段数据，人工找出值得复用和需要优化的部分，再形成新 SKU 的制作建议。</p></section>
+          <section class="resume-project__step"><h4>再做素材</h4><p>基于 grok-built 自建悟空 Agent，把剪辑拆成任务卡，用剪辑脚本和自动质检约束非多模态模型；基本能一次生成待抽检成片，再由人工抽检。</p></section>
+          <section class="resume-project__step"><h4>最后看投放</h4><p>新素材的 CPM 与 CTCVR 综合表现，处于同期同 SKU 全量素材中上游；减少人工逐条跟进和重复制作。</p></section>
+        </div>
+        <footer class="resume-project__footer"><p class="resume-project__boundary">人工判断方向，Agent 负责执行</p><div class="project-links"><a class="project-link" href="demo-creative.html">体验创意分析 Demo</a><a class="project-link" href="demo-wukong.html">体验悟空生产流程</a></div></footer>
+      </div>
+    </article>
+    <article class="resume-project">
+      <div class="resume-project__rail" aria-hidden="true"><strong>03</strong><span>ANALYTICS</span></div>
+      <div class="resume-project__main">
+        <header class="resume-project__header"><h3>AI 广告日报与问题排查</h3><p class="resume-project__meta">AI 初筛 · 人工核验 · MRD 反馈</p></header>
+        <div class="resume-project__steps">
+          <section class="resume-project__step"><h4>AI 先找线索</h4><p>数分机器人每天按固定指标口径汇总核心表现、异常变化和待排查线索，把日报整理和数据排查从小时级缩短到分钟级。</p></section>
+          <section class="resume-project__step"><h4>运营再核验</h4><p>运营进入公司内部大数据看板 Grafana-Lite 下钻，用明细数据确认问题及其影响范围，不直接采用 AI 结论。</p></section>
+          <section class="resume-project__step"><h4>反馈产研</h4><p>把确认的问题和数据证据整理成 MRD，每周向产研提交 1 至 2 份。</p></section>
+        </div>
+        <footer class="resume-project__footer"><p class="resume-project__boundary">AI 提供线索，人工核验并最终判断</p><div class="project-links"><a class="project-link" href="demo-shufen.html">体验数分机器人</a><a class="project-link" href="demo-eval.html">查看 Eval 证据</a></div></footer>
+      </div>
+    </article>
+  </div>
 </section>
 
 <!-- 2. 工作经历（只讲商业化/增长战绩，不重复工具） -->
@@ -129,7 +123,7 @@
       </div>
     </div>
     <div class="tl-item"><div class="tl-dot"></div>
-      <div class="tl-card">
+      <div class="tl-card tl-card--compact">
         <div class="tl-header"><div><h3>百度(中国)有限公司深圳分公司 · 客户运营</h3><span class="company-tag">百度</span></div><span class="date-tag">2022.11 - 2023.07</span></div>
         <div class="tags"><span class="tag tag-ind">教育</span><span class="tag tag-ind">医疗</span></div>
         <ul class="tl-list">
@@ -138,7 +132,7 @@
       </div>
     </div>
     <div class="tl-item"><div class="tl-dot"></div>
-      <div class="tl-card">
+      <div class="tl-card tl-card--compact">
         <div class="tl-header"><div><h3>深圳市亿科数字科技有限公司 · 广告运营</h3><span class="company-tag">亿科数字</span></div><span class="date-tag">2020.06 - 2022.07</span></div>
         <div class="tags"><span class="tag tag-ind">金融</span></div>
         <ul class="tl-list">
