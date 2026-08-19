@@ -71,8 +71,18 @@ const compactJobs = {
 };
 
 const unaffectedCards = {
-  'index.html': { currentEmployer: '北京太字流动', currentHeight: 332.65625, educationHeading: '教育经历', educationHeight: 89.375 },
-  'en.html': { currentEmployer: 'Beijing Taizi Liudong', currentHeight: 356.421875, educationHeading: 'Education', educationHeight: 89.375 },
+  'index.html': {
+    currentEmployer: '北京太字流动',
+    currentHeight: 332.65625,
+    educationHeading: '教育经历',
+    educationDetail: '校团委宣传部学生干部，获校级优秀学生干部（前 10%）。',
+  },
+  'en.html': {
+    currentEmployer: 'Beijing Taizi Liudong',
+    currentHeight: 356.421875,
+    educationHeading: 'Education',
+    educationDetail: "Student leader in the University Youth League Committee's Publicity Department; recognized as an Outstanding Student Leader (top 10%).",
+  },
 };
 
 const compactFontSizes = {
@@ -376,6 +386,38 @@ test('resume keeps contribution claims tied to their verified evidence', async (
   }
 });
 
+test('resume tail contains education as section 3 and no skills wall', async ({ page }) => {
+  const contracts = {
+    'index.html': {
+      educationHeading: '教育经历',
+      educationDetail: '校团委宣传部学生干部，获校级优秀学生干部（前 10%）。',
+      excludedCopy: ['技能 & 证书', 'SQL（ODPS / MySQL）', '腾讯广告认证营销顾问'],
+    },
+    'en.html': {
+      educationHeading: 'Education',
+      educationDetail: "Student leader in the University Youth League Committee's Publicity Department; recognized as an Outstanding Student Leader (top 10%).",
+      excludedCopy: ['Skills & Certifications', 'SQL (ODPS / MySQL)', 'Tencent Ads Certified Marketing Consultant'],
+    },
+  };
+
+  for (const [file, contract] of Object.entries(contracts)) {
+    await gotoWithFonts(page, file);
+    const sectionTitles = page.locator('.section-title');
+    const educationSection = page.locator('section.section', {
+      has: page.locator('.section-title', { hasText: contract.educationHeading }),
+    });
+    await expect(sectionTitles).toHaveCount(3);
+    await expect(educationSection).toHaveCount(1);
+    await expect(educationSection.locator('.section-title .icon')).toHaveText('3');
+    await expect(educationSection.locator('.education-note')).toHaveText(contract.educationDetail);
+    await expect(sectionTitles.locator('.icon').filter({ hasText: /^4$/ })).toHaveCount(0);
+    await expect(page.locator('.info-grid')).toHaveCount(0);
+    for (const copy of contract.excludedCopy) {
+      await expect(page.locator('body')).not.toContainText(copy);
+    }
+  }
+});
+
 test('only Baidu and Yike use the compact work layout without losing copy', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   for (const [file, jobs] of Object.entries(compactJobs)) {
@@ -391,7 +433,15 @@ test('only Baidu and Yike use the compact work layout without losing copy', asyn
     await expect(current).not.toHaveClass(/tl-card--compact/);
     await expect(education).not.toHaveClass(/tl-card--compact/);
     expectWithinOnePixel(await current.evaluate((node) => node.getBoundingClientRect().height), unaffected.currentHeight);
-    expectWithinOnePixel(await education.evaluate((node) => node.getBoundingClientRect().height), unaffected.educationHeight);
+    await expect(education.locator('.education-note')).toHaveText(unaffected.educationDetail);
+    const educationGeometry = await education.evaluate((node) => ({
+      clientHeight: node.clientHeight,
+      clientWidth: node.clientWidth,
+      scrollHeight: node.scrollHeight,
+      scrollWidth: node.scrollWidth,
+    }));
+    expect(educationGeometry.scrollHeight).toBeLessThanOrEqual(educationGeometry.clientHeight + 1);
+    expect(educationGeometry.scrollWidth).toBeLessThanOrEqual(educationGeometry.clientWidth + 1);
 
     for (const job of jobs) {
       const card = page.locator('.tl-card').filter({ hasText: job.name });
