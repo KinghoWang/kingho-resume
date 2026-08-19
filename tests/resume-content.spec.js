@@ -5,6 +5,39 @@ const BASE = process.env.DEMO_BASE_URL || 'http://127.0.0.1:52784';
 const normalize = (value) => value.replace(/\s+/g, ' ').trim();
 const expectWithinOnePixel = (actual, expected) => expect(Math.abs(actual - expected)).toBeLessThanOrEqual(1);
 
+function parseComputedSrgb(value) {
+  const channels = value.match(/[\d.]+/g)?.map(Number);
+  if (!/^rgba?\(/.test(value) || !channels || channels.length < 3) {
+    throw new Error(`Unsupported computed color: ${value}`);
+  }
+  return { red: channels[0], green: channels[1], blue: channels[2], alpha: channels[3] ?? 1 };
+}
+
+function compositeOver(foreground, background) {
+  const alpha = foreground.alpha + background.alpha * (1 - foreground.alpha);
+  const channel = (key) => (
+    foreground[key] * foreground.alpha + background[key] * background.alpha * (1 - foreground.alpha)
+  ) / alpha;
+  return { red: channel('red'), green: channel('green'), blue: channel('blue'), alpha };
+}
+
+function relativeLuminance(color) {
+  const linearize = (value) => {
+    const channel = value / 255;
+    return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+  };
+  return 0.2126 * linearize(color.red) + 0.7152 * linearize(color.green) + 0.0722 * linearize(color.blue);
+}
+
+function contrastRatio(foregroundValue, backgroundValue) {
+  const white = { red: 255, green: 255, blue: 255, alpha: 1 };
+  const background = compositeOver(parseComputedSrgb(backgroundValue), white);
+  const foreground = compositeOver(parseComputedSrgb(foregroundValue), background);
+  const lighter = Math.max(relativeLuminance(foreground), relativeLuminance(background));
+  const darker = Math.min(relativeLuminance(foreground), relativeLuminance(background));
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
 async function gotoWithFonts(page, file) {
   await page.goto(`${BASE}/${file}`);
   await page.evaluate(() => document.fonts.ready);
@@ -274,6 +307,24 @@ test('Chinese resume presents three product, AI and data projects with WeCom fir
 
 test('English resume presents three product, AI and data projects with WeCom first', async ({ page }) => {
   await expectProjectContract(page, 'en.html');
+});
+
+test('project role metadata meets WCAG AA text contrast', async ({ page }) => {
+  for (const file of ['index.html', 'en.html']) {
+    await gotoWithFonts(page, file);
+    const samples = await page.locator('.resume-project-list > .resume-project').evaluateAll((projects) => projects.map((project) => {
+      const meta = project.querySelector('.resume-project__meta');
+      return {
+        background: getComputedStyle(project).backgroundColor,
+        foreground: getComputedStyle(meta).color,
+      };
+    }));
+    expect(samples).toHaveLength(3);
+    for (let index = 0; index < samples.length; index += 1) {
+      const sample = samples[index];
+      expect(contrastRatio(sample.foreground, sample.background), `${file} project ${index + 1} role metadata`).toBeGreaterThanOrEqual(4.5);
+    }
+  }
 });
 
 test('resume heroes use the unified six-demo count', async ({ page }) => {
