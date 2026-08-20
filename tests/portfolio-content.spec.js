@@ -57,6 +57,62 @@ test('portfolio renders three complete project cases in résumé order', async (
   }
 });
 
+test('portfolio keeps project cases readable without IntersectionObserver', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(window, 'IntersectionObserver', {
+      configurable: true,
+      value: undefined,
+    });
+  });
+  await page.goto(`${BASE}/cases.html`);
+
+  const states = await page.locator('[data-testid="project-case"]').evaluateAll((projectCases) =>
+    projectCases.map((projectCase) => ({
+      opacity: getComputedStyle(projectCase).opacity,
+      pending: projectCase.classList.contains('reveal-pending'),
+    }))
+  );
+  expect(states).toEqual([
+    { opacity: '1', pending: false },
+    { opacity: '1', pending: false },
+    { opacity: '1', pending: false },
+  ]);
+});
+
+test('portfolio reveal resolves case opacity after anchor navigation and scrolling', async ({ page }) => {
+  await page.goto(`${BASE}/cases.html#case-lianlu`);
+  const projectCases = page.locator('[data-testid="project-case"]');
+  await expect(projectCases).toHaveCount(3);
+
+  for (let index = 0; index < 3; index += 1) {
+    const projectCase = projectCases.nth(index);
+    await projectCase.scrollIntoViewIfNeeded();
+    await expect.poll(
+      () => projectCase.evaluate((element) =>
+        element.classList.contains('visible') || getComputedStyle(element).opacity === '1'
+      ),
+      { message: `project case ${index + 1} reveal did not resolve` }
+    ).toBe(true);
+  }
+});
+
+test('portfolio supporting text uses the approved accessible color', async ({ page }) => {
+  await page.goto(`${BASE}/cases.html`);
+
+  const roleColors = await page.locator('.project-case-role').evaluateAll((elements) =>
+    elements.map((element) => getComputedStyle(element).color)
+  );
+  const noteColors = await page.locator('.project-demo-note').evaluateAll((elements) =>
+    elements.map((element) => getComputedStyle(element).color)
+  );
+  expect(roleColors).toEqual([
+    'rgb(101, 114, 116)',
+    'rgb(101, 114, 116)',
+    'rgb(101, 114, 116)',
+  ]);
+  expect(noteColors).toEqual(['rgb(101, 114, 116)']);
+});
+
 test('portfolio embeds each Demo URL exactly once beside its project', async ({ page }) => {
   await page.goto(`${BASE}/cases.html`);
   const projectCases = page.locator('[data-testid="project-case"]');
@@ -133,18 +189,24 @@ for (const viewport of [
 
     const projectCases = page.locator('[data-testid="project-case"]');
     await expect(projectCases).toHaveCount(3);
-    for (const projectCase of await projectCases.all()) {
+    const projectCaseItems = await projectCases.all();
+    for (let index = 0; index < projectCaseItems.length; index += 1) {
+      const projectCase = projectCaseItems[index];
       await projectCase.scrollIntoViewIfNeeded();
       await expect(projectCase).toBeVisible();
       const box = await projectCase.boundingBox();
+      expect(box, `${viewport.name} project case ${index + 1} has no bounding box`).not.toBeNull();
       expect(box.x).toBeGreaterThanOrEqual(0);
       expect(box.x + box.width).toBeLessThanOrEqual(viewport.width + 1);
     }
     const links = page.locator('.project-demo-link');
     await expect(links).toHaveCount(6);
-    for (const link of await links.all()) {
+    const demoLinks = await links.all();
+    for (let index = 0; index < demoLinks.length; index += 1) {
+      const link = demoLinks[index];
       await link.scrollIntoViewIfNeeded();
       const box = await link.boundingBox();
+      expect(box, `${viewport.name} Demo link ${index + 1} has no bounding box`).not.toBeNull();
       expect(box.height).toBeGreaterThanOrEqual(44);
     }
     const documentWidth = await page.evaluate(() => document.documentElement.scrollWidth);

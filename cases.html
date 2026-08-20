@@ -24,13 +24,14 @@
     .disclaimer{max-width:864px;margin:24px auto 10px;padding:13px 0;border-top:1px solid #e6c986;border-bottom:1px solid #e6c986;font-size:.84rem;color:#735f2a;line-height:1.65}
     .disclaimer strong{color:#5f4c1d}
     .project-list{max-width:864px;margin:18px auto 0;padding:0 0 36px}
-    .project-case{padding:38px 0 42px;border-top:1px solid var(--border);opacity:0;transform:translateY(24px);scroll-margin-top:20px}
-    .project-case.visible{animation:fadeUp .55s ease forwards}
+    .project-case{padding:38px 0 42px;border-top:1px solid var(--border);opacity:1;transform:none;scroll-margin-top:20px}
+    .project-case.reveal-pending{opacity:0;transform:translateY(24px)}
+    .project-case.reveal-pending.visible{animation:fadeUp .55s ease forwards}
     .project-case:last-child{border-bottom:1px solid var(--border)}
     .project-case-head{display:grid;grid-template-columns:58px minmax(0,1fr);gap:18px;align-items:start}
     .project-case-no{font-family:var(--font-display);font-size:1.55rem;line-height:1;color:var(--accent);font-weight:700}
     .project-case-title h2{font-family:var(--font-display);font-size:1.28rem;line-height:1.35;font-weight:700}
-    .project-case-role{margin-top:5px;color:var(--muted);font-size:.76rem}
+    .project-case-role{margin-top:5px;color:#657274;font-size:.76rem}
     .project-context{max-width:760px;margin:19px 0 18px 76px;color:#354047;font-size:.9rem;line-height:1.72}
     .project-label{display:block;margin-bottom:4px;color:var(--accent);font-size:.72rem;font-weight:700}
     .project-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin-left:76px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
@@ -45,7 +46,7 @@
     .project-demo-links{display:flex;flex-wrap:wrap;gap:8px 14px}
     .project-demo-link{display:inline-flex;align-items:center;min-height:44px;color:var(--accent);font-size:.8rem;font-weight:700;text-decoration:none;border-bottom:1px solid #dfa39b}
     .project-demo-link:hover{text-decoration:underline}
-    .project-demo-note{width:100%;color:var(--muted);font-size:.74rem;line-height:1.6}
+    .project-demo-note{width:100%;color:#657274;font-size:.74rem;line-height:1.6}
     .footer{margin-top:0}
     @media(max-width:960px){
       .disclaimer,.project-list{margin-left:48px;margin-right:48px}
@@ -159,10 +160,34 @@
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
   const els=document.querySelectorAll('[data-reveal]');
-  const io=new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}})
-  },{threshold:.08});
-  els.forEach(el=>io.observe(el));
+  const projectCases=document.querySelectorAll('.project-case[data-reveal]');
+  const showProjectCases=()=>projectCases.forEach(el=>{
+    el.classList.remove('reveal-pending');
+    el.classList.add('visible');
+  });
+  if(typeof IntersectionObserver!=='function'){
+    showProjectCases();
+    return;
+  }
+  let io;
+  try{
+    io=new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{if(e.isIntersecting){
+        e.target.classList.add('visible');
+        if(e.target.classList.contains('project-case')){
+          const finishReveal=()=>e.target.classList.remove('reveal-pending');
+          e.target.addEventListener('animationend',finishReveal,{once:true});
+          setTimeout(finishReveal,650);
+        }
+        io.unobserve(e.target);
+      }})
+    },{threshold:.08});
+    projectCases.forEach(el=>el.classList.add('reveal-pending'));
+    els.forEach(el=>io.observe(el));
+  }catch(error){
+    if(io)io.disconnect();
+    showProjectCases();
+  }
 });
 
 </script>
