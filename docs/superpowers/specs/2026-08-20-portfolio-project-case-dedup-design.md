@@ -67,7 +67,6 @@
 
 - `demo-creative.html`：逐秒表现、分段聚合与双素材对比。
 - `demo-wukong.html`：任务卡、自动质检、失败停车、白名单自修与人工审校。
-- `demo-advideo.html`：仅作为外部素材参考能力展示，不宣称已经接入本项目的生产链路，不公开采集细节。
 
 ### 03 AI 广告日报与问题排查
 
@@ -90,8 +89,15 @@
 
 - `index.html` 和 `en.html` 的企微项目仍链接 `cases.html#case-lianlu`，标签保持“查看案例 / View case”。
 - `cases.html` 的标题、描述和 Open Graph 文案改为三个项目案例，不再宣传单独的 Demo 目录或策略案例区。
-- `README.md` 与 `README.en.md` 将作品集说明改为“三个完整项目案例，Demo 嵌入对应案例”，Demo 总表可以保留，因为它提供直接入口而非复述简历项目正文。
-- 不修改简历项目正文、PDF、Word 或任何 Demo 文件。
+- `README.md` 与 `README.en.md` 将作品集说明改为“三个完整项目案例，五个公开 Demo 嵌入对应案例”，保留五行公开 Demo 总表，因为它提供直接入口而非复述简历项目正文。
+- 不修改简历项目正文、PDF、Word；Demo 文件只允许执行下述 `demo-advideo.html` robots meta 隐私修订。
+
+## 隐私修订与公开边界
+
+- `demo-advideo.html` 文件不删除，功能、数据和视觉保持不变；仅在页面 `<head>` 增加 `<meta name="robots" content="noindex,nofollow">`。
+- 从公开发现面 `cases.html`、`README.md`、`README.en.md`、`index.html`、`en.html` 与 `sitemap.xml` 完全撤下 `demo-advideo.html` 的链接和名称，公开数量统一为五个 Demo。
+- `robots.txt` 保持 `Allow: /`，让爬虫能够读取页面的 `noindex` 并逐步退索引；不得用 `Disallow` 阻断该过程。
+- 这是非破坏性隐藏，不是权限隔离。知道直接 URL 的访问者和历史链接仍可能访问该文件，因此不得声称页面已经私有、不可访问或具备鉴权保护。
 
 ## 响应式与交互
 
@@ -109,23 +115,25 @@
 - 已删除的算法流量和财务对账案例不得重新出现。
 - 仅服务于上述旧结构的 CSS、JavaScript 和测试断言。
 
-六个 Demo 文件本身全部保留。
+五个公开 Demo 文件本身全部保留；`demo-advideo.html` 也保留，但不再有公开入口，只增加 robots meta。
 
 ## 验收标准
 
 1. 页面只包含三个项目案例，顺序与简历一致。
 2. 三个案例均包含必要背景、关键判断、方案逻辑、结果验证、归因边界和对应 Demo。
-3. 六个 Demo URL 在 `cases.html` 中各出现一次，不存在第二套 Demo 目录。
+3. 五个公开 Demo URL 在 `cases.html` 中各出现一次，不存在第二套 Demo 目录；Case 02 只保留创意分析与悟空两个入口。
 4. 页面不出现算法流量存废、财务对账数据可信性或旧三栏简历项目卡。
 5. `#case-lianlu` 及企微 Demo 返回链接继续有效。
-6. 中英文首页入口、README 数量和页面元信息口径一致。
+6. 中英文首页与 README 的公开数量统一为五，README 公开 Demo 表各五行。
 7. Playwright 回归通过；360、390、1024、1440 视口无横向溢出、截断或重叠。
 8. 桌面和手机截图中三个案例均可见，Demo 链接可点击，控制台无错误。
+9. `cases.html`、两份 README、中英文首页与 `sitemap.xml` 均无 `demo-advideo.html` 入口；`sitemap.xml` 只列五个公开 Demo。
+10. `demo-advideo.html` 含精确的 `noindex,nofollow` meta，`robots.txt` 仍为 `Allow: /`。
 
 ## 不在本次范围
 
 - 修改简历项目文案、PDF 或 Word。
-- 修改六个 Demo 的功能、数据或视觉。
+- 删除 `demo-advideo.html`，或修改其功能、数据和视觉；本轮只允许增加 robots meta。
 - 新增算法、财务对账或其他项目案例。
 - 公开客户、内部数据源、采集实现或未经确认的效率比例。
 - 推送 GitHub 或发布 Pages；上线仍需本地预览通过后由用户确认。

@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Replace the resume-like summary cards and separate Demo directory in `cases.html` with three independently readable project cases whose six Demo links appear once, beside the relevant case.
+**Goal:** Replace the resume-like summary cards and separate Demo directory in `cases.html` with three independently readable project cases whose five public Demo links appear once, beside the relevant case; keep the competitor-intelligence Demo file only as a non-indexed, non-publicly-linked historical artifact.
 
-**Architecture:** Keep the site as one static page with inline case-page CSS and the existing reveal script. Render three unframed, full-width `<article>` sections in resume order; each article owns its background, judgment, execution logic, result, attribution boundary, and Demo links. Keep the six standalone Demo files unchanged; preserve the homepage destination `cases.html#case-lianlu` and its approved labels `查看案例` / `View case`.
+**Architecture:** Keep the site as one static page with inline case-page CSS and the existing reveal script. Render three unframed, full-width `<article>` sections in resume order; each article owns its background, judgment, execution logic, result, attribution boundary, and public Demo links. Keep the five public Demo files unchanged. Retain `demo-advideo.html` without changing its functionality, data, or visuals, but remove it from every public discovery surface and add only `noindex,nofollow`; keep `robots.txt` crawlable so search engines can process that directive. Preserve the homepage destination `cases.html#case-lianlu` and its approved labels `查看案例` / `View case`.
 
 **Tech Stack:** Static HTML5, CSS3, vanilla JavaScript, Playwright, Python `http.server`, Git
 
@@ -13,13 +13,16 @@
 ## File Map
 
 - Modify `cases.html`: replace the summary-card and Demo-directory information architecture with the three approved case narratives.
-- Modify `tests/portfolio-content.spec.js`: lock the three-case content contract, one-link-per-Demo contract, removed structures, responsive geometry, touch targets, and console cleanliness.
-- Modify `tests/resume-content.spec.js`: keep the cross-page six-Demo regression while removing its dependency on the deleted Demo directory.
+- Modify `tests/portfolio-content.spec.js`: lock the three-case content contract, one-link-per-public-Demo contract, hidden-Demo discovery boundary, removed structures, responsive geometry, touch targets, and console cleanliness.
+- Modify `tests/resume-content.spec.js`: keep the cross-page five-public-Demo regression while removing its dependency on the deleted Demo directory.
 - Verify/Modify `tests/wecom-flow.spec.js`: synchronize the new case link and evidence copy while retaining the 44px touch-target and bidirectional `cases.html#case-lianlu` anchor checks.
-- Modify `README.md`: describe three complete cases with Demo links embedded beside the relevant case; retain the direct Demo table.
-- Modify `README.en.md`: mirror the same portfolio architecture in English; retain the direct Demo table.
-- Retain the approved `index.html` / `en.html` entry-label updates from the prerequisite commit: each file keeps `cases.html#case-lianlu` and changes only its single label to `查看案例` / `View case`; do not change any other resume copy.
-- Do not modify resume copy beyond those two labels, `style.css`, `kingho-resume-ai-pm.pdf`, Word/PDF sources, or any `demo-*.html` file.
+- Modify `README.md`: describe three complete cases with five public Demo links embedded beside the relevant case; retain a five-row direct Demo table with no competitor-intelligence entry.
+- Modify `README.en.md`: mirror the same portfolio architecture in English; retain a five-row direct Demo table with no competitor-intelligence entry.
+- Modify `index.html` / `en.html`: set the hero count to five public demos. Retain the prerequisite project-entry contract: both files keep `cases.html#case-lianlu` and the labels `查看案例` / `View case`; do not change any other resume copy.
+- Modify `sitemap.xml`: list the five public Demo URLs and omit the hidden Demo.
+- Modify `robots.txt`: retain `Allow: /` and explain that non-indexed pages declare their own robots meta.
+- Modify `demo-advideo.html`: add only `<meta name="robots" content="noindex,nofollow">`; do not delete the file or change its functionality, data, or visuals.
+- Do not modify `style.css`, `kingho-resume-ai-pm.pdf`, Word/PDF sources, or any other Demo content.
 
 ### Task 1: Lock The Approved Page Contract And Implement The Three Cases
 
@@ -35,8 +38,7 @@
 Keep the README test at the top of `tests/portfolio-content.spec.js` for Task 2. Replace the remaining tests with the following contract:
 
 ```javascript
-const EXPECTED_DEMOS = [
-  'demo-advideo.html',
+const PUBLIC_DEMOS = [
   'demo-creative.html',
   'demo-eval.html',
   'demo-shufen.html',
@@ -73,8 +75,8 @@ test('portfolio embeds each Demo URL exactly once beside its project', async ({ 
   await expect(projectCases.nth(0).locator('a')).toHaveCount(1);
   await expect(projectCases.nth(1).locator('a[href="demo-creative.html"]')).toHaveCount(1);
   await expect(projectCases.nth(1).locator('a[href="demo-wukong.html"]')).toHaveCount(1);
-  await expect(projectCases.nth(1).locator('a[href="demo-advideo.html"]')).toHaveCount(1);
-  await expect(projectCases.nth(1).locator('a')).toHaveCount(3);
+  await expect(projectCases.nth(1).locator('a[href="demo-advideo.html"]')).toHaveCount(0);
+  await expect(projectCases.nth(1).locator('a')).toHaveCount(2);
   await expect(projectCases.nth(2).locator('a[href="demo-shufen.html"]')).toHaveCount(1);
   await expect(projectCases.nth(2).locator('a[href="demo-eval.html"]')).toHaveCount(1);
   await expect(projectCases.nth(2).locator('a')).toHaveCount(2);
@@ -82,8 +84,8 @@ test('portfolio embeds each Demo URL exactly once beside its project', async ({ 
   const published = await page.locator('a[href^="demo-"][href$=".html"]').evaluateAll((links) =>
     links.map((link) => link.getAttribute('href')).sort()
   );
-  expect(published).toEqual(EXPECTED_DEMOS);
-  for (const href of EXPECTED_DEMOS) {
+  expect(published).toEqual(PUBLIC_DEMOS);
+  for (const href of PUBLIC_DEMOS) {
     await expect(page.locator(`a[href="${href}"]`)).toHaveCount(1);
   }
 });
@@ -101,7 +103,6 @@ test('portfolio keeps the approved evidence and attribution boundaries', async (
   await expect(projectCases.nth(1)).toContainText('同期同 SKU 全量素材');
   await expect(projectCases.nth(1)).toContainText('CPM 与 CTCVR 综合表现处于中上游');
   await expect(projectCases.nth(1)).toContainText('不包装为头部爆款');
-  await expect(projectCases.nth(1)).toContainText('未接入本项目生产链路');
 
   await expect(projectCases.nth(2)).toContainText('小时级缩短至分钟级');
   await expect(projectCases.nth(2)).toContainText('每周向产研提交 1 至 2 份 MRD');
@@ -115,6 +116,7 @@ test('portfolio removes the duplicate cards, Demo directory, and supplemental ca
   await expect(page.locator('[data-section="demo-directory"]')).toHaveCount(0);
   await expect(page.locator('[data-testid="project-demo"]')).toHaveCount(0);
   await expect(page.locator('[data-testid="extension-demo"]')).toHaveCount(0);
+  await expect(page.locator('.project-demo-note')).toHaveCount(0);
   await expect(page.getByRole('heading', { name: /全部在线 Demo/ })).toHaveCount(0);
   await expect(page.locator('.case-index-steps')).toHaveCount(0);
   await expect(page.locator('section.case')).toHaveCount(0);
@@ -122,6 +124,9 @@ test('portfolio removes the duplicate cards, Demo directory, and supplemental ca
   await expect(page.locator('body')).not.toContainText('算法流量存废之争');
   await expect(page.locator('body')).not.toContainText('财务对账数据可信性');
   await expect(page.locator('body')).not.toContainText('策略产品 & 数据分析案例');
+  await expect(page.locator('body')).not.toContainText('竞品广告情报');
+  await expect(page.locator('body')).not.toContainText('外部素材参考');
+  await expect(page.locator('body')).not.toContainText('采集细节');
 });
 
 for (const viewport of [
@@ -152,7 +157,7 @@ for (const viewport of [
       expect(box.x + box.width).toBeLessThanOrEqual(viewport.width + 1);
     }
     const links = page.locator('.project-demo-link');
-    await expect(links).toHaveCount(6);
+    await expect(links).toHaveCount(5);
     const demoLinks = await links.all();
     for (let index = 0; index < demoLinks.length; index += 1) {
       const link = demoLinks[index];
@@ -168,18 +173,19 @@ for (const viewport of [
 }
 ```
 
-Replace the old `portfolio publishes six unique online demos` test in `tests/resume-content.spec.js` with:
+Replace the old portfolio Demo-count test in `tests/resume-content.spec.js` with:
 
 ```javascript
-test('portfolio publishes six unique online demos once inside project cases', async ({ page }) => {
+test('portfolio publishes five unique online demos once inside project cases', async ({ page }) => {
   await page.goto(`${BASE}/cases.html`);
   await expect(page.locator('[data-testid="project-case"]')).toHaveCount(3);
   await expect(page.locator('[data-section="demo-directory"]')).toHaveCount(0);
-  const expected = ['demo-advideo.html', 'demo-creative.html', 'demo-eval.html', 'demo-shufen.html', 'demo-wecom-flow.html', 'demo-wukong.html'];
+  const expected = ['demo-creative.html', 'demo-eval.html', 'demo-shufen.html', 'demo-wecom-flow.html', 'demo-wukong.html'];
   const published = await page.locator('a[href^="demo-"][href$=".html"]').evaluateAll((links) =>
     links.map((link) => link.getAttribute('href')).sort()
   );
   expect(published).toEqual(expected);
+  await expect(page.locator('a[href="demo-advideo.html"]')).toHaveCount(0);
   for (const href of expected) {
     await expect(page.locator(`a[href="${href}"]`)).toHaveCount(1);
   }
@@ -194,7 +200,7 @@ Run:
 DEMO_BASE_URL=http://127.0.0.1:52786 playwright test tests/portfolio-content.spec.js tests/resume-content.spec.js --grep "complete project cases|embeds each Demo|evidence and attribution|duplicate cards|project content usable|once inside project cases" --workers=1
 ```
 
-Expected: FAIL because the current page still has `② 全部在线 Demo`, `.case-index-steps`, repeated Demo URLs, and lacks the five-part case narrative.
+Expected: FAIL because the current page still has the legacy Demo directory, `.case-index-steps`, repeated Demo URLs, and lacks the five-part case narrative.
 
 - [ ] **Step 3: Replace the case-page metadata and inline CSS**
 
@@ -241,7 +247,6 @@ Replace the case-page `<style>` block with this unframed project layout:
 .project-demo-links{display:flex;flex-wrap:wrap;gap:8px 14px}
 .project-demo-link{display:inline-flex;align-items:center;min-height:44px;color:var(--accent);font-size:.8rem;font-weight:700;text-decoration:none;border-bottom:1px solid #dfa39b}
 .project-demo-link:hover{text-decoration:underline}
-.project-demo-note{width:100%;color:#657274;font-size:.74rem;line-height:1.6}
 .footer{margin-top:0}
 @media(max-width:960px){
   .disclaimer,.project-list{margin-left:48px;margin-right:48px}
@@ -321,8 +326,6 @@ Keep the existing footer only. Replace the content from `<header class="page-hea
       <div class="project-demo-links">
         <a class="project-demo-link" href="demo-creative.html">查看创意分析 Demo ↗</a>
         <a class="project-demo-link" href="demo-wukong.html">体验悟空生产流程 ↗</a>
-        <a class="project-demo-link" href="demo-advideo.html">查看外部素材参考 Demo ↗</a>
-        <p class="project-demo-note">竞品广告情报仅展示外部素材参考能力，未接入本项目生产链路，不公开采集细节。</p>
       </div>
     </nav>
   </article>
@@ -396,7 +399,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 Run the Step 2 command again.
 
-Expected: all selected tests PASS; six Demo links appear exactly once, the old directory is absent, all four viewports stay within width, every Demo link is at least 44px high, and browser errors are empty.
+Expected: all selected tests PASS; five public Demo links appear exactly once, Case 02 contains only the creative and Wukong links, the old directory is absent, all four viewports stay within width, every Demo link is at least 44px high, and browser errors are empty.
 
 - [ ] **Post-review hardening: lock progressive reveal, supporting-text color, and geometry guards**
 
@@ -449,15 +452,11 @@ test('portfolio supporting text uses the approved accessible color', async ({ pa
   const roleColors = await page.locator('.project-case-role').evaluateAll((elements) =>
     elements.map((element) => getComputedStyle(element).color)
   );
-  const noteColors = await page.locator('.project-demo-note').evaluateAll((elements) =>
-    elements.map((element) => getComputedStyle(element).color)
-  );
   expect(roleColors).toEqual([
     'rgb(101, 114, 116)',
     'rgb(101, 114, 116)',
     'rgb(101, 114, 116)',
   ]);
-  expect(noteColors).toEqual(['rgb(101, 114, 116)']);
 });
 ```
 
@@ -477,7 +476,7 @@ for (let index = 0; index < projectCaseItems.length; index += 1) {
   expect(box.x + box.width).toBeLessThanOrEqual(viewport.width + 1);
 }
 const links = page.locator('.project-demo-link');
-await expect(links).toHaveCount(6);
+await expect(links).toHaveCount(5);
 const demoLinks = await links.all();
 for (let index = 0; index < demoLinks.length; index += 1) {
   const link = demoLinks[index];
@@ -494,7 +493,7 @@ Run:
 DEMO_BASE_URL=http://127.0.0.1:52786 playwright test tests/portfolio-content.spec.js --grep "without IntersectionObserver|reveal resolves case opacity|supporting text uses|project content usable" --workers=1
 ```
 
-Expected: all selected tests PASS; the three fallback states equal `{ opacity: '1', pending: false }`, anchor/scroll reveals settle to the same state, role/note colors compute to `rgb(101, 114, 116)` (`#657274`), and every project/Demo bounding box is non-null before geometry is read.
+Expected: all selected tests PASS; the three fallback states equal `{ opacity: '1', pending: false }`, anchor/scroll reveals settle to the same state, the three role colors compute to `rgb(101, 114, 116)` (`#657274`), and every project/Demo bounding box is non-null before geometry is read. The removed note and competitor copy are covered by the separate structure/discovery contracts, not by this color test.
 
 - [ ] **Step 6: Preserve the published WeCom anchor and backlink contract**
 
@@ -532,13 +531,21 @@ test('README descriptions match the embedded-Demo portfolio structure', () => {
   const english = fs.readFileSync(path.join(__dirname, '..', 'README.en.md'), 'utf8');
 
   expect(chinese).toContain('**三个完整项目案例（按简历顺序）**');
-  expect(chinese).toContain('6 个 Demo 分别嵌在对应案例末尾');
-  expect(chinese).not.toContain('**② 6 个在线 Demo**');
-  expect(chinese).toContain('**在线 Demo 总表（6 个）**');
+  expect(chinese).toContain('5 个 Demo 分别嵌在对应案例末尾');
+  expect(chinese).toContain('**在线 Demo 总表（5 个）**');
   expect(english).toContain('**Three complete project cases (in résumé order)**');
-  expect(english).toContain('The six demos are embedded once at the end of the relevant case');
-  expect(english).not.toContain('**② Six live demos**');
-  expect(english).toContain('**Live demo index (6 total)**');
+  expect(english).toContain('The five demos are embedded once at the end of the relevant case');
+  expect(english).toContain('**Live demo index (5 total)**');
+
+  for (const href of PUBLIC_DEMOS) {
+    const markdownLink = `[${href}](https://kinghowang.github.io/kingho-resume/${href})`;
+    expect(chinese.split(markdownLink).length - 1).toBe(1);
+    expect(english.split(markdownLink).length - 1).toBe(1);
+  }
+  expect(chinese).not.toContain('demo-advideo.html');
+  expect(chinese).not.toContain('竞品广告情报引擎');
+  expect(english).not.toContain('demo-advideo.html');
+  expect(english).not.toContain('Competitor Ad Intelligence');
 });
 ```
 
@@ -548,7 +555,7 @@ test('README descriptions match the embedded-Demo portfolio structure', () => {
 DEMO_BASE_URL=http://127.0.0.1:52786 playwright test tests/portfolio-content.spec.js --grep "README descriptions" --workers=1
 ```
 
-Expected: FAIL because both READMEs still describe a separate second Demo section.
+Expected: FAIL because both READMEs still use the outdated public count or retain the hidden competitor-intelligence row.
 
 - [ ] **Step 3: Replace the Chinese portfolio introduction**
 
@@ -557,8 +564,10 @@ Keep the direct Demo table. Replace the two numbered paragraphs above it in `REA
 ```markdown
 **三个完整项目案例（按简历顺序）**：企微获客链路改造、AI 创意生产与投放验证、AI 广告日报与问题排查。每个案例独立讲清必要背景、关键判断、执行流程、结果验证与归因边界。
 
-6 个 Demo 分别嵌在对应案例末尾，面试官可先理解项目，再按兴趣继续体验。下表保留直接入口，便于快速访问。
+5 个 Demo 分别嵌在对应案例末尾，面试官可先理解项目，再按兴趣继续体验。下表保留直接入口，便于快速访问。
 ```
+
+Keep exactly five table rows: `demo-shufen.html`, `demo-wukong.html`, `demo-wecom-flow.html`, `demo-creative.html`, and `demo-eval.html`. Do not include the hidden Demo URL or its Chinese name.
 
 - [ ] **Step 4: Replace the English portfolio introduction**
 
@@ -567,8 +576,10 @@ Keep the direct Demo table. Replace the two numbered paragraphs above it in `REA
 ```markdown
 **Three complete project cases (in résumé order)**: WeCom acquisition-flow redesign, AI creative production and delivery validation, and AI ad reporting and issue investigation. Each case independently explains the necessary context, key judgment, execution flow, result validation, and attribution boundary.
 
-The six demos are embedded once at the end of the relevant case, so readers can understand the project before choosing what to try. The table below remains as a direct-access index.
+The five demos are embedded once at the end of the relevant case, so readers can understand the project before choosing what to try. The table below remains as a direct-access index.
 ```
+
+Keep the same five table rows in English and do not include the hidden Demo URL or its English name.
 
 - [ ] **Step 5: Run the README and full portfolio specs**
 
@@ -585,7 +596,128 @@ git add README.md README.en.md tests/portfolio-content.spec.js
 git commit -m "docs: align portfolio readmes with embedded demos"
 ```
 
-### Task 3: Perform The Minimal Full Verification And Prepare Local Review
+### Task 3: Apply The Non-Destructive Competitor-Demo Privacy Revision
+
+**Files:**
+- Modify: `cases.html` (Case 02 keeps only the creative and Wukong links; no competitor name or explanatory note)
+- Modify: `README.md` and `README.en.md` (five-row public tables; no hidden Demo link or name)
+- Modify: `index.html` and `en.html` (hero count becomes five; retain `查看案例` / `View case`)
+- Modify: `sitemap.xml` (five public Demo URLs only)
+- Modify: `robots.txt` (`Allow: /` remains)
+- Modify: `demo-advideo.html` (robots meta only; file and direct URL remain)
+- Modify: `tests/portfolio-content.spec.js` and `tests/resume-content.spec.js` (static discovery, count, and hero contracts)
+
+This is discovery-surface hiding, not access control. A visitor who knows the direct URL, follows an old link, or has browser history can still open the retained file. Do not describe the result as private, authenticated, or inaccessible.
+
+- [ ] **Step 1: Lock the public-discovery contract first**
+
+Add the static contract to `tests/portfolio-content.spec.js`:
+
+```javascript
+test('public discovery surfaces hide the competitor intelligence Demo', () => {
+  for (const file of ['cases.html', 'README.md', 'README.en.md', 'index.html', 'en.html', 'sitemap.xml']) {
+    const content = fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
+    expect(content, file).not.toContain('demo-advideo.html');
+  }
+
+  const sitemap = fs.readFileSync(path.join(__dirname, '..', 'sitemap.xml'), 'utf8');
+  for (const href of PUBLIC_DEMOS) {
+    expect(sitemap).toContain(`https://kinghowang.github.io/kingho-resume/${href}`);
+  }
+
+  const hiddenDemo = fs.readFileSync(path.join(__dirname, '..', 'demo-advideo.html'), 'utf8');
+  expect(hiddenDemo).toContain('<meta name="robots" content="noindex,nofollow">');
+
+  const robots = fs.readFileSync(path.join(__dirname, '..', 'robots.txt'), 'utf8');
+  expect(robots).not.toContain('各 Demo 均为对外展示内容');
+  expect(robots).toMatch(/^Allow: \/$/m);
+});
+```
+
+Keep the Case 02 and public-body assertions from Task 1: two links, zero `demo-advideo.html` links, and zero occurrences of `竞品广告情报`, `外部素材参考`, or `采集细节`. Keep the README assertions from Task 2 so both public tables contain exactly the five `PUBLIC_DEMOS` links once and omit both competitor-intelligence names.
+
+In `tests/resume-content.spec.js`, set the hero and portfolio counts to five while preserving the existing case-label arrays:
+
+```javascript
+test('resume heroes use the unified five-demo count', async ({ page }) => {
+  await page.goto(`${BASE}/index.html`);
+  await expect(page.locator('.hero-links a[href="cases.html"]')).toContainText('5 个在线 Demo');
+
+  await page.goto(`${BASE}/en.html`);
+  await expect(page.locator('.hero-links a[href="cases.html"]')).toContainText('5 live demos');
+});
+
+// Existing project-entry contracts remain unchanged:
+// ['cases.html#case-lianlu', '查看案例']
+// ['cases.html#case-lianlu', 'View case']
+```
+
+- [ ] **Step 2: Run the privacy contracts and verify the old public entry points fail**
+
+```bash
+DEMO_BASE_URL=http://127.0.0.1:52786 playwright test tests/portfolio-content.spec.js tests/resume-content.spec.js --grep "public discovery surfaces|README descriptions|supporting text uses|embeds each Demo|five-demo count|five unique online demos" --workers=1
+```
+
+Expected before the privacy implementation: FAIL on the old Case 02 link/note, README rows, hero count, sitemap entry, or missing robots meta.
+
+- [ ] **Step 3: Apply the exact discovery-file changes**
+
+Keep the Case 02 HTML from Task 1 at exactly two links and no `.project-demo-note`; keep the CSS without a `.project-demo-note` rule. Set the two hero links to:
+
+```html
+<a class="hero-cta" href="cases.html">作品集：5 个在线 Demo →</a>
+<a class="hero-cta" href="cases.html">Portfolio: 5 live demos →</a>
+```
+
+Do not disturb these existing project-entry links:
+
+```html
+<a class="project-link" href="cases.html#case-lianlu">查看案例</a>
+<a class="project-link" href="cases.html#case-lianlu">View case</a>
+```
+
+`sitemap.xml` must retain the three public page URLs and exactly these five Demo entries:
+
+```xml
+<url><loc>https://kinghowang.github.io/kingho-resume/demo-wecom-flow.html</loc><priority>0.6</priority></url>
+<url><loc>https://kinghowang.github.io/kingho-resume/demo-shufen.html</loc><priority>0.6</priority></url>
+<url><loc>https://kinghowang.github.io/kingho-resume/demo-eval.html</loc><priority>0.6</priority></url>
+<url><loc>https://kinghowang.github.io/kingho-resume/demo-wukong.html</loc><priority>0.6</priority></url>
+<url><loc>https://kinghowang.github.io/kingho-resume/demo-creative.html</loc><priority>0.6</priority></url>
+```
+
+Set `robots.txt` to the crawlable contract:
+
+```text
+# 允许抓取公开页面；不进入搜索索引的页面在各自 HTML 中声明 noindex。
+# 已删除页面需要让爬虫重新抓取并看到 404；历史跳转页也需要让爬虫读取 canonical。
+
+User-agent: *
+Allow: /
+
+Sitemap: https://kinghowang.github.io/kingho-resume/sitemap.xml
+```
+
+In `demo-advideo.html`, add exactly this line after the charset/viewport line and make no other change to that file:
+
+```html
+<meta name="robots" content="noindex,nofollow">
+```
+
+- [ ] **Step 4: Run the focused contracts and verify they pass**
+
+Run the Step 2 command again.
+
+Expected: selected tests PASS; the five public Demo URLs appear once in their cases and README tables, Case 02 has two links, public discovery files contain no hidden URL, sitemap contains the five public Demo URLs, the retained hidden page declares `noindex,nofollow`, and `robots.txt` still contains `Allow: /`.
+
+- [ ] **Step 5: Commit the privacy revision**
+
+```bash
+git add cases.html README.md README.en.md index.html en.html sitemap.xml robots.txt demo-advideo.html tests/portfolio-content.spec.js tests/resume-content.spec.js
+git commit -m "fix: hide competitor intelligence demo from public entry points"
+```
+
+### Task 4: Perform The Minimal Full Verification And Prepare Local Review
 
 **Files:**
 - Verify only; no source changes expected
@@ -607,7 +739,7 @@ Expected: all Playwright tests PASS; local links report `missing=[]`; the creati
 
 Open `http://127.0.0.1:52786/cases.html` and capture full-page screenshots at `360×800`, `390×844`, `1024×768`, and `1440×900`. Scroll each case into view before capture so reveal animation has completed.
 
-Expected at every size: all three numbered cases are readable; the four content labels keep their natural order; no text, divider, or Demo link overlaps or truncates; Case 02 shows three Demo links including the qualified external-reference link; no horizontal scrollbar is present.
+Expected at every size: all three numbered cases are readable; the four content labels keep their natural order; no text, divider, or Demo link overlaps or truncates; Case 02 shows exactly the creative and Wukong Demo links; no hidden-Demo note or public entry is present; no horizontal scrollbar is present.
 
 - [ ] **Step 3: Review the final diff against the approved scope**
 
@@ -618,7 +750,7 @@ git diff --name-only origin/main...HEAD
 git log --oneline origin/main..HEAD
 ```
 
-Expected: the implementation changes are limited to `cases.html`, `README.md`, `README.en.md`, `index.html`, `en.html`, `tests/portfolio-content.spec.js`, `tests/resume-content.spec.js`, `tests/wecom-flow.spec.js`, plus the approved spec and this plan. `index.html` and `en.html` each contain exactly one changed line, limited to the approved `查看案例` / `View case` label while retaining `cases.html#case-lianlu`; no other resume copy, PDF, Word, shared stylesheet, or Demo file appears in the diff.
+Expected: the implementation changes are limited to `cases.html`, `README.md`, `README.en.md`, `index.html`, `en.html`, `sitemap.xml`, `robots.txt`, `demo-advideo.html`, `tests/portfolio-content.spec.js`, `tests/resume-content.spec.js`, `tests/wecom-flow.spec.js`, plus the approved spec and this plan. `index.html` and `en.html` contain only the approved `查看案例` / `View case` label change (retaining `cases.html#case-lianlu`) and the hero count change to five. `demo-advideo.html` contains only the robots meta addition. No other resume copy, PDF, Word, shared stylesheet, Demo functionality, data, or visuals appear in the diff.
 
 - [ ] **Step 4: Stop at local review**
 
