@@ -35,7 +35,7 @@ The six demos are embedded once at the end of the relevant case, so readers can 
 | Creative Segment Diagnostics | Second-by-second video breakdown to locate drop-off points and conversion hooks; dual-creative A/B compare | [demo-creative.html](https://kinghowang.github.io/kingho-resume/demo-creative.html) |
 | Attribution Quality Eval | Golden set + code metrics + LLM-as-judge; quantifies numeric fidelity and mechanism-hallucination rate as a regression gate | [demo-eval.html](https://kinghowang.github.io/kingho-resume/demo-eval.html) |
 
-**④ Methodology write-ups**:
+**Methodology write-ups**:
 - [Ad Ops Analysis Playbook](https://github.com/KinghoWang/ad-ops-analysis-playbook) — the rule base behind the analytics agent
 - [Agent Collab Playbook](https://github.com/KinghoWang/agent-collab-playbook) — task contracts & framework pitfalls for reliable agents
 

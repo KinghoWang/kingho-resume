@@ -16,6 +16,8 @@ test('README descriptions match the embedded-Demo portfolio structure', () => {
   expect(english).toContain('The six demos are embedded once at the end of the relevant case');
   expect(english).not.toContain('**② Six live demos**');
   expect(english).toContain('**Live demo index (6 total)**');
+  expect(english).toContain('**Methodology write-ups**:');
+  expect(english).not.toContain('**④ Methodology write-ups**:');
 
   for (const href of EXPECTED_DEMOS) {
     const markdownLink = `[${href}](https://kinghowang.github.io/kingho-resume/${href})`;
