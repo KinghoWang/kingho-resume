@@ -113,7 +113,7 @@ const projectContracts = {
         boundary: '相对提升，绝对值已脱敏',
         links: [
           ['demo-wecom-flow.html', '体验企微链路 Demo'],
-          ['cases.html#case-lianlu', '查看完整案例'],
+          ['cases.html#case-lianlu', '查看案例'],
         ],
       },
       {
@@ -161,7 +161,7 @@ const projectContracts = {
         boundary: 'Relative lifts; absolute values sanitized',
         links: [
           ['demo-wecom-flow.html', 'Try the WeCom flow demo'],
-          ['cases.html#case-lianlu', 'View the full case'],
+          ['cases.html#case-lianlu', 'View case'],
         ],
       },
       {

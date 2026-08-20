@@ -22,9 +22,7 @@
 
 **① Three project cases (in the same order as the résumé)**: WeCom acquisition-flow redesign, AI creative production and delivery validation, and AI ad reporting and issue investigation. Each starts with the problem → action → result, followed by its relevant demos.
 
-**② Three complete strategy-product and data-analysis cases** (sanitized): WeCom acquisition-flow redesign, an algorithmic-traffic decision reversal, and financial-reconciliation data integrity; see [cases.html](https://kinghowang.github.io/kingho-resume/cases.html).
-
-**③ Six live demos**: grouped by project, with the exploratory demo at the bottom. Wukong reproduces the real task contract and state machine without connecting to production.
+**② Six live demos**: grouped by project as interactive evidence for the three cases, with the exploratory demo at the bottom. Wukong reproduces the real task contract and state machine without connecting to production.
 
 **Live demo index (6 total)**
 
