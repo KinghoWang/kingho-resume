@@ -4,20 +4,18 @@ const path = require('path');
 
 const BASE = process.env.DEMO_BASE_URL || 'http://127.0.0.1:52784';
 
-test('README hierarchy matches the portfolio section counts', () => {
+test('README descriptions match the embedded-Demo portfolio structure', () => {
   const chinese = fs.readFileSync(path.join(__dirname, '..', 'README.md'), 'utf8');
   const english = fs.readFileSync(path.join(__dirname, '..', 'README.en.md'), 'utf8');
 
-  expect(chinese).toContain('**① 3 个项目案例（按简历顺序）**');
-  expect(chinese).toContain('**② 6 个在线 Demo**');
-  expect(chinese).not.toContain('完整策略产品 & 数据分析案例');
+  expect(chinese).toContain('**三个完整项目案例（按简历顺序）**');
+  expect(chinese).toContain('6 个 Demo 分别嵌在对应案例末尾');
+  expect(chinese).not.toContain('**② 6 个在线 Demo**');
   expect(chinese).toContain('**在线 Demo 总表（6 个）**');
-  expect(chinese).toContain('demo-wecom-flow.html');
-  expect(english).toContain('**① Three project cases (in the same order as the résumé)**');
-  expect(english).toContain('**② Six live demos**');
-  expect(english).not.toContain('complete strategy-product and data-analysis cases');
+  expect(english).toContain('**Three complete project cases (in résumé order)**');
+  expect(english).toContain('The six demos are embedded once at the end of the relevant case');
+  expect(english).not.toContain('**② Six live demos**');
   expect(english).toContain('**Live demo index (6 total)**');
-  expect(english).toContain('demo-wecom-flow.html');
 });
 
 const EXPECTED_DEMOS = [

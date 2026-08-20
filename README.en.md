@@ -20,9 +20,9 @@
 
 ## 🚀 Portfolio
 
-**① Three project cases (in the same order as the résumé)**: WeCom acquisition-flow redesign, AI creative production and delivery validation, and AI ad reporting and issue investigation. Each starts with the problem → action → result, followed by its relevant demos.
+**Three complete project cases (in résumé order)**: WeCom acquisition-flow redesign, AI creative production and delivery validation, and AI ad reporting and issue investigation. Each case independently explains the necessary context, key judgment, execution flow, result validation, and attribution boundary.
 
-**② Six live demos**: grouped by project as interactive evidence for the three cases, with the exploratory demo at the bottom. Wukong reproduces the real task contract and state machine without connecting to production.
+The six demos are embedded once at the end of the relevant case, so readers can understand the project before choosing what to try. The table below remains as a direct-access index.
 
 **Live demo index (6 total)**
 
