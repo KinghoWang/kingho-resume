@@ -245,6 +245,18 @@ const contactContracts = {
   },
 };
 
+test('resume pages request the versioned stylesheet for contact UI', async ({ page }) => {
+  for (const file of Object.keys(contactContracts)) {
+    await gotoWithFonts(page, file);
+    await expect(page.locator('link[rel="stylesheet"]')).toHaveAttribute('href', 'style.css?v=20260820-contact-copy');
+    const styles = await page.locator('[data-testid="contact-email"]').evaluate((button) => ({
+      borderTopWidth: getComputedStyle(button).borderTopWidth,
+      display: getComputedStyle(button).display,
+    }));
+    expect(styles).toEqual({ borderTopWidth: '0px', display: 'flex' });
+  }
+});
+
 test('resume contact controls copy email and phone with localized feedback', async ({ page, context }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: BASE });
   for (const [file, contract] of Object.entries(contactContracts)) {
