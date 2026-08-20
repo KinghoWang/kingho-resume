@@ -337,23 +337,24 @@ test('project role metadata meets WCAG AA text contrast', async ({ page }) => {
   }
 });
 
-test('resume heroes use the unified six-demo count', async ({ page }) => {
+test('resume heroes use the unified five-demo count', async ({ page }) => {
   await page.goto(`${BASE}/index.html`);
-  await expect(page.locator('.hero-links a[href="cases.html"]')).toContainText('6 个在线 Demo');
+  await expect(page.locator('.hero-links a[href="cases.html"]')).toContainText('5 个在线 Demo');
 
   await page.goto(`${BASE}/en.html`);
-  await expect(page.locator('.hero-links a[href="cases.html"]')).toContainText('6 live demos');
+  await expect(page.locator('.hero-links a[href="cases.html"]')).toContainText('5 live demos');
 });
 
-test('portfolio publishes six unique online demos once inside project cases', async ({ page }) => {
+test('portfolio publishes five unique online demos once inside project cases', async ({ page }) => {
   await page.goto(`${BASE}/cases.html`);
   await expect(page.locator('[data-testid="project-case"]')).toHaveCount(3);
   await expect(page.locator('[data-section="demo-directory"]')).toHaveCount(0);
-  const expected = ['demo-advideo.html', 'demo-creative.html', 'demo-eval.html', 'demo-shufen.html', 'demo-wecom-flow.html', 'demo-wukong.html'];
+  const expected = ['demo-creative.html', 'demo-eval.html', 'demo-shufen.html', 'demo-wecom-flow.html', 'demo-wukong.html'];
   const published = await page.locator('a[href^="demo-"][href$=".html"]').evaluateAll((links) =>
     links.map((link) => link.getAttribute('href')).sort()
   );
   expect(published).toEqual(expected);
+  await expect(page.locator('a[href="demo-advideo.html"]')).toHaveCount(0);
   for (const href of expected) {
     await expect(page.locator(`a[href="${href}"]`)).toHaveCount(1);
   }

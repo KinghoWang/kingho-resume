@@ -9,25 +9,28 @@ test('README descriptions match the embedded-Demo portfolio structure', () => {
   const english = fs.readFileSync(path.join(__dirname, '..', 'README.en.md'), 'utf8');
 
   expect(chinese).toContain('**三个完整项目案例（按简历顺序）**');
-  expect(chinese).toContain('6 个 Demo 分别嵌在对应案例末尾');
+  expect(chinese).toContain('5 个 Demo 分别嵌在对应案例末尾');
   expect(chinese).not.toContain('**② 6 个在线 Demo**');
-  expect(chinese).toContain('**在线 Demo 总表（6 个）**');
+  expect(chinese).toContain('**在线 Demo 总表（5 个）**');
   expect(english).toContain('**Three complete project cases (in résumé order)**');
-  expect(english).toContain('The six demos are embedded once at the end of the relevant case');
+  expect(english).toContain('The five demos are embedded once at the end of the relevant case');
   expect(english).not.toContain('**② Six live demos**');
-  expect(english).toContain('**Live demo index (6 total)**');
+  expect(english).toContain('**Live demo index (5 total)**');
   expect(english).toContain('**Methodology write-ups**:');
   expect(english).not.toContain('**④ Methodology write-ups**:');
 
-  for (const href of EXPECTED_DEMOS) {
+  for (const href of PUBLIC_DEMOS) {
     const markdownLink = `[${href}](https://kinghowang.github.io/kingho-resume/${href})`;
     expect(chinese.split(markdownLink).length - 1).toBe(1);
     expect(english.split(markdownLink).length - 1).toBe(1);
   }
+  expect(chinese).not.toContain('demo-advideo.html');
+  expect(chinese).not.toContain('竞品广告情报引擎');
+  expect(english).not.toContain('demo-advideo.html');
+  expect(english).not.toContain('Competitor Ad Intelligence');
 });
 
-const EXPECTED_DEMOS = [
-  'demo-advideo.html',
+const PUBLIC_DEMOS = [
   'demo-creative.html',
   'demo-eval.html',
   'demo-shufen.html',
@@ -109,15 +112,15 @@ test('portfolio supporting text uses the approved accessible color', async ({ pa
   const roleColors = await page.locator('.project-case-role').evaluateAll((elements) =>
     elements.map((element) => getComputedStyle(element).color)
   );
-  const noteColors = await page.locator('.project-demo-note').evaluateAll((elements) =>
-    elements.map((element) => getComputedStyle(element).color)
-  );
   expect(roleColors).toEqual([
     'rgb(101, 114, 116)',
     'rgb(101, 114, 116)',
     'rgb(101, 114, 116)',
   ]);
-  expect(noteColors).toEqual(['rgb(101, 114, 116)']);
+  await expect(page.locator('.project-demo-note')).toHaveCount(0);
+  await expect(page.locator('body')).not.toContainText('竞品广告情报');
+  await expect(page.locator('body')).not.toContainText('外部素材参考');
+  await expect(page.locator('body')).not.toContainText('采集细节');
 });
 
 test('portfolio embeds each Demo URL exactly once beside its project', async ({ page }) => {
@@ -128,8 +131,8 @@ test('portfolio embeds each Demo URL exactly once beside its project', async ({ 
   await expect(projectCases.nth(0).locator('a')).toHaveCount(1);
   await expect(projectCases.nth(1).locator('a[href="demo-creative.html"]')).toHaveCount(1);
   await expect(projectCases.nth(1).locator('a[href="demo-wukong.html"]')).toHaveCount(1);
-  await expect(projectCases.nth(1).locator('a[href="demo-advideo.html"]')).toHaveCount(1);
-  await expect(projectCases.nth(1).locator('a')).toHaveCount(3);
+  await expect(projectCases.nth(1).locator('a[href="demo-advideo.html"]')).toHaveCount(0);
+  await expect(projectCases.nth(1).locator('a')).toHaveCount(2);
   await expect(projectCases.nth(2).locator('a[href="demo-shufen.html"]')).toHaveCount(1);
   await expect(projectCases.nth(2).locator('a[href="demo-eval.html"]')).toHaveCount(1);
   await expect(projectCases.nth(2).locator('a')).toHaveCount(2);
@@ -137,8 +140,8 @@ test('portfolio embeds each Demo URL exactly once beside its project', async ({ 
   const published = await page.locator('a[href^="demo-"][href$=".html"]').evaluateAll((links) =>
     links.map((link) => link.getAttribute('href')).sort()
   );
-  expect(published).toEqual(EXPECTED_DEMOS);
-  for (const href of EXPECTED_DEMOS) {
+  expect(published).toEqual(PUBLIC_DEMOS);
+  for (const href of PUBLIC_DEMOS) {
     await expect(page.locator(`a[href="${href}"]`)).toHaveCount(1);
   }
 });
@@ -156,7 +159,6 @@ test('portfolio keeps the approved evidence and attribution boundaries', async (
   await expect(projectCases.nth(1)).toContainText('同期同 SKU 全量素材');
   await expect(projectCases.nth(1)).toContainText('CPM 与 CTCVR 综合表现处于中上游');
   await expect(projectCases.nth(1)).toContainText('不包装为头部爆款');
-  await expect(projectCases.nth(1)).toContainText('未接入本项目生产链路');
 
   await expect(projectCases.nth(2)).toContainText('小时级缩短至分钟级');
   await expect(projectCases.nth(2)).toContainText('每周向产研提交 1 至 2 份 MRD');
@@ -177,6 +179,25 @@ test('portfolio removes the duplicate cards, Demo directory, and supplemental ca
   await expect(page.locator('body')).not.toContainText('算法流量存废之争');
   await expect(page.locator('body')).not.toContainText('财务对账数据可信性');
   await expect(page.locator('body')).not.toContainText('策略产品 & 数据分析案例');
+});
+
+test('public discovery surfaces hide the competitor intelligence Demo', () => {
+  for (const file of ['cases.html', 'README.md', 'README.en.md', 'index.html', 'en.html', 'sitemap.xml']) {
+    const content = fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
+    expect(content, file).not.toContain('demo-advideo.html');
+  }
+
+  const sitemap = fs.readFileSync(path.join(__dirname, '..', 'sitemap.xml'), 'utf8');
+  for (const href of PUBLIC_DEMOS) {
+    expect(sitemap).toContain(`https://kinghowang.github.io/kingho-resume/${href}`);
+  }
+
+  const hiddenDemo = fs.readFileSync(path.join(__dirname, '..', 'demo-advideo.html'), 'utf8');
+  expect(hiddenDemo).toContain('<meta name="robots" content="noindex,nofollow">');
+
+  const robots = fs.readFileSync(path.join(__dirname, '..', 'robots.txt'), 'utf8');
+  expect(robots).not.toContain('各 Demo 均为对外展示内容');
+  expect(robots).toMatch(/^Allow: \/$/m);
 });
 
 for (const viewport of [
@@ -207,7 +228,7 @@ for (const viewport of [
       expect(box.x + box.width).toBeLessThanOrEqual(viewport.width + 1);
     }
     const links = page.locator('.project-demo-link');
-    await expect(links).toHaveCount(6);
+    await expect(links).toHaveCount(5);
     const demoLinks = await links.all();
     for (let index = 0; index < demoLinks.length; index += 1) {
       const link = demoLinks[index];
