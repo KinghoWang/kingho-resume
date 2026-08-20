@@ -649,6 +649,17 @@ for (const viewport of [
       }));
       expect(geometry.documentWidth).toBeLessThanOrEqual(geometry.viewportWidth);
       expect(geometry.statsInsideCards).toBe(true);
+      const contactControls = page.locator('.contact-copy, .wechat-trigger');
+      await expect(contactControls).toHaveCount(3);
+      for (const control of await contactControls.all()) {
+        const box = await control.boundingBox();
+        expect(box).not.toBeNull();
+        expect(box.x).toBeGreaterThanOrEqual(0);
+        expect(box.x + box.width).toBeLessThanOrEqual(viewport.width + 1);
+        if (viewport.width <= 640) expect(box.height).toBeGreaterThanOrEqual(44);
+      }
+      const contactStatus = page.locator('[data-testid="contact-copy-status"]');
+      await expect(contactStatus).toHaveCount(1);
       const projects = page.locator('.resume-project-list > .resume-project');
       await expect(projects).toHaveCount(3);
 
