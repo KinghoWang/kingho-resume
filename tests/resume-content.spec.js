@@ -232,25 +232,82 @@ async function expectProjectContract(page, file) {
   await expect(page.getByRole('link', { name: contract.languageLink.name })).toHaveAttribute('href', contract.languageLink.href);
 }
 
-test('resume contact details use real email and phone links', async ({ page }) => {
-  for (const file of ['index.html', 'en.html']) {
+const contactContracts = {
+  'index.html': {
+    emailDone: '邮箱已复制',
+    phoneDone: '电话已复制',
+    failure: '复制失败，请手动复制',
+    wechat: '微信 / 二维码',
+  },
+  'en.html': {
+    emailDone: 'Email copied',
+    phoneDone: 'Phone copied',
+    failure: 'Copy failed. Please copy manually.',
+    wechat: 'WeChat / QR code',
+  },
+};
+
+test('resume contact controls copy email and phone with localized feedback', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: BASE });
+  for (const [file, contract] of Object.entries(contactContracts)) {
     await gotoWithFonts(page, file);
     const contacts = page.locator('.contact-row');
-    await expect(contacts.locator('a[href="mailto:kinghowang@foxmail.com"]')).toHaveCount(1);
-    await expect(contacts.locator('a[href="tel:+8617512006748"]')).toHaveCount(1);
-    await expect(contacts.locator('a[href^="mailto:"]')).toHaveCount(1);
-    await expect(contacts.locator('a[href^="tel:"]')).toHaveCount(1);
+    const email = contacts.locator('[data-testid="contact-email"]');
+    const phone = contacts.locator('[data-testid="contact-phone"]');
+    const status = page.locator('[data-testid="contact-copy-status"]');
+    const trigger = contacts.locator('[data-testid="wechat-trigger"]');
 
+    await expect(contacts.locator('a[href^="mailto:"], a[href^="tel:"]')).toHaveCount(0);
+    await expect(email).toHaveAttribute('data-copy-value', 'kinghowang@foxmail.com');
+    await expect(phone).toHaveAttribute('data-copy-value', '17512006748');
+    await expect(email).toHaveAttribute('aria-label', /复制邮箱|Copy email/);
+    await expect(phone).toHaveAttribute('aria-label', /复制电话|Copy phone/);
+    await expect(status).toHaveAttribute('role', 'status');
+    await expect(status).toHaveAttribute('aria-live', 'polite');
+
+    await email.click();
+    await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe('kinghowang@foxmail.com');
+    await expect(status).toHaveText(contract.emailDone);
+    await expect(status).toBeVisible();
+
+    await phone.click();
+    await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe('17512006748');
+    await expect(status).toHaveText(contract.phoneDone);
+    await expect(trigger).toHaveText(contract.wechat);
+    await expect(trigger).toHaveAttribute('aria-controls', 'wechatDialog');
+    await expect(status).toBeHidden({ timeout: 2500 });
+  }
+});
+
+test('resume contact controls report clipboard failure honestly', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: () => Promise.reject(new Error('blocked')) },
+    });
+    document.execCommand = () => false;
+  });
+  for (const [file, contract] of Object.entries(contactContracts)) {
+    await page.goto(`${BASE}/${file}`);
+    await page.locator('[data-testid="contact-email"]').click();
+    const status = page.locator('[data-testid="contact-copy-status"]');
+    await expect(status).toHaveText(contract.failure);
+    await expect(status).toHaveClass(/is-error/);
+  }
+});
+
+test('resume keeps the existing WeChat dialog behavior behind the clearer trigger', async ({ page }) => {
+  for (const [file, contract] of Object.entries(contactContracts)) {
+    await gotoWithFonts(page, file);
     const trigger = page.locator('[data-testid="wechat-trigger"]');
     const dialog = page.locator('[data-testid="wechat-dialog"]');
     const qr = dialog.locator('img[src="wechat-qr.png"]');
-    await expect(trigger).toBeVisible();
+    await expect(trigger).toHaveText(contract.wechat);
     await expect(dialog).not.toBeVisible();
     await trigger.click();
     await expect(dialog).toBeVisible();
     await expect(dialog).toContainText(/微信扫码添加|Scan to connect/);
     await expect(dialog.locator('.wechat-id')).toHaveText('WJH748247724');
-    await expect(page.getByText('WJH748247724', { exact: true })).toHaveCount(1);
     await expect(qr).toBeVisible();
     const qrGeometry = await qr.evaluate((image) => ({
       naturalWidth: image.naturalWidth,

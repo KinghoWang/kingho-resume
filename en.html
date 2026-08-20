@@ -33,8 +33,12 @@
     <h1>Kingho Wang 王钧灏</h1>
     <p class="tagline">Commercial Strategy × AI Product · Data-Driven Growth · 5 Years in Ad Monetization</p>
     <div class="contact-row">
-      <a href="mailto:kinghowang@foxmail.com">kinghowang@foxmail.com</a><a href="tel:+8617512006748">+86 17512006748</a><button type="button" class="wechat-trigger" data-testid="wechat-trigger" aria-haspopup="dialog">WeChat</button><span>B.Eng. · Beijing</span>
+      <button type="button" class="contact-copy" data-testid="contact-email" data-copy-value="kinghowang@foxmail.com" data-copy-done="Email copied" data-copy-fail="Copy failed. Please copy manually." aria-label="Copy email kinghowang@foxmail.com"><span>kinghowang@foxmail.com</span><span class="copy-icon" aria-hidden="true"></span></button>
+      <button type="button" class="contact-copy" data-testid="contact-phone" data-copy-value="17512006748" data-copy-done="Phone copied" data-copy-fail="Copy failed. Please copy manually." aria-label="Copy phone +86 17512006748"><span>+86 17512006748</span><span class="copy-icon" aria-hidden="true"></span></button>
+      <button type="button" class="wechat-trigger" data-testid="wechat-trigger" aria-haspopup="dialog" aria-controls="wechatDialog"><span>WeChat / QR code</span><span class="wechat-chevron" aria-hidden="true"></span></button>
+      <span>B.Eng. · Beijing</span>
     </div>
+    <div class="contact-copy-status" data-testid="contact-copy-status" role="status" aria-live="polite" aria-atomic="true" hidden></div>
     <span class="intent">Currently employed in Beijing · Open to: Commercial Strategy PM / AI Commercialization PM</span>
     <div class="hero-links">
       <a class="hero-cta" href="cases.html">Portfolio: 5 live demos →</a>
@@ -165,37 +169,69 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 <script>
 (function(){
-  var dlg=document.getElementById('wechatDialog'); if(!dlg) return;
-  var open=document.querySelector('.wechat-trigger'),
-      close=document.getElementById('wechatClose'),
-      copy=document.getElementById('wechatCopy'),
-      id=document.getElementById('wechatId');
-  if(!open||!close||!copy||!id) return;
-  var label=copy.textContent, resetTimer;
-  function show(){ if(!dlg.open){ dlg.showModal ? dlg.showModal() : dlg.setAttribute('open',''); } }
-  function hide(){ if(dlg.open){ dlg.close ? dlg.close() : dlg.removeAttribute('open'); } }
-  function setStatus(message){
-    clearTimeout(resetTimer); copy.textContent=message;
-    resetTimer=setTimeout(function(){ copy.textContent=label; },1600);
+  var status=document.querySelector('[data-testid="contact-copy-status"]'),
+      statusTimer,
+      hideTimer;
+
+  function showCopyStatus(message,isError){
+    if(!status) return;
+    clearTimeout(statusTimer); clearTimeout(hideTimer);
+    status.textContent=message;
+    status.classList.toggle('is-error',Boolean(isError));
+    status.hidden=false;
+    requestAnimationFrame(function(){ status.classList.add('is-visible'); });
+    statusTimer=setTimeout(function(){
+      status.classList.remove('is-visible');
+      hideTimer=setTimeout(function(){ status.hidden=true; },170);
+    },1800);
   }
-  function copied(){ setStatus(copy.dataset.done); }
-  function copyFallback(text){
+
+  function copyFallback(text,focusTarget,done){
     var ta=document.createElement('textarea'), success=false;
     ta.value=text; ta.setAttribute('readonly','');
     ta.style.position='fixed'; ta.style.opacity='0';
     document.body.appendChild(ta); ta.focus(); ta.select(); ta.setSelectionRange(0,ta.value.length);
     try{ success=document.execCommand('copy'); }catch(e){}
-    document.body.removeChild(ta); copy.focus();
-    success ? copied() : setStatus(copy.dataset.fail);
+    document.body.removeChild(ta);
+    if(focusTarget) focusTarget.focus();
+    done(success);
+  }
+
+  function copyText(text,focusTarget,done){
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ done(true); },function(){ copyFallback(text,focusTarget,done); });
+    }else{ copyFallback(text,focusTarget,done); }
+  }
+
+  document.querySelectorAll('[data-copy-value]').forEach(function(button){
+    button.addEventListener('click',function(){
+      copyText(button.dataset.copyValue,button,function(success){
+        showCopyStatus(success ? button.dataset.copyDone : button.dataset.copyFail,!success);
+      });
+    });
+  });
+
+  var dlg=document.getElementById('wechatDialog'); if(!dlg) return;
+  var open=document.querySelector('.wechat-trigger'),
+      close=document.getElementById('wechatClose'),
+      copy=document.getElementById('wechatCopy'),
+      id=document.getElementById('wechatId'),
+      copyLabel=copy&&copy.textContent,
+      resetTimer;
+  if(!open||!close||!copy||!id) return;
+  function show(){ if(!dlg.open){ dlg.showModal ? dlg.showModal() : dlg.setAttribute('open',''); } }
+  function hide(){ if(dlg.open){ dlg.close ? dlg.close() : dlg.removeAttribute('open'); } }
+  function setWechatStatus(message){
+    clearTimeout(resetTimer); copy.textContent=message;
+    resetTimer=setTimeout(function(){ copy.textContent=copyLabel; },1600);
   }
   open.addEventListener('click',show);
   close.addEventListener('click',hide);
-  dlg.addEventListener('click',function(e){ if(e.target===dlg) hide(); });
+  dlg.addEventListener('click',function(event){ if(event.target===dlg) hide(); });
   copy.addEventListener('click',function(){
-    var text=id.textContent.trim();
-    if(navigator.clipboard&&navigator.clipboard.writeText){
-      navigator.clipboard.writeText(text).then(copied,function(){ copyFallback(text); });
-    }else{ copyFallback(text); }
+    copyText(id.textContent.trim(),copy,function(success){
+      setWechatStatus(success ? copy.dataset.done : copy.dataset.fail);
+    });
   });
 })();
 </script>
