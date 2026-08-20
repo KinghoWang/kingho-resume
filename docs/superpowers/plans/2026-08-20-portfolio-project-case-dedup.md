@@ -4,7 +4,7 @@
 
 **Goal:** Replace the resume-like summary cards and separate Demo directory in `cases.html` with three independently readable project cases whose six Demo links appear once, beside the relevant case.
 
-**Architecture:** Keep the site as one static page with inline case-page CSS and the existing reveal script. Render three unframed, full-width `<article>` sections in resume order; each article owns its background, judgment, execution logic, result, attribution boundary, and Demo links. Keep the six standalone Demo files and homepage links unchanged.
+**Architecture:** Keep the site as one static page with inline case-page CSS and the existing reveal script. Render three unframed, full-width `<article>` sections in resume order; each article owns its background, judgment, execution logic, result, attribution boundary, and Demo links. Keep the six standalone Demo files unchanged; preserve the homepage destination `cases.html#case-lianlu` and its approved labels `查看案例` / `View case`.
 
 **Tech Stack:** Static HTML5, CSS3, vanilla JavaScript, Playwright, Python `http.server`, Git
 
@@ -15,16 +15,20 @@
 - Modify `cases.html`: replace the summary-card and Demo-directory information architecture with the three approved case narratives.
 - Modify `tests/portfolio-content.spec.js`: lock the three-case content contract, one-link-per-Demo contract, removed structures, responsive geometry, touch targets, and console cleanliness.
 - Modify `tests/resume-content.spec.js`: keep the cross-page six-Demo regression while removing its dependency on the deleted Demo directory.
+- Verify/Modify `tests/wecom-flow.spec.js`: synchronize the new case link and evidence copy while retaining the 44px touch-target and bidirectional `cases.html#case-lianlu` anchor checks.
 - Modify `README.md`: describe three complete cases with Demo links embedded beside the relevant case; retain the direct Demo table.
 - Modify `README.en.md`: mirror the same portfolio architecture in English; retain the direct Demo table.
-- Do not modify `index.html`, `en.html`, `style.css`, `kingho-resume-ai-pm.pdf`, Word/PDF sources, or any `demo-*.html` file.
+- Retain the approved `index.html` / `en.html` entry-label updates from the prerequisite commit: each file keeps `cases.html#case-lianlu` and changes only its single label to `查看案例` / `View case`; do not change any other resume copy.
+- Do not modify resume copy beyond those two labels, `style.css`, `kingho-resume-ai-pm.pdf`, Word/PDF sources, or any `demo-*.html` file.
 
 ### Task 1: Lock The Approved Page Contract And Implement The Three Cases
 
 **Files:**
 - Modify: `tests/portfolio-content.spec.js:23-105`
 - Modify: `tests/resume-content.spec.js:348-365`
+- Verify/Modify: `tests/wecom-flow.spec.js:310-341` (the branch diff already synchronizes the approved case-link label and evidence assertions while retaining the 44px and bidirectional-anchor checks)
 - Modify: `cases.html:6-243`
+- Retain from prerequisite commit `cb48394` as part of the final implementation scope: `index.html:80` and `en.html:79` (one label-only line in each file; both keep `cases.html#case-lianlu`)
 
 - [ ] **Step 1: Replace the old portfolio hierarchy assertions with failing case-page regressions**
 
@@ -350,6 +354,8 @@ Expected: all selected tests PASS; six Demo links appear exactly once, the old d
 
 - [ ] **Step 6: Preserve the published WeCom anchor and backlink contract**
 
+Verify and, where needed, synchronize `tests/wecom-flow.spec.js` with the approved case-link label and new evidence copy. Keep its mobile 44px touch-target assertion and both directions of the `cases.html#case-lianlu` ↔ `demo-wecom-flow.html` navigation contract.
+
 Run:
 
 ```bash
@@ -361,7 +367,7 @@ Expected: 2 tests PASS; `cases.html#case-lianlu` reveals the case, its link stil
 - [ ] **Step 7: Commit the page and regression changes**
 
 ```bash
-git add cases.html tests/portfolio-content.spec.js tests/resume-content.spec.js
+git add cases.html tests/portfolio-content.spec.js tests/resume-content.spec.js tests/wecom-flow.spec.js
 git commit -m "refactor: turn portfolio into three complete project cases"
 ```
 
@@ -468,7 +474,7 @@ git diff --name-only origin/main...HEAD
 git log --oneline origin/main..HEAD
 ```
 
-Expected: the implementation changes are limited to `cases.html`, `README.md`, `README.en.md`, `tests/portfolio-content.spec.js`, `tests/resume-content.spec.js`, plus the approved spec and this plan. No resume source, PDF, Word, homepage, shared stylesheet, or Demo file appears in the diff.
+Expected: the implementation changes are limited to `cases.html`, `README.md`, `README.en.md`, `index.html`, `en.html`, `tests/portfolio-content.spec.js`, `tests/resume-content.spec.js`, `tests/wecom-flow.spec.js`, plus the approved spec and this plan. `index.html` and `en.html` each contain exactly one changed line, limited to the approved `查看案例` / `View case` label while retaining `cases.html#case-lianlu`; no other resume copy, PDF, Word, shared stylesheet, or Demo file appears in the diff.
 
 - [ ] **Step 4: Stop at local review**
 
