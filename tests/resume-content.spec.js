@@ -345,21 +345,17 @@ test('resume heroes use the unified six-demo count', async ({ page }) => {
   await expect(page.locator('.hero-links a[href="cases.html"]')).toContainText('6 live demos');
 });
 
-test('portfolio publishes six unique online demos', async ({ page }) => {
+test('portfolio publishes six unique online demos once inside project cases', async ({ page }) => {
   await page.goto(`${BASE}/cases.html`);
-  await expect(page.locator('.section-divider').first()).toContainText('项目案例 · 按简历顺序阅读');
-  await expect(page.locator('.demo-lead').first()).toContainText('6 个在线 Demo');
   await expect(page.locator('[data-testid="project-case"]')).toHaveCount(3);
-  await expect(page.locator('[data-testid="project-demo"]')).toHaveCount(5);
-  await expect(page.locator('[data-testid="extension-demo"]')).toHaveCount(1);
-  await expect(page.locator('[data-section="demo-directory"] a[href="demo-wukong.html"]')).toHaveCount(1);
+  await expect(page.locator('[data-section="demo-directory"]')).toHaveCount(0);
   const expected = ['demo-advideo.html', 'demo-creative.html', 'demo-eval.html', 'demo-shufen.html', 'demo-wecom-flow.html', 'demo-wukong.html'];
   const published = await page.locator('a[href^="demo-"][href$=".html"]').evaluateAll((links) =>
-    [...new Set(links.map((link) => link.getAttribute('href')))].sort()
+    links.map((link) => link.getAttribute('href')).sort()
   );
   expect(published).toEqual(expected);
   for (const href of expected) {
-    await expect(page.locator(`a[href="${href}"]`).first()).toBeVisible();
+    await expect(page.locator(`a[href="${href}"]`)).toHaveCount(1);
   }
 });
 
