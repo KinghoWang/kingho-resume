@@ -73,13 +73,11 @@ const compactJobs = {
 const unaffectedCards = {
   'index.html': {
     currentEmployer: '北京太字流动',
-    currentHeight: 332.65625,
     educationHeading: '教育经历',
     educationDetail: '校团委宣传部学生干部，获校级优秀学生干部（前 10%）。',
   },
   'en.html': {
     currentEmployer: 'Beijing Taizi Liudong',
-    currentHeight: 356.421875,
     educationHeading: 'Education',
     educationDetail: "Student leader in the University Youth League Committee's Publicity Department; recognized as an Outstanding Student Leader (top 10%).",
   },
@@ -394,12 +392,52 @@ test('project role metadata meets WCAG AA text contrast', async ({ page }) => {
   }
 });
 
-test('resume heroes use the unified five-demo count', async ({ page }) => {
+test('resume heroes describe a portfolio of three project cases', async ({ page }) => {
   await page.goto(`${BASE}/index.html`);
-  await expect(page.locator('.hero-links a[href="cases.html"]')).toContainText('5 个在线 Demo');
+  await expect(page.locator('.hero-links a[href="cases.html"]')).toHaveText('作品集：3 个项目案例 →');
 
   await page.goto(`${BASE}/en.html`);
-  await expect(page.locator('.hero-links a[href="cases.html"]')).toContainText('5 live demos');
+  await expect(page.locator('.hero-links a[href="cases.html"]')).toHaveText('Portfolio: 3 project cases →');
+});
+
+test('resume positioning and current role use the approved execution-level copy', async ({ page }) => {
+  const contracts = {
+    'index.html': {
+      tagline: '商业化策略 × AI 产品 · 数据驱动增长 · 5 年广告运营经验',
+      leadStart: '5 年商业化广告运营经验，工作重点从投放执行逐步延伸到策略、数据和产品改造。',
+      employer: '北京太字流动',
+      bullets: [
+        '行业商业化运营：负责中医 & 大健康行业从冷启动到规模化，预算占比 5% → 90%+；参与行业商业化策略制定与落地。',
+        '客户组合与预算保障：服务 60+ 客户，覆盖兴趣教育与中医大健康，年消耗 3 亿+ 量级；负责行业趋势分析、消耗监控和预算稳定性保障。',
+      ],
+      excluded: ['5 年商业化广告操盘者', '5 年商业化操盘', '行业变现操盘', '数据驱动决策', '素材与链路策略'],
+    },
+    'en.html': {
+      tagline: 'Commercial Strategy × AI Product · Data-Driven Growth · 5 Years in Ad Operations',
+      leadStart: 'Five years in commercial ad operations, with my work extending from campaign execution into strategy, data and product improvements.',
+      employer: 'Beijing Taizi Liudong',
+      bullets: [
+        'Industry commercialization operations: responsible for taking TCM & healthcare from cold start to scale, growing its budget share from 5% to 90%+; participated in commercialization strategy design and execution.',
+        'Client portfolio and budget stability: served 60+ clients across interest education and TCM & healthcare at ¥300M+ annual-spend scale; tracked industry trends, spend delivery and budget stability.',
+      ],
+      excluded: ['operator', 'owner', 'Data-driven decisions', 'Creative and funnel strategy'],
+    },
+  };
+
+  for (const [file, contract] of Object.entries(contracts)) {
+    await gotoWithFonts(page, file);
+    await expect(page.locator('.tagline')).toHaveText(contract.tagline);
+    await expect(page.locator('.lead')).toContainText(contract.leadStart);
+    const employer = page.locator('.tl-card').filter({ hasText: contract.employer });
+    const bullets = employer.locator('.tl-list li');
+    await expect(bullets).toHaveCount(2);
+    for (let index = 0; index < contract.bullets.length; index += 1) {
+      expect(normalize(await bullets.nth(index).innerText())).toBe(contract.bullets[index]);
+    }
+    for (const excluded of contract.excluded) {
+      await expect(page.locator('body')).not.toContainText(excluded);
+    }
+  }
 });
 
 test('portfolio publishes five unique online demos once inside project cases', async ({ page }) => {
@@ -487,7 +525,15 @@ test('only Baidu and Yike use the compact work layout without losing copy', asyn
     const education = educationSection.locator('.tl-card');
     await expect(current).not.toHaveClass(/tl-card--compact/);
     await expect(education).not.toHaveClass(/tl-card--compact/);
-    expectWithinOnePixel(await current.evaluate((node) => node.getBoundingClientRect().height), unaffected.currentHeight);
+    await expect(current.locator('.tl-list li')).toHaveCount(2);
+    const currentGeometry = await current.evaluate((node) => ({
+      clientHeight: node.clientHeight,
+      clientWidth: node.clientWidth,
+      scrollHeight: node.scrollHeight,
+      scrollWidth: node.scrollWidth,
+    }));
+    expect(currentGeometry.scrollHeight).toBeLessThanOrEqual(currentGeometry.clientHeight + 1);
+    expect(currentGeometry.scrollWidth).toBeLessThanOrEqual(currentGeometry.clientWidth + 1);
     await expect(education.locator('.education-note')).toHaveText(unaffected.educationDetail);
     const educationGeometry = await education.evaluate((node) => ({
       clientHeight: node.clientHeight,
