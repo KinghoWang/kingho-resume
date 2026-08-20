@@ -132,7 +132,7 @@ test('resume keeps the existing WeChat dialog behavior behind the clearer trigge
 Run:
 
 ```bash
-DEMO_BASE_URL=http://127.0.0.1:52786 /Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node /Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/cli.js test tests/resume-content.spec.js --grep "contact controls copy|contact controls report|WeChat dialog" --workers=1
+NODE_PATH=/Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules DEMO_BASE_URL=http://127.0.0.1:52786 /Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node /Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/cli.js test tests/resume-content.spec.js --grep "contact controls copy|contact controls report|WeChat dialog" --workers=1
 ```
 
 Expected: FAIL because email and phone are still anchors, the live-status element does not exist, and the WeChat trigger still reads only `微信` / `WeChat`.
@@ -278,7 +278,7 @@ In both `index.html` and `en.html`, replace the existing second script with this
 Run:
 
 ```bash
-DEMO_BASE_URL=http://127.0.0.1:52786 /Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node /Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/cli.js test tests/resume-content.spec.js --grep "contact controls copy|contact controls report|WeChat dialog" --workers=1
+NODE_PATH=/Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules DEMO_BASE_URL=http://127.0.0.1:52786 /Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node /Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/cli.js test tests/resume-content.spec.js --grep "contact controls copy|contact controls report|WeChat dialog" --workers=1
 ```
 
 Expected: all selected tests PASS; clipboard contents are exact, failure copy is honest, and the existing WeChat dialog behavior is unchanged.
@@ -370,7 +370,7 @@ expect(currentGeometry.scrollWidth).toBeLessThanOrEqual(currentGeometry.clientWi
 Run:
 
 ```bash
-DEMO_BASE_URL=http://127.0.0.1:52786 /Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node /Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/cli.js test tests/resume-content.spec.js --grep "three project cases|execution-level copy|compact work layout" --workers=1
+NODE_PATH=/Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules DEMO_BASE_URL=http://127.0.0.1:52786 /Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node /Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/cli.js test tests/resume-content.spec.js --grep "three project cases|execution-level copy|compact work layout" --workers=1
 ```
 
 Expected: FAIL because the hero still says five Demos, the Chinese page still contains `操盘`, and Taizi still has three bullets.
@@ -432,7 +432,7 @@ Replace the Taizi list with:
 Run:
 
 ```bash
-DEMO_BASE_URL=http://127.0.0.1:52786 /Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node /Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/cli.js test tests/resume-content.spec.js --grep "three project cases|execution-level copy|compact work layout|contribution claims" --workers=1
+NODE_PATH=/Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules DEMO_BASE_URL=http://127.0.0.1:52786 /Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node /Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/cli.js test tests/resume-content.spec.js --grep "three project cases|execution-level copy|compact work layout|contribution claims" --workers=1
 ```
 
 Expected: all selected tests PASS, with three-case CTAs, no inflated Chinese positioning, and exactly two Taizi bullets in both languages.
@@ -475,7 +475,7 @@ await expect(contactStatus).toHaveCount(1);
 Run:
 
 ```bash
-DEMO_BASE_URL=http://127.0.0.1:52786 /Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node /Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/cli.js test --workers=1
+NODE_PATH=/Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules DEMO_BASE_URL=http://127.0.0.1:52786 /Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node /Users/a123/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/cli.js test --workers=1
 ```
 
 Expected: all Playwright tests PASS. Do not rerun after this passes unless related HTML, CSS, JavaScript, or tests change.
