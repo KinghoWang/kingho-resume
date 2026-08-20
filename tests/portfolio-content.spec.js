@@ -88,11 +88,12 @@ test('portfolio reveal resolves case opacity after anchor navigation and scrolli
     const projectCase = projectCases.nth(index);
     await projectCase.scrollIntoViewIfNeeded();
     await expect.poll(
-      () => projectCase.evaluate((element) =>
-        element.classList.contains('visible') || getComputedStyle(element).opacity === '1'
-      ),
+      () => projectCase.evaluate((element) => ({
+        opacity: getComputedStyle(element).opacity,
+        pending: element.classList.contains('reveal-pending'),
+      })),
       { message: `project case ${index + 1} reveal did not resolve` }
-    ).toBe(true);
+    ).toEqual({ opacity: '1', pending: false });
   }
 });
 
