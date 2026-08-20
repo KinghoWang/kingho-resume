@@ -308,7 +308,7 @@ test('navigation links meet the 44px touch target on mobile', async ({ page }) =
   expect(backBox.height).toBeGreaterThanOrEqual(44);
 
   await page.goto(`${BASE}/cases.html#case-lianlu`);
-  const demoBox = await page.locator('#case-lianlu').getByRole('link', { name: '打开交互 Demo' }).boundingBox();
+  const demoBox = await page.locator('#case-lianlu').getByRole('link', { name: '体验企微链路 Demo' }).boundingBox();
   expect(demoBox.height).toBeGreaterThanOrEqual(44);
 });
 
@@ -328,13 +328,13 @@ test('reduced motion keeps the hold indicator aligned with the 800ms state', asy
 test('Case 01 links to the demo and preserves the published evidence', async ({ page }) => {
   await page.goto(`${BASE}/cases.html#case-lianlu`);
   const caseOne = page.locator('#case-lianlu');
-  await expect(caseOne.getByRole('link', { name: '打开交互 Demo' }))
+  await expect(caseOne.getByRole('link', { name: '体验企微链路 Demo' }))
     .toHaveAttribute('href', 'demo-wecom-flow.html');
-  await expect(caseOne).toContainText('曝光-加微率 +50%+');
-  await expect(caseOne).toContainText('曝光-地址率 +40%+');
-  await expect(caseOne).toContainText('后转无损');
-  await expect(caseOne).toContainText('不熟悉长按识别二维码');
-  await expect(caseOne).toContainText('不是为了单纯少一步');
+  await expect(caseOne).toContainText('曝光-加微率提升 50% 以上');
+  await expect(caseOne).toContainText('曝光-地址率提升 40% 以上');
+  await expect(caseOne).toContainText('广告主后续转化未下降');
+  await expect(caseOne).toContainText('中老年主力用户不熟悉这一步');
+  await expect(caseOne).toContainText('用户点击任一入口即可继续添加微信');
 
   await page.goto(`${BASE}/demo-wecom-flow.html`);
   await expect(page.getByRole('link', { name: '返回企微获客案例' }))

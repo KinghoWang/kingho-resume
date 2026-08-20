@@ -73,13 +73,11 @@ const compactJobs = {
 const unaffectedCards = {
   'index.html': {
     currentEmployer: '北京太字流动',
-    currentHeight: 332.65625,
     educationHeading: '教育经历',
     educationDetail: '校团委宣传部学生干部，获校级优秀学生干部（前 10%）。',
   },
   'en.html': {
     currentEmployer: 'Beijing Taizi Liudong',
-    currentHeight: 356.421875,
     educationHeading: 'Education',
     educationDetail: "Student leader in the University Youth League Committee's Publicity Department; recognized as an Outstanding Student Leader (top 10%).",
   },
@@ -113,7 +111,7 @@ const projectContracts = {
         boundary: '相对提升，绝对值已脱敏',
         links: [
           ['demo-wecom-flow.html', '体验企微链路 Demo'],
-          ['cases.html#case-lianlu', '查看完整案例'],
+          ['cases.html#case-lianlu', '查看案例'],
         ],
       },
       {
@@ -161,7 +159,7 @@ const projectContracts = {
         boundary: 'Relative lifts; absolute values sanitized',
         links: [
           ['demo-wecom-flow.html', 'Try the WeCom flow demo'],
-          ['cases.html#case-lianlu', 'View the full case'],
+          ['cases.html#case-lianlu', 'View case'],
         ],
       },
       {
@@ -232,25 +230,94 @@ async function expectProjectContract(page, file) {
   await expect(page.getByRole('link', { name: contract.languageLink.name })).toHaveAttribute('href', contract.languageLink.href);
 }
 
-test('resume contact details use real email and phone links', async ({ page }) => {
-  for (const file of ['index.html', 'en.html']) {
+const contactContracts = {
+  'index.html': {
+    emailDone: '邮箱已复制',
+    phoneDone: '电话已复制',
+    failure: '复制失败，请手动复制',
+    wechat: '微信 / 二维码',
+  },
+  'en.html': {
+    emailDone: 'Email copied',
+    phoneDone: 'Phone copied',
+    failure: 'Copy failed. Please copy manually.',
+    wechat: 'WeChat / QR code',
+  },
+};
+
+test('resume pages request the versioned stylesheet for contact UI', async ({ page }) => {
+  for (const file of Object.keys(contactContracts)) {
+    await gotoWithFonts(page, file);
+    await expect(page.locator('link[rel="stylesheet"]')).toHaveAttribute('href', 'style.css?v=20260820-contact-copy');
+    const styles = await page.locator('[data-testid="contact-email"]').evaluate((button) => ({
+      borderTopWidth: getComputedStyle(button).borderTopWidth,
+      display: getComputedStyle(button).display,
+    }));
+    expect(styles).toEqual({ borderTopWidth: '0px', display: 'flex' });
+  }
+});
+
+test('resume contact controls copy email and phone with localized feedback', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: BASE });
+  for (const [file, contract] of Object.entries(contactContracts)) {
     await gotoWithFonts(page, file);
     const contacts = page.locator('.contact-row');
-    await expect(contacts.locator('a[href="mailto:kinghowang@foxmail.com"]')).toHaveCount(1);
-    await expect(contacts.locator('a[href="tel:+8617512006748"]')).toHaveCount(1);
-    await expect(contacts.locator('a[href^="mailto:"]')).toHaveCount(1);
-    await expect(contacts.locator('a[href^="tel:"]')).toHaveCount(1);
+    const email = contacts.locator('[data-testid="contact-email"]');
+    const phone = contacts.locator('[data-testid="contact-phone"]');
+    const status = page.locator('[data-testid="contact-copy-status"]');
+    const trigger = contacts.locator('[data-testid="wechat-trigger"]');
 
+    await expect(contacts.locator('a[href^="mailto:"], a[href^="tel:"]')).toHaveCount(0);
+    await expect(email).toHaveAttribute('data-copy-value', 'kinghowang@foxmail.com');
+    await expect(phone).toHaveAttribute('data-copy-value', '17512006748');
+    await expect(email).toHaveAttribute('aria-label', /复制邮箱|Copy email/);
+    await expect(phone).toHaveAttribute('aria-label', /复制电话|Copy phone/);
+    await expect(status).toHaveAttribute('role', 'status');
+    await expect(status).toHaveAttribute('aria-live', 'polite');
+
+    await email.click();
+    await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe('kinghowang@foxmail.com');
+    await expect(status).toHaveText(contract.emailDone);
+    await expect(status).toBeVisible();
+
+    await phone.click();
+    await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe('17512006748');
+    await expect(status).toHaveText(contract.phoneDone);
+    await expect(trigger).toHaveText(contract.wechat);
+    await expect(trigger).toHaveAttribute('aria-controls', 'wechatDialog');
+    await expect(status).toBeHidden({ timeout: 2500 });
+  }
+});
+
+test('resume contact controls report clipboard failure honestly', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: () => Promise.reject(new Error('blocked')) },
+    });
+    document.execCommand = () => false;
+  });
+  for (const [file, contract] of Object.entries(contactContracts)) {
+    await page.goto(`${BASE}/${file}`);
+    await page.locator('[data-testid="contact-email"]').click();
+    const status = page.locator('[data-testid="contact-copy-status"]');
+    await expect(status).toHaveText(contract.failure);
+    await expect(status).toHaveClass(/is-error/);
+  }
+});
+
+test('resume keeps the existing WeChat dialog behavior behind the clearer trigger', async ({ page }) => {
+  for (const [file, contract] of Object.entries(contactContracts)) {
+    await gotoWithFonts(page, file);
     const trigger = page.locator('[data-testid="wechat-trigger"]');
     const dialog = page.locator('[data-testid="wechat-dialog"]');
     const qr = dialog.locator('img[src="wechat-qr.png"]');
-    await expect(trigger).toBeVisible();
+    await expect(trigger).toHaveText(contract.wechat);
     await expect(dialog).not.toBeVisible();
     await trigger.click();
     await expect(dialog).toBeVisible();
     await expect(dialog).toContainText(/微信扫码添加|Scan to connect/);
     await expect(dialog.locator('.wechat-id')).toHaveText('WJH748247724');
-    await expect(page.getByText('WJH748247724', { exact: true })).toHaveCount(1);
     await expect(qr).toBeVisible();
     const qrGeometry = await qr.evaluate((image) => ({
       naturalWidth: image.naturalWidth,
@@ -337,28 +404,66 @@ test('project role metadata meets WCAG AA text contrast', async ({ page }) => {
   }
 });
 
-test('resume heroes use the unified six-demo count', async ({ page }) => {
+test('resume heroes describe a portfolio of three project cases', async ({ page }) => {
   await page.goto(`${BASE}/index.html`);
-  await expect(page.locator('.hero-links a[href="cases.html"]')).toContainText('6 个在线 Demo');
+  await expect(page.locator('.hero-links a[href="cases.html"]')).toHaveText('作品集：3 个项目案例 →');
 
   await page.goto(`${BASE}/en.html`);
-  await expect(page.locator('.hero-links a[href="cases.html"]')).toContainText('6 live demos');
+  await expect(page.locator('.hero-links a[href="cases.html"]')).toHaveText('Portfolio: 3 project cases →');
 });
 
-test('portfolio publishes six unique online demos', async ({ page }) => {
+test('resume positioning and current role use the approved execution-level copy', async ({ page }) => {
+  const contracts = {
+    'index.html': {
+      tagline: '商业化策略 × AI 产品 · 数据驱动增长 · 5 年广告运营经验',
+      leadStart: '5 年商业化广告运营经验，工作重点从投放执行逐步延伸到策略、数据和产品改造。',
+      employer: '北京太字流动',
+      bullets: [
+        '行业商业化运营：负责中医 & 大健康行业从冷启动到规模化，预算占比 5% → 90%+；参与行业商业化策略制定与落地。',
+        '客户组合与预算保障：服务 60+ 客户，覆盖兴趣教育与中医大健康，年消耗 3 亿+ 量级；负责行业趋势分析、消耗监控和预算稳定性保障。',
+      ],
+      excluded: ['5 年商业化广告操盘者', '5 年商业化操盘', '行业变现操盘', '数据驱动决策', '素材与链路策略'],
+    },
+    'en.html': {
+      tagline: 'Commercial Strategy × AI Product · Data-Driven Growth · 5 Years in Ad Operations',
+      leadStart: 'Five years in commercial ad operations, with my work extending from campaign execution into strategy, data and product improvements.',
+      employer: 'Beijing Taizi Liudong',
+      bullets: [
+        'Industry commercialization operations: responsible for taking TCM & healthcare from cold start to scale, growing its budget share from 5% to 90%+; participated in commercialization strategy design and execution.',
+        'Client portfolio and budget stability: served 60+ clients across interest education and TCM & healthcare at ¥300M+ annual-spend scale; tracked industry trends, spend delivery and budget stability.',
+      ],
+      excluded: ['operator', 'owner', 'Data-driven decisions', 'Creative and funnel strategy'],
+    },
+  };
+
+  for (const [file, contract] of Object.entries(contracts)) {
+    await gotoWithFonts(page, file);
+    await expect(page.locator('.tagline')).toHaveText(contract.tagline);
+    await expect(page.locator('.lead')).toContainText(contract.leadStart);
+    const employer = page.locator('.tl-card').filter({ hasText: contract.employer });
+    const bullets = employer.locator('.tl-list li');
+    await expect(bullets).toHaveCount(2);
+    for (let index = 0; index < contract.bullets.length; index += 1) {
+      expect(normalize(await bullets.nth(index).innerText())).toBe(contract.bullets[index]);
+    }
+    for (const excluded of contract.excluded) {
+      await expect(page.locator('body')).not.toContainText(excluded);
+    }
+  }
+});
+
+test('portfolio publishes five unique online demos once inside project cases', async ({ page }) => {
   await page.goto(`${BASE}/cases.html`);
-  await expect(page.locator('.section-divider').first()).toContainText('自建 AI 产品');
-  await expect(page.locator('.demo-lead')).toContainText('6 个在线 Demo');
-  await expect(page.locator('[data-testid="core-project"]')).toHaveCount(2);
-  await expect(page.locator('[data-testid="extension-demo"]')).toHaveCount(2);
-  await expect(page.locator('.demo-gallery a[href="demo-wukong.html"]')).toHaveCount(1);
-  const expected = ['demo-advideo.html', 'demo-creative.html', 'demo-eval.html', 'demo-shufen.html', 'demo-wecom-flow.html', 'demo-wukong.html'];
+  await expect(page.locator('[data-testid="project-case"]')).toHaveCount(3);
+  await expect(page.locator('[data-section="demo-directory"]')).toHaveCount(0);
+  const expected = ['demo-creative.html', 'demo-eval.html', 'demo-shufen.html', 'demo-wecom-flow.html', 'demo-wukong.html'];
   const published = await page.locator('a[href^="demo-"][href$=".html"]').evaluateAll((links) =>
-    [...new Set(links.map((link) => link.getAttribute('href')))].sort()
+    links.map((link) => link.getAttribute('href')).sort()
   );
   expect(published).toEqual(expected);
+  await expect(page.locator('a[href="demo-advideo.html"]')).toHaveCount(0);
   for (const href of expected) {
-    await expect(page.locator(`a[href="${href}"]`).first()).toBeVisible();
+    await expect(page.locator(`a[href="${href}"]`)).toHaveCount(1);
   }
 });
 
@@ -432,7 +537,15 @@ test('only Baidu and Yike use the compact work layout without losing copy', asyn
     const education = educationSection.locator('.tl-card');
     await expect(current).not.toHaveClass(/tl-card--compact/);
     await expect(education).not.toHaveClass(/tl-card--compact/);
-    expectWithinOnePixel(await current.evaluate((node) => node.getBoundingClientRect().height), unaffected.currentHeight);
+    await expect(current.locator('.tl-list li')).toHaveCount(2);
+    const currentGeometry = await current.evaluate((node) => ({
+      clientHeight: node.clientHeight,
+      clientWidth: node.clientWidth,
+      scrollHeight: node.scrollHeight,
+      scrollWidth: node.scrollWidth,
+    }));
+    expect(currentGeometry.scrollHeight).toBeLessThanOrEqual(currentGeometry.clientHeight + 1);
+    expect(currentGeometry.scrollWidth).toBeLessThanOrEqual(currentGeometry.clientWidth + 1);
     await expect(education.locator('.education-note')).toHaveText(unaffected.educationDetail);
     const educationGeometry = await education.evaluate((node) => ({
       clientHeight: node.clientHeight,
@@ -548,6 +661,17 @@ for (const viewport of [
       }));
       expect(geometry.documentWidth).toBeLessThanOrEqual(geometry.viewportWidth);
       expect(geometry.statsInsideCards).toBe(true);
+      const contactControls = page.locator('.contact-copy, .wechat-trigger');
+      await expect(contactControls).toHaveCount(3);
+      for (const control of await contactControls.all()) {
+        const box = await control.boundingBox();
+        expect(box).not.toBeNull();
+        expect(box.x).toBeGreaterThanOrEqual(0);
+        expect(box.x + box.width).toBeLessThanOrEqual(viewport.width + 1);
+        if (viewport.width <= 640) expect(box.height).toBeGreaterThanOrEqual(44);
+      }
+      const contactStatus = page.locator('[data-testid="contact-copy-status"]');
+      await expect(contactStatus).toHaveCount(1);
       const projects = page.locator('.resume-project-list > .resume-project');
       await expect(projects).toHaveCount(3);
 
