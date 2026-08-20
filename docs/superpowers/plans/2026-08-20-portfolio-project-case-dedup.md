@@ -24,7 +24,7 @@
 ### Task 1: Lock The Approved Page Contract And Implement The Three Cases
 
 **Files:**
-- Modify: `tests/portfolio-content.spec.js:23-105`
+- Modify: `tests/portfolio-content.spec.js:23-223`
 - Modify: `tests/resume-content.spec.js:348-365`
 - Verify/Modify: `tests/wecom-flow.spec.js:310-341` (the branch diff already synchronizes the approved case-link label and evidence assertions while retaining the 44px and bidirectional-anchor checks)
 - Modify: `cases.html:6-243`
@@ -141,18 +141,24 @@ for (const viewport of [
 
     const projectCases = page.locator('[data-testid="project-case"]');
     await expect(projectCases).toHaveCount(3);
-    for (const projectCase of await projectCases.all()) {
+    const projectCaseItems = await projectCases.all();
+    for (let index = 0; index < projectCaseItems.length; index += 1) {
+      const projectCase = projectCaseItems[index];
       await projectCase.scrollIntoViewIfNeeded();
       await expect(projectCase).toBeVisible();
       const box = await projectCase.boundingBox();
+      expect(box, `${viewport.name} project case ${index + 1} has no bounding box`).not.toBeNull();
       expect(box.x).toBeGreaterThanOrEqual(0);
       expect(box.x + box.width).toBeLessThanOrEqual(viewport.width + 1);
     }
     const links = page.locator('.project-demo-link');
     await expect(links).toHaveCount(6);
-    for (const link of await links.all()) {
+    const demoLinks = await links.all();
+    for (let index = 0; index < demoLinks.length; index += 1) {
+      const link = demoLinks[index];
       await link.scrollIntoViewIfNeeded();
       const box = await link.boundingBox();
+      expect(box, `${viewport.name} Demo link ${index + 1} has no bounding box`).not.toBeNull();
       expect(box.height).toBeGreaterThanOrEqual(44);
     }
     const documentWidth = await page.evaluate(() => document.documentElement.scrollWidth);
@@ -213,13 +219,14 @@ Replace the case-page `<style>` block with this unframed project layout:
 .disclaimer{max-width:864px;margin:24px auto 10px;padding:13px 0;border-top:1px solid #e6c986;border-bottom:1px solid #e6c986;font-size:.84rem;color:#735f2a;line-height:1.65}
 .disclaimer strong{color:#5f4c1d}
 .project-list{max-width:864px;margin:18px auto 0;padding:0 0 36px}
-.project-case{padding:38px 0 42px;border-top:1px solid var(--border);opacity:0;transform:translateY(24px);scroll-margin-top:20px}
-.project-case.visible{animation:fadeUp .55s ease forwards}
+.project-case{padding:38px 0 42px;border-top:1px solid var(--border);opacity:1;transform:none;scroll-margin-top:20px}
+.project-case.reveal-pending{opacity:0;transform:translateY(24px)}
+.project-case.reveal-pending.visible{animation:fadeUp .55s ease forwards}
 .project-case:last-child{border-bottom:1px solid var(--border)}
 .project-case-head{display:grid;grid-template-columns:58px minmax(0,1fr);gap:18px;align-items:start}
 .project-case-no{font-family:var(--font-display);font-size:1.55rem;line-height:1;color:var(--accent);font-weight:700}
 .project-case-title h2{font-family:var(--font-display);font-size:1.28rem;line-height:1.35;font-weight:700}
-.project-case-role{margin-top:5px;color:var(--muted);font-size:.76rem}
+.project-case-role{margin-top:5px;color:#657274;font-size:.76rem}
 .project-context{max-width:760px;margin:19px 0 18px 76px;color:#354047;font-size:.9rem;line-height:1.72}
 .project-label{display:block;margin-bottom:4px;color:var(--accent);font-size:.72rem;font-weight:700}
 .project-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin-left:76px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
@@ -234,7 +241,7 @@ Replace the case-page `<style>` block with this unframed project layout:
 .project-demo-links{display:flex;flex-wrap:wrap;gap:8px 14px}
 .project-demo-link{display:inline-flex;align-items:center;min-height:44px;color:var(--accent);font-size:.8rem;font-weight:700;text-decoration:none;border-bottom:1px solid #dfa39b}
 .project-demo-link:hover{text-decoration:underline}
-.project-demo-note{width:100%;color:var(--muted);font-size:.74rem;line-height:1.6}
+.project-demo-note{width:100%;color:#657274;font-size:.74rem;line-height:1.6}
 .footer{margin-top:0}
 @media(max-width:960px){
   .disclaimer,.project-list{margin-left:48px;margin-right:48px}
@@ -259,7 +266,7 @@ Replace the case-page `<style>` block with this unframed project layout:
 
 - [ ] **Step 4: Replace the old page body with the approved three-case markup**
 
-Keep the existing footer and reveal script. Replace the content from `<header class="page-head"` through the closing tag of the Demo-directory section with:
+Keep the existing footer only. Replace the content from `<header class="page-head"` through the closing tag of the Demo-directory section with:
 
 ```html
 <header class="page-head" data-reveal>
@@ -346,11 +353,148 @@ Keep the existing footer and reveal script. Replace the content from `<header cl
 </main>
 ```
 
+Replace the reveal script with this progressive-enhancement implementation. Project cases are visible by default. Add `reveal-pending` only when `IntersectionObserver` exists and its constructor succeeds; after intersection, add `visible` and remove the pending state on `animationend` or after 650ms. If the API is missing or construction/observation throws, the fallback removes `reveal-pending` and adds `visible`:
+
+```html
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  const els=document.querySelectorAll('[data-reveal]');
+  const projectCases=document.querySelectorAll('.project-case[data-reveal]');
+  const showProjectCases=()=>projectCases.forEach(el=>{
+    el.classList.remove('reveal-pending');
+    el.classList.add('visible');
+  });
+  if(typeof IntersectionObserver!=='function'){
+    showProjectCases();
+    return;
+  }
+  let io;
+  try{
+    io=new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{if(e.isIntersecting){
+        e.target.classList.add('visible');
+        if(e.target.classList.contains('project-case')){
+          const finishReveal=()=>e.target.classList.remove('reveal-pending');
+          e.target.addEventListener('animationend',finishReveal,{once:true});
+          setTimeout(finishReveal,650);
+        }
+        io.unobserve(e.target);
+      }})
+    },{threshold:.08});
+    projectCases.forEach(el=>el.classList.add('reveal-pending'));
+    els.forEach(el=>io.observe(el));
+  }catch(error){
+    if(io)io.disconnect();
+    showProjectCases();
+  }
+});
+
+</script>
+```
+
 - [ ] **Step 5: Run the focused page regressions and verify they pass**
 
 Run the Step 2 command again.
 
 Expected: all selected tests PASS; six Demo links appear exactly once, the old directory is absent, all four viewports stay within width, every Demo link is at least 44px high, and browser errors are empty.
+
+- [ ] **Post-review hardening: lock progressive reveal, supporting-text color, and geometry guards**
+
+Add the reviewed regressions to `tests/portfolio-content.spec.js`:
+
+```javascript
+test('portfolio keeps project cases readable without IntersectionObserver', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(window, 'IntersectionObserver', {
+      configurable: true,
+      value: undefined,
+    });
+  });
+  await page.goto(`${BASE}/cases.html`);
+
+  const states = await page.locator('[data-testid="project-case"]').evaluateAll((projectCases) =>
+    projectCases.map((projectCase) => ({
+      opacity: getComputedStyle(projectCase).opacity,
+      pending: projectCase.classList.contains('reveal-pending'),
+    }))
+  );
+  expect(states).toEqual([
+    { opacity: '1', pending: false },
+    { opacity: '1', pending: false },
+    { opacity: '1', pending: false },
+  ]);
+});
+
+test('portfolio reveal resolves case opacity after anchor navigation and scrolling', async ({ page }) => {
+  await page.goto(`${BASE}/cases.html#case-lianlu`);
+  const projectCases = page.locator('[data-testid="project-case"]');
+  await expect(projectCases).toHaveCount(3);
+
+  for (let index = 0; index < 3; index += 1) {
+    const projectCase = projectCases.nth(index);
+    await projectCase.scrollIntoViewIfNeeded();
+    await expect.poll(
+      () => projectCase.evaluate((element) => ({
+        opacity: getComputedStyle(element).opacity,
+        pending: element.classList.contains('reveal-pending'),
+      })),
+      { message: `project case ${index + 1} reveal did not resolve` }
+    ).toEqual({ opacity: '1', pending: false });
+  }
+});
+
+test('portfolio supporting text uses the approved accessible color', async ({ page }) => {
+  await page.goto(`${BASE}/cases.html`);
+
+  const roleColors = await page.locator('.project-case-role').evaluateAll((elements) =>
+    elements.map((element) => getComputedStyle(element).color)
+  );
+  const noteColors = await page.locator('.project-demo-note').evaluateAll((elements) =>
+    elements.map((element) => getComputedStyle(element).color)
+  );
+  expect(roleColors).toEqual([
+    'rgb(101, 114, 116)',
+    'rgb(101, 114, 116)',
+    'rgb(101, 114, 116)',
+  ]);
+  expect(noteColors).toEqual(['rgb(101, 114, 116)']);
+});
+```
+
+Keep the responsive loop's geometry checks null-safe before reading `x`, `width`, or `height`:
+
+```javascript
+const projectCases = page.locator('[data-testid="project-case"]');
+await expect(projectCases).toHaveCount(3);
+const projectCaseItems = await projectCases.all();
+for (let index = 0; index < projectCaseItems.length; index += 1) {
+  const projectCase = projectCaseItems[index];
+  await projectCase.scrollIntoViewIfNeeded();
+  await expect(projectCase).toBeVisible();
+  const box = await projectCase.boundingBox();
+  expect(box, `${viewport.name} project case ${index + 1} has no bounding box`).not.toBeNull();
+  expect(box.x).toBeGreaterThanOrEqual(0);
+  expect(box.x + box.width).toBeLessThanOrEqual(viewport.width + 1);
+}
+const links = page.locator('.project-demo-link');
+await expect(links).toHaveCount(6);
+const demoLinks = await links.all();
+for (let index = 0; index < demoLinks.length; index += 1) {
+  const link = demoLinks[index];
+  await link.scrollIntoViewIfNeeded();
+  const box = await link.boundingBox();
+  expect(box, `${viewport.name} Demo link ${index + 1} has no bounding box`).not.toBeNull();
+  expect(box.height).toBeGreaterThanOrEqual(44);
+}
+```
+
+Run:
+
+```bash
+DEMO_BASE_URL=http://127.0.0.1:52786 playwright test tests/portfolio-content.spec.js --grep "without IntersectionObserver|reveal resolves case opacity|supporting text uses|project content usable" --workers=1
+```
+
+Expected: all selected tests PASS; the three fallback states equal `{ opacity: '1', pending: false }`, anchor/scroll reveals settle to the same state, role/note colors compute to `rgb(101, 114, 116)` (`#657274`), and every project/Demo bounding box is non-null before geometry is read.
 
 - [ ] **Step 6: Preserve the published WeCom anchor and backlink contract**
 
