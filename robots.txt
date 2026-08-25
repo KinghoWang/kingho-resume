@@ -1,0 +1,7 @@
+# 允许抓取公开页面；不进入搜索索引的页面在各自 HTML 中声明 noindex。
+# 已删除页面需要让爬虫重新抓取并看到 404；历史跳转页也需要让爬虫读取 canonical。
+
+User-agent: *
+Allow: /
+
+Sitemap: https://kinghowang.github.io/kingho-resume/sitemap.xml

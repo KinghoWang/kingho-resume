@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数分机器人 · 合成广告日报 Demo</title>
+  <style>
+    :root {
+      --bg: #efe7d0;
+      --bg-soft: #f6efd8;
+      --ink: #2d2a26;
+      --amber: #8a5a18;
+      --muted: #756c58;
+      --rule: #d6cbab;
+      --rule-soft: #e2d9bd;
+      --danger: #a33a30;
+      --success: #3f6f3f;
+      --white: #fff;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, "PingFang SC", "Microsoft YaHei", monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    button { font: inherit; }
+
+    .demohead {
+      padding: 14px 24px 16px;
+      border-bottom: 1px solid var(--rule);
+      background: var(--bg-soft);
+    }
+
+    .demohead a {
+      color: var(--amber);
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .demohead h1 {
+      margin: 10px 0 5px;
+      font-size: 16px;
+      letter-spacing: 0;
+    }
+
+    .demohead p {
+      max-width: 940px;
+      margin: 0;
+      color: #4a453b;
+      font-size: 11.5px;
+      line-height: 1.7;
+    }
+
+    .demohead p b { color: var(--amber); }
+
+    .badge {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 3px 10px;
+      border: 1px solid #e2c687;
+      border-radius: 3px;
+      background: #fff5dc;
+      color: #765718;
+      font-size: 10.5px;
+      line-height: 1.5;
+    }
+
+    .bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--rule);
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .bar b { color: var(--ink); }
+
+    .bar button {
+      min-height: 30px;
+      padding: 5px 12px;
+      border: 1px solid var(--rule-soft);
+      border-radius: 3px;
+      background: var(--bg-soft);
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .bar button:hover,
+    .bar button:focus-visible {
+      border-color: var(--amber);
+      color: var(--amber);
+      outline: none;
+    }
+
+    .bar button.primary {
+      border-color: var(--amber);
+      background: var(--amber);
+      color: var(--white);
+      font-weight: 600;
+    }
+
+    .bar button:disabled {
+      cursor: default;
+      opacity: 0.45;
+    }
+
+    #report {
+      overflow-x: auto;
+      padding: 16px 24px 32px;
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    #report h2 {
+      margin: 22px 0 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--rule);
+      color: var(--amber);
+      font-size: 14px;
+      letter-spacing: 0;
+    }
+
+    #report h2:first-of-type { margin-top: 0; }
+
+    #report table {
+      width: 100%;
+      margin: 6px 0 10px;
+      border-collapse: collapse;
+      font-size: 11.5px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #report th,
+    #report td {
+      padding: 4px 8px;
+      border: 1px solid var(--rule-soft);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    #report th {
+      background: var(--bg-soft);
+      color: var(--ink);
+    }
+
+    #report td:first-child,
+    #report th:first-child { text-align: left; }
+
+    .summary-card {
+      margin: 8px 0;
+      padding: 9px 12px;
+      border: 1px solid var(--rule-soft);
+      border-left: 3px solid var(--amber);
+      background: var(--bg-soft);
+    }
+
+    .summary-card strong { color: var(--ink); }
+    .warn { color: var(--danger); font-weight: 600; }
+    .ok { color: var(--success); font-weight: 600; }
+    .note { color: var(--muted); font-size: 11px; }
+
+    @media (max-width: 640px) {
+      .demohead { padding: 14px 16px; }
+      #report { padding: 14px 16px 28px; }
+      .bar { align-items: stretch; }
+      .bar .status { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="demohead">
+    <a href="cases.html">← 返回作品集</a>
+    <h1>数分机器人 · 广告数据分析日报</h1>
+    <p>用代码完成指标计算和异常筛选，再把结构化线索交给 AI 整理表达；运营人员继续下钻核验并作最终判断。重点展示的是<b>数据计算、问题定位与人工复核的协作方式</b>，不是任何公司的真实数据口径。</p>
+    <span class="badge">公开演示重构：数据、字段、阈值和判断规则均为合成示意，与任何公司实际口径无对应关系</span>
+  </header>
+
+  <main>
+    <div class="bar">
+      <b>合成广告日报</b>
+      <span>演示日 D0</span>
+      <button class="primary" id="run" type="button">生成日报</button>
+      <button id="copy-ai" type="button" disabled>复制分析摘要</button>
+      <button id="copy-text" type="button" disabled>复制日报文本</button>
+      <span class="status" id="status" role="status" aria-live="polite"></span>
+    </div>
+    <div id="report"><p class="note">点击“生成日报”，查看规则计算如何从合成数据中筛出异常线索。</p></div>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const DEMO_RULES = Object.freeze({
+        overallChangePct: 18,
+        segmentChangePct: 22,
+        accountChangePct: 35
+      });
+
+      const SAMPLE = Object.freeze({
+        days: [
+          { label: "D-7", spend: 92000, impressions: 5500000, conversions: 2900 },
+          { label: "D-6", spend: 95000, impressions: 5600000, conversions: 3000 },
+          { label: "D-5", spend: 94000, impressions: 5400000, conversions: 2920 },
+          { label: "D-4", spend: 96000, impressions: 5500000, conversions: 3040 },
+          { label: "D-3", spend: 93000, impressions: 5350000, conversions: 2860 },
+          { label: "D-2", spend: 97000, impressions: 5600000, conversions: 3100 },
+          { label: "D-1", spend: 96000, impressions: 5550000, conversions: 3060 },
+          { label: "D0", spend: 101000, impressions: 4750000, conversions: 2650 }
+        ],
+        segments: [
+          {
+            name: "示例行业 A",
+            current: { spend: 50000, impressions: 2600000, conversions: 1500 },
+            previous: { spend: 52000, impressions: 3000000, conversions: 1700 }
+          },
+          {
+            name: "示例行业 B",
+            current: { spend: 36000, impressions: 1200000, conversions: 720 },
+            previous: { spend: 30000, impressions: 1800000, conversions: 880 }
+          },
+          {
+            name: "示例行业 C",
+            current: { spend: 15000, impressions: 950000, conversions: 430 },
+            previous: { spend: 14000, impressions: 750000, conversions: 350 }
+          }
+        ],
+        accounts: [
+          {
+            name: "示例客户 A",
+            current: { spend: 38000, impressions: 2000000, conversions: 1100 },
+            previous: { spend: 36000, impressions: 2100000, conversions: 1150 }
+          },
+          {
+            name: "示例客户 B",
+            current: { spend: 32000, impressions: 1000000, conversions: 560 },
+            previous: { spend: 20000, impressions: 1200000, conversions: 620 }
+          },
+          {
+            name: "示例客户 C",
+            current: { spend: 16000, impressions: 1100000, conversions: 680 },
+            previous: { spend: 27000, impressions: 1500000, conversions: 850 }
+          }
+        ]
+      });
+
+      const number = value => new Intl.NumberFormat("zh-CN").format(Math.round(value));
+      const round = (value, digits = 1) => Number(value.toFixed(digits));
+      const percentChange = (current, previous) => previous ? round((current / previous - 1) * 100) : null;
+      const signed = value => value === null ? "—" : `${value > 0 ? "+" : ""}${value}%`;
+
+      function metrics(row) {
+        return {
+          ...row,
+          cpm: row.impressions ? round(row.spend / row.impressions * 1000, 2) : 0,
+          conversionRate: row.impressions ? round(row.conversions / row.impressions * 100, 3) : 0,
+          cpa: row.conversions ? round(row.spend / row.conversions, 2) : 0
+        };
+      }
+
+      function average(rows) {
+        return metrics({
+          spend: rows.reduce((sum, row) => sum + row.spend, 0) / rows.length,
+          impressions: rows.reduce((sum, row) => sum + row.impressions, 0) / rows.length,
+          conversions: rows.reduce((sum, row) => sum + row.conversions, 0) / rows.length
+        });
+      }
+
+      function compare(item) {
+        const current = metrics(item.current);
+        const previous = metrics(item.previous);
+        return {
+          name: item.name,
+          current,
+          previous,
+          spendChange: percentChange(current.spend, previous.spend),
+          cpmChange: percentChange(current.cpm, previous.cpm),
+          cpaChange: percentChange(current.cpa, previous.cpa)
+        };
+      }
+
+      function analyze(sample) {
+        const days = sample.days.map(metrics);
+        const current = days.at(-1);
+        const baseline = average(days.slice(0, -1));
+        const overview = {
+          spendChange: percentChange(current.spend, baseline.spend),
+          cpmChange: percentChange(current.cpm, baseline.cpm),
+          cpaChange: percentChange(current.cpa, baseline.cpa)
+        };
+        const segments = sample.segments.map(compare);
+        const accounts = sample.accounts.map(compare);
+        const flaggedSegments = segments.filter(item =>
+          Math.abs(item.spendChange) >= DEMO_RULES.segmentChangePct ||
+          Math.abs(item.cpmChange) >= DEMO_RULES.segmentChangePct
+        );
+        const flaggedAccounts = accounts.filter(item =>
+          Math.abs(item.spendChange) >= DEMO_RULES.accountChangePct ||
+          Math.abs(item.cpaChange) >= DEMO_RULES.accountChangePct
+        );
+        const summaries = [];
+
+        if (Math.abs(overview.cpmChange) >= DEMO_RULES.overallChangePct) {
+          summaries.push({
+            title: `大盘 CPM 较前 7 日均值变化 ${signed(overview.cpmChange)}`,
+            basis: `消耗 ${number(current.spend)}，曝光 ${number(current.impressions)}；消耗变化有限，但曝光量下降，需要继续判断是哪一维度造成。`,
+            action: "先看行业拆分，再核对异常客户的投放设置、素材和落地页表现。"
+          });
+        }
+
+        if (flaggedSegments.length) {
+          const item = [...flaggedSegments].sort((a, b) => Math.abs(b.cpmChange) - Math.abs(a.cpmChange))[0];
+          summaries.push({
+            title: `${item.name} CPM 变化 ${signed(item.cpmChange)}`,
+            basis: `该维度消耗变化 ${signed(item.spendChange)}，CPM 变化明显高于其他示例行业，是本次大盘波动的首要排查线索。`,
+            action: "继续拆到客户层，确认变化是否集中在少数账户。"
+          });
+        }
+
+        if (flaggedAccounts.length) {
+          const names = flaggedAccounts.map(item => item.name).join("、");
+          summaries.push({
+            title: `${names} 进入人工复核清单`,
+            basis: "示例规则仅负责筛出显著变化，不直接判断业务原因。",
+            action: "由运营查看原始明细、变更记录和业务反馈，确认后再向产研提交问题。"
+          });
+        }
+
+        if (!summaries.length) {
+          summaries.push({
+            title: "未发现需要优先下钻的显著变化",
+            basis: "合成样例的主要指标均未达到演示阈值。",
+            action: "保持例行巡检，由人工关注业务侧新增反馈。"
+          });
+        }
+
+        return {
+          label: "演示日 D0",
+          boundary: "规则只负责计算和筛选线索；原因判断与需求提交必须经过人工核验。",
+          summaries,
+          days,
+          current,
+          baseline,
+          overview,
+          segments,
+          accounts,
+          demoRules: { ...DEMO_RULES }
+        };
+      }
+
+      function table(headers, rows) {
+        return `<table><thead><tr>${headers.map(header => `<th>${header}</th>`).join("")}</tr></thead><tbody>${rows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+      }
+
+      function render(output) {
+        const summaries = output.summaries.map(item => `
+          <article class="summary-card">
+            <strong>${item.title}</strong><br>
+            <span>数据依据：${item.basis}</span><br>
+            <span>下一步：${item.action}</span>
+          </article>
+        `).join("");
+
+        const dailyRows = output.days.map(day => [
+          day.label,
+          number(day.spend),
+          number(day.impressions),
+          day.cpm,
+          day.conversionRate + "%",
+          day.cpa
+        ]);
+
+        const segmentRows = output.segments.map(item => [
+          item.name,
+          number(item.current.spend),
+          signed(item.spendChange),
+          item.current.cpm,
+          signed(item.cpmChange),
+          item.current.cpa,
+          signed(item.cpaChange)
+        ]);
+
+        const accountRows = output.accounts.map(item => {
+          const flagged = Math.abs(item.spendChange) >= DEMO_RULES.accountChangePct || Math.abs(item.cpaChange) >= DEMO_RULES.accountChangePct;
+          return [
+            item.name,
+            number(item.current.spend),
+            signed(item.spendChange),
+            item.current.cpm,
+            item.current.cpa,
+            signed(item.cpaChange),
+            flagged ? '<span class="warn">需复核</span>' : '<span class="ok">常规观察</span>'
+          ];
+        });
+
+        return `
+          <h2>一、自动筛选出的线索</h2>
+          ${summaries}
+          <h2>二、大盘趋势</h2>
+          ${table(["日期", "消耗", "曝光", "CPM", "转化率", "转化成本"], dailyRows)}
+          <p class="note">演示规则：大盘变化达到 ${DEMO_RULES.overallChangePct}% 时进入维度下钻。该数字仅用于公开演示。</p>
+          <h2>三、行业下钻</h2>
+          ${table(["行业", "当日消耗", "消耗变化", "当日 CPM", "CPM 变化", "当日转化成本", "成本变化"], segmentRows)}
+          <h2>四、客户复核清单</h2>
+          ${table(["客户", "当日消耗", "消耗变化", "当日 CPM", "当日转化成本", "成本变化", "状态"], accountRows)}
+          <div class="summary-card"><strong>人工判断边界</strong><br>${output.boundary}</div>
+          <p class="note">本页所有名称、数据、字段、阈值和结论均为合成示意，不对应任何真实公司、客户或生产系统。</p>
+        `;
+      }
+
+      const report = document.querySelector("#report");
+      const status = document.querySelector("#status");
+      const copyAi = document.querySelector("#copy-ai");
+      const copyText = document.querySelector("#copy-text");
+      let lastOutput = null;
+
+      async function copy(value, successMessage) {
+        try {
+          await navigator.clipboard.writeText(value);
+          status.textContent = successMessage;
+        } catch {
+          status.textContent = "浏览器未允许复制，请手动选择页面内容。";
+        }
+      }
+
+      function generate() {
+        lastOutput = analyze(SAMPLE);
+        report.innerHTML = render(lastOutput);
+        copyAi.disabled = false;
+        copyText.disabled = false;
+        status.textContent = "已生成合成日报";
+      }
+
+      document.querySelector("#run").addEventListener("click", generate);
+      copyAi.addEventListener("click", () => {
+        const payload = {
+          notice: "以下内容来自公开合成数据，仅用于演示。",
+          task: "请把已计算好的异常线索整理成简洁日报，不新增数据或未经验证的原因。",
+          report: lastOutput
+        };
+        copy(JSON.stringify(payload, null, 2), "已复制分析摘要");
+      });
+      copyText.addEventListener("click", () => {
+        const textContainer = document.createElement("div");
+        textContainer.innerHTML = render(lastOutput);
+        copy(textContainer.innerText, "已复制日报文本");
+      });
+
+      generate();
+    })();
+  </script>
+</body>
+</html>

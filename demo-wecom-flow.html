@@ -1,0 +1,1214 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="企微获客链路改造交互模拟：解决中老年用户不熟悉长按识别二维码的操作门槛。">
+  <title>企微获客链路交互模拟</title>
+  <style>
+    :root {
+      --page: #eef2f3;
+      --surface: #ffffff;
+      --surface-soft: #f5f7f8;
+      --ink: #20282d;
+      --muted: #68757b;
+      --line: #d9dfe3;
+      --old: #b6463c;
+      --old-soft: #fff2ef;
+      --new: #267052;
+      --new-soft: #edf7f1;
+      --link: #286e9b;
+      --phone: #15191c;
+      --shadow: 0 16px 34px rgba(32, 40, 45, .12);
+      font-family: "Avenir Next", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--page); }
+    body { margin: 0; min-width: 320px; overflow-x: hidden; background: var(--page); }
+    button, a { font: inherit; }
+    button { color: inherit; }
+    button:focus-visible, a:focus-visible, [tabindex]:focus-visible {
+      outline: 3px solid rgba(40, 110, 155, .38);
+      outline-offset: 3px;
+    }
+    .demo-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: center;
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 18px 28px;
+      border-bottom: 1px solid var(--line);
+    }
+    .back-link { min-height: 44px; display: inline-flex; align-items: center; color: var(--link); text-decoration: none; font-size: 14px; font-weight: 700; }
+    .privacy-note { margin: 0; color: var(--muted); font-size: 12px; }
+    .shell { max-width: 1380px; margin: 0 auto; padding: 22px 28px 48px; }
+    .intro { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 18px; }
+    .eyebrow { margin: 0 0 6px; color: var(--link); font-size: 12px; font-weight: 800; }
+    h1 { margin: 0; font-size: 30px; line-height: 1.16; letter-spacing: 0; }
+    .lede { max-width: 680px; margin: 8px 0 0; color: var(--muted); line-height: 1.65; }
+    .controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+    .segment { display: inline-flex; padding: 3px; border: 1px solid var(--line); background: var(--surface); border-radius: 7px; }
+    .segment button, .reset-button {
+      min-height: 44px;
+      border: 0;
+      border-radius: 5px;
+      background: transparent;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .segment button[aria-pressed="true"] { color: #fff; background: var(--ink); }
+    .reset-button { border: 1px solid var(--line); background: var(--surface); }
+    .mode-readout {
+      min-width: 118px;
+      min-height: 34px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .countdown { color: var(--ink); font-size: 20px; }
+    .stage { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
+    .lane { min-width: 0; }
+    .lane-heading { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+    .lane-heading h2 { margin: 0; font-size: 18px; }
+    .lane-heading p { margin: 0; color: var(--muted); font-size: 12px; }
+    .lane.old .lane-heading h2 { color: var(--old); }
+    .lane.new .lane-heading h2 { color: var(--new); }
+    .lane-workspace { display: grid; grid-template-columns: minmax(240px, 300px) minmax(150px, 1fr); gap: 16px; align-items: center; }
+    .phone {
+      width: 100%;
+      aspect-ratio: 9 / 18.4;
+      border: 8px solid var(--phone);
+      border-radius: 34px;
+      background: #fff;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      position: relative;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .phone-screen { height: 100%; display: flex; flex-direction: column; background: #f2f3f4; }
+    .statusbar {
+      height: 29px;
+      flex: 0 0 29px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      color: #3c4448;
+      background: #fff;
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .status-icons { letter-spacing: 2px; }
+    .appbar {
+      min-height: 45px;
+      display: grid;
+      grid-template-columns: 28px 1fr 28px;
+      align-items: center;
+      padding: 0 10px;
+      background: #fff;
+      border-bottom: 1px solid #e7eaec;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .appbar-side { color: #7b858a; font-size: 16px; }
+    .screen-body { flex: 1; min-height: 0; overflow: hidden; position: relative; }
+    .ad-screen { height: 100%; padding: 14px; background: #f7f8f8; }
+    .ad-label { color: #8b959a; font-size: 10px; margin-bottom: 8px; }
+    .ad-visual {
+      height: 48%;
+      min-height: 150px;
+      display: grid;
+      place-items: center;
+      background: #dceae5;
+      border: 1px solid #ccddd6;
+      overflow: hidden;
+      position: relative;
+    }
+    .booklet {
+      width: 118px;
+      height: 145px;
+      padding: 18px 14px;
+      background: #fff;
+      border: 1px solid #ccd4d1;
+      box-shadow: 8px 10px 0 #b8d0c6;
+      transform: rotate(-4deg);
+    }
+    .booklet b { display: block; color: #245d49; font-size: 18px; line-height: 1.25; }
+    .booklet i { display: block; width: 34px; height: 5px; margin: 13px 0; background: #e7a958; }
+    .booklet small { color: #6c7772; line-height: 1.5; }
+    .ad-copy h3 { margin: 14px 0 7px; font-size: 17px; line-height: 1.35; }
+    .ad-copy p { margin: 0; color: #667176; font-size: 12px; line-height: 1.55; }
+    .primary-action {
+      width: 100%;
+      min-height: 44px;
+      margin-top: 14px;
+      border: 0;
+      border-radius: 6px;
+      padding: 11px 12px;
+      color: #fff;
+      background: var(--link);
+      cursor: pointer;
+      font-weight: 800;
+    }
+    .old .primary-action { background: var(--old); }
+    .new .primary-action { background: var(--new); }
+    .browserbar { display: flex; align-items: center; gap: 8px; padding: 7px 10px; background: #e9edef; color: #657177; font-size: 9px; }
+    .browser-address { flex: 1; border-radius: 12px; padding: 4px 8px; background: #fff; text-align: center; }
+    .h5-screen { height: calc(100% - 29px); padding: 16px 14px; background: #fff; text-align: center; }
+    .h5-screen h3 { margin: 5px 0 7px; font-size: 17px; }
+    .h5-screen p { margin: 0; color: #6e797e; font-size: 11px; line-height: 1.55; }
+    .qr-wrap { display: grid; place-items: center; margin: 18px auto 12px; }
+    .fake-qr {
+      width: 150px;
+      height: 150px;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      grid-template-rows: repeat(9, 1fr);
+      gap: 3px;
+      border: 1px solid #ccd2d5;
+      background: #fff;
+      cursor: pointer;
+      touch-action: none;
+      position: relative;
+    }
+    .qr-cell { background: transparent; }
+    .qr-cell.on { background: #263034; }
+    .hold-track { height: 5px; width: 150px; margin: 10px auto 0; overflow: hidden; background: #e5e8e9; border-radius: 4px; }
+    .hold-fill { width: 0; height: 100%; background: var(--old); }
+    .holding .hold-fill { animation: hold-progress .8s linear forwards; }
+    @keyframes hold-progress { to { width: 100%; } }
+    .hold-label { min-height: 18px; margin-top: 6px; color: var(--old); font-size: 10px; font-weight: 800; }
+    .menu-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; background: rgba(17, 22, 24, .34); }
+    .action-sheet { padding: 8px 10px 12px; background: #eef0f1; }
+    .sheet-group { overflow: hidden; border-radius: 9px; background: #fff; }
+    .sheet-title { padding: 10px 12px; color: #8a9499; border-bottom: 1px solid #edf0f1; font-size: 10px; text-align: center; }
+    .sheet-button {
+      width: 100%;
+      min-height: 44px;
+      border: 0;
+      border-bottom: 1px solid #edf0f1;
+      padding: 11px;
+      background: #fff;
+      color: var(--link);
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .sheet-button:last-child { border-bottom: 0; }
+    .sheet-cancel { margin-top: 7px; border-radius: 9px; color: #30383c; font-weight: 800; }
+    .message-entry, .card-entry { width: 100%; min-height: 44px; border: 1px solid #d9dfe1; background: #fff; cursor: pointer; text-align: left; }
+    .message-entry { display: grid; gap: 5px; border-radius: 7px; padding: 12px; color: #343d41; font-size: 11px; line-height: 1.5; }
+    .message-entry b { font-size: 12px; }
+    .message-entry span { color: var(--muted); }
+    .message-entry strong { color: var(--link); font-size: 10px; }
+    .card-entry { border-radius: 7px; padding: 0; overflow: hidden; }
+    .contact-screen { height: 100%; background: #f2f3f4; }
+    .contact-profile { padding: 28px 18px 20px; background: #fff; text-align: center; }
+    .contact-avatar { width: 70px; height: 70px; margin: 0 auto 12px; display: grid; place-items: center; border-radius: 10px; color: #fff; background: #4e806d; font-size: 23px; font-weight: 900; }
+    .contact-profile h3 { margin: 0; font-size: 18px; }
+    .contact-profile p { margin: 6px 0 0; color: #748086; font-size: 11px; }
+    .verified { display: inline-block; margin-top: 10px; padding: 4px 8px; color: #396c58; background: #e7f3ed; border-radius: 3px; font-size: 9px; }
+    .contact-details { margin: 12px 0; padding: 0 14px; background: #fff; }
+    .detail-row { display: flex; justify-content: space-between; gap: 14px; padding: 13px 0; border-bottom: 1px solid #eceff0; font-size: 11px; }
+    .detail-row span { color: #7a858a; }
+    .contact-action { padding: 4px 14px; }
+    .added-state { color: var(--new); background: #e5f1eb; }
+    .steps { display: flex; flex-direction: column; gap: 8px; }
+    .step { display: grid; grid-template-columns: 25px 1fr; gap: 9px; align-items: start; padding: 9px 0; border-bottom: 1px solid var(--line); }
+    .step-index { width: 25px; height: 25px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; color: var(--muted); background: var(--surface); font-size: 10px; font-weight: 900; }
+    .step b { display: block; font-size: 12px; line-height: 1.35; }
+    .step small { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; line-height: 1.45; }
+    .step.done .step-index { color: #fff; border-color: var(--ink); background: var(--ink); }
+    .old .step.active .step-index { color: #fff; border-color: var(--old); background: var(--old); }
+    .new .step.active .step-index { color: #fff; border-color: var(--new); background: var(--new); }
+    .step.active b { color: var(--ink); }
+    .feedback {
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-width: 760px;
+      margin: 18px auto;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+    .comparison { border-top: 1px solid var(--line); padding-top: 18px; }
+    .comparison h2 { margin: 0 0 12px; font-size: 17px; }
+    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .metric-table { width: 100%; border-collapse: collapse; background: var(--surface); }
+    .metric-table caption { padding: 10px 12px; text-align: left; color: #fff; font-weight: 800; }
+    .metric-table.old caption { background: var(--old); }
+    .metric-table.new caption { background: var(--new); }
+    .metric-table th, .metric-table td { padding: 10px 12px; border-bottom: 1px solid var(--line); font-size: 12px; text-align: left; }
+    .metric-table td { text-align: right; font-weight: 900; }
+    .metric-note { margin: 10px 0 0; color: var(--muted); font-size: 11px; line-height: 1.55; }
+
+    /* Clean-room redraw of the phone screens from the local reference videos. */
+    .phone { aspect-ratio: 540 / 1170; }
+    .phone-screen { color: #181b1d; }
+    .device-status {
+      height: 30px;
+      flex: 0 0 30px;
+      display: grid;
+      grid-template-columns: 1fr 94px 1fr;
+      align-items: center;
+      padding: 0 13px;
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .device-status.dark { color: #f8f8f8; background: #0d0d0e; }
+    .device-status.light { color: #111; background: #fff; }
+    .device-time { justify-self: start; }
+    .dynamic-island {
+      width: 86px;
+      height: 22px;
+      justify-self: center;
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+      border-radius: 14px;
+      background: #030303;
+      box-shadow: inset 0 0 0 1px rgba(255, 63, 63, .24);
+    }
+    .dynamic-island::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #e63b32; }
+    .device-signals { justify-self: end; display: inline-flex; align-items: center; gap: 4px; letter-spacing: 0; }
+    .signal-bars { display: inline-flex; align-items: end; gap: 1px; height: 9px; }
+    .signal-bars i { width: 2px; background: currentColor; border-radius: 1px; }
+    .signal-bars i:nth-child(1) { height: 3px; }
+    .signal-bars i:nth-child(2) { height: 5px; }
+    .signal-bars i:nth-child(3) { height: 7px; }
+    .signal-bars i:nth-child(4) { height: 9px; }
+    .battery { min-width: 22px; padding: 1px 3px; border-radius: 5px; color: #111; background: #f5f5f5; font-size: 8px; text-align: center; }
+
+    .native-appbar {
+      min-height: 45px;
+      flex: 0 0 45px;
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) 34px;
+      align-items: center;
+      padding: 0 8px;
+      border-bottom: 1px solid rgba(127, 127, 127, .15);
+    }
+    .native-appbar.light { color: #111; background: #fff; }
+    .native-appbar.dark { color: #f0f0f0; background: #111113; }
+    .native-back, .native-more { font-size: 22px; font-weight: 400; line-height: 1; }
+    .native-more { justify-self: end; font-size: 15px; }
+    .native-title { min-width: 0; text-align: center; line-height: 1.15; }
+    .native-title strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
+    .native-title small { display: block; margin-top: 1px; color: #8d8d90; font-size: 8px; font-weight: 500; }
+
+    .video-phone { background: #050505; }
+    .short-video-ad {
+      min-height: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+      background: #050505;
+    }
+    .video-back, .video-pill, .video-close { position: absolute; z-index: 4; display: grid; place-items: center; }
+    .video-back { top: 10px; left: 10px; width: 34px; height: 34px; border: 1px solid rgba(255,255,255,.7); border-radius: 50%; background: rgba(0,0,0,.5); font-size: 26px; }
+    .video-pill { top: 12px; right: 9px; width: 58px; height: 28px; grid-template-columns: 1fr 1fr; border-radius: 17px; color: #161616; background: rgba(255,255,255,.9); font-size: 13px; }
+    .video-close { top: 160px; right: 8px; width: 32px; height: 32px; border: 2px solid #fff; border-radius: 50%; font-size: 21px; background: rgba(0,0,0,.55); }
+    .ad-hero-banner {
+      height: 168px;
+      flex: 0 0 168px;
+      position: relative;
+      overflow: hidden;
+      background: #6d877b;
+    }
+    .ad-hero-banner::before,
+    .ad-hero-banner::after { content: ""; position: absolute; left: 0; right: 0; }
+    .ad-hero-banner::before { top: 0; height: 70px; background: #9cb0a7; }
+    .ad-hero-banner::after { bottom: 0; height: 60px; background: #557269; }
+    .coast-rail { position: absolute; left: 12px; right: 12px; bottom: 39px; height: 5px; background: rgba(255,255,255,.75); transform: rotate(-5deg); }
+    .coast-people { position: absolute; left: 18px; right: 16px; bottom: 49px; display: flex; justify-content: space-between; align-items: end; }
+    .coast-people i { width: 5px; height: 19px; border-radius: 4px 4px 1px 1px; background: #243b34; }
+    .coast-people i:nth-child(2n) { height: 14px; background: #f0d8b0; }
+    .coast-people i:nth-child(3n) { height: 22px; background: #6b2927; }
+    .video-play { position: absolute; z-index: 2; top: 49px; left: 50%; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 7px; padding: 10px 18px; border-radius: 8px; color: #fff; background: #07c160; font-size: 15px; font-weight: 800; box-shadow: 0 4px 10px rgba(0,0,0,.2); }
+    .play-triangle { width: 0; height: 0; border-top: 8px solid transparent; border-bottom: 8px solid transparent; border-left: 13px solid #fff; }
+    .video-headline { position: absolute; z-index: 2; left: 8px; right: 8px; bottom: 7px; margin: 0; font-size: 17px; line-height: 1.25; font-weight: 900; text-shadow: 0 1px 2px #000; }
+    .ad-vertical-creative {
+      min-height: 0;
+      flex: 1;
+      width: 72%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      color: #151515;
+      background: #f4f3ed;
+      box-shadow: 0 0 0 1px rgba(255,255,255,.12);
+    }
+    .creative-scene { min-height: 0; flex: 1; position: relative; overflow: hidden; background: #b9d5cd; }
+    .creative-window { position: absolute; inset: 18px 20px 52px; border: 8px solid #edf5f2; background: #7aa096; }
+    .creative-window::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 5px; background: #edf5f2; }
+    .creative-window::after { content: ""; position: absolute; left: 0; right: 0; top: 48%; height: 5px; background: #edf5f2; }
+    .creative-person { position: absolute; z-index: 2; left: 50%; bottom: 28px; width: 44px; height: 102px; transform: translateX(-50%); border-radius: 21px 21px 8px 8px; background: #263c36; }
+    .creative-person::before { content: ""; position: absolute; top: -19px; left: 10px; width: 25px; height: 25px; border-radius: 50%; background: #d8b395; }
+    .creative-person::after { content: ""; position: absolute; left: -28px; top: 29px; width: 96px; height: 12px; border-radius: 8px; background: #263c36; transform: rotate(-6deg); }
+    .creative-caption { flex: 0 0 35px; display: grid; place-items: center; color: #111; background: #ffd500; font-size: 14px; font-weight: 900; }
+    .creative-proof { flex: 0 0 66px; display: grid; grid-template-columns: 48px 1fr; align-items: center; gap: 6px; padding: 7px 9px; background: #f4f4f1; }
+    .mini-device { width: 42px; height: 42px; display: grid; place-items: center; border: 4px solid #303638; border-radius: 12px; color: #fff; background: #5b7771; font-size: 8px; }
+    .proof-lines i { display: block; height: 4px; margin: 4px 0; background: #5f6668; }
+    .proof-lines i:nth-child(2) { width: 83%; }
+    .proof-lines i:nth-child(3) { width: 68%; }
+    .creative-fineprint { flex: 0 0 35px; padding: 6px 8px; color: #5d6264; background: #e8e8e4; font-size: 6px; line-height: 1.4; }
+    .ad-cta-bar { min-height: 52px; flex: 0 0 52px; display: grid; grid-template-columns: 38px 1fr 73px; align-items: center; gap: 7px; padding: 6px 9px; color: #151515; background: #fff; }
+    .cta-seal { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; color: #111; background: #ffd500; font-size: 9px; font-weight: 900; }
+    .cta-copy { min-width: 0; }
+    .cta-copy b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
+    .cta-copy small { color: #777; font-size: 7px; }
+    .ad-claim { min-height: 38px; border: 0; border-radius: 5px; color: #fff; background: #f5222d; font-size: 11px; font-weight: 800; cursor: pointer; }
+
+    .h5-view { height: 100%; position: relative; overflow: hidden; background: #fff; }
+    .h5-scroll { height: 100%; overflow-y: auto; overscroll-behavior: contain; padding-bottom: 66px; color: #1b1b1b; background: #fff; scrollbar-width: none; }
+    .h5-scroll::-webkit-scrollbar, .entry-scroll::-webkit-scrollbar { display: none; }
+    .h5-hero { min-height: 195px; padding: 8px 12px 6px; text-align: center; background: #fff; }
+    .h5-title { margin: 0; color: #d30d16; font-size: 25px; line-height: 1.05; font-weight: 900; }
+    .gift-tags { display: flex; justify-content: center; margin: 5px 0; }
+    .gift-tags b { padding: 3px 8px; color: #fff; background: #d50b13; font-size: 13px; }
+    .gift-tags b:last-child { background: #1539b8; }
+    .health-book-cover { width: 86px; height: 100px; margin: 7px auto 3px; position: relative; border: 4px solid #e8eadf; background: #9ec76d; box-shadow: 6px 5px 0 #d6dcc8; transform: perspective(180px) rotateY(-6deg); }
+    .health-book-cover::before { content: "四季\A养生"; white-space: pre; position: absolute; inset: 8px 15px; display: grid; place-items: center; color: #fff; border: 2px solid #fff; font-size: 16px; line-height: 1.05; font-weight: 900; }
+    .health-book-cover::after { content: "免费赠送"; position: absolute; right: -34px; bottom: 16px; padding: 5px 7px; color: #d10d14; border: 3px solid #d10d14; background: rgba(255,255,255,.9); font-size: 10px; font-weight: 900; transform: rotate(-17deg); }
+    .hero-arrow { color: #c9151e; font-size: 13px; font-weight: 900; }
+    .claim-panel { margin: 0 8px 10px; padding: 10px 9px 11px; border: 3px solid #65e765; border-radius: 8px; background: #f2ebdf; box-shadow: 0 0 8px rgba(79,221,91,.45); text-align: center; }
+    .claim-panel.holding { border-color: #e34a42; box-shadow: 0 0 9px rgba(227,74,66,.45); }
+    .claim-panel h3 { margin: 0 0 4px; font-size: 13px; }
+    .claim-instruction { margin: 0 0 8px; color: #d4232c; font-size: 10px; line-height: 1.45; }
+    .fake-qr.dense {
+      --qr-size: 21;
+      width: 160px;
+      height: 160px;
+      padding: 9px;
+      display: grid;
+      grid-template-columns: repeat(var(--qr-size), 1fr);
+      grid-template-rows: repeat(var(--qr-size), 1fr);
+      gap: 1px;
+      border: 0;
+      background: #fff;
+      touch-action: none;
+      cursor: pointer;
+      position: relative;
+    }
+    .fake-qr.compact { --qr-size: 15; width: 62px; height: 62px; padding: 4px; gap: 1px; cursor: default; }
+    .fake-qr .qr-cell { min-width: 0; min-height: 0; background: transparent; }
+    .fake-qr .qr-cell.on { background: #070707; }
+    .qr-center-badge { position: absolute; left: 50%; top: 50%; width: 31px; height: 31px; transform: translate(-50%, -50%); display: grid; place-items: center; border: 3px solid #fff; border-radius: 5px; color: #346f4f; background: #e9f2d4; font-size: 7px; font-weight: 900; }
+    .hold-track { width: 160px; height: 4px; margin: 7px auto 0; }
+    .hold-label { margin-top: 4px; }
+    .claim-count { margin: 6px 0 0; font-size: 9px; font-weight: 800; }
+    .avatar-strip { display: flex; justify-content: center; margin-top: 7px; }
+    .avatar-dot { width: 25px; height: 25px; margin-left: -3px; border: 2px solid #fff; border-radius: 50%; background: #8faca6; }
+    .avatar-dot:nth-child(2n) { background: #d68f96; }
+    .avatar-dot:nth-child(3n) { background: #7ba0c4; }
+    .avatar-dot:nth-child(4n) { background: #d5b45e; }
+    .claim-list { margin: 0 14px 10px; padding: 8px 10px 10px; background: #f6efe4; }
+    .claim-list h3 { margin: 0 0 7px; padding: 5px; color: #fff; background: #d90913; font-size: 14px; text-align: center; }
+    .claim-row { display: grid; grid-template-columns: 48px 1fr 58px 43px; gap: 4px; padding: 3px 0; font-size: 9px; text-align: left; }
+    .secondary-qr-card { margin: 0 9px 16px; padding: 10px; border: 3px solid #65e765; border-radius: 8px; background: #f7f0e5; box-shadow: 0 0 7px rgba(79,221,91,.38); text-align: center; }
+    .secondary-qr-card .fake-qr { margin: 7px auto 0; }
+    .sticky-claim-bar { position: absolute; z-index: 4; left: 0; right: 0; bottom: 0; height: 64px; display: grid; grid-template-columns: 55px 1fr 70px; align-items: center; gap: 6px; padding: 5px 8px; border-top: 1px solid #e7e7e7; color: #1b1b1b; background: #fff; }
+    .free-stamp { height: 52px; display: grid; place-items: center; color: #fff; background: #12a83e; font-size: 16px; line-height: 1.05; font-weight: 900; }
+    .sticky-copy b { color: #d30d16; font-size: 11px; }
+    .sticky-copy small { display: block; margin-top: 4px; font-size: 8px; }
+    .mini-qr-wrap { display: flex; align-items: center; justify-content: flex-end; gap: 3px; }
+    .pointing-hand { color: #e4232c; font-size: 23px; }
+
+    .menu-overlay { z-index: 9; background: rgba(0,0,0,.56); }
+    .action-sheet { padding: 0 0 8px; background: transparent; }
+    .sheet-group { border-radius: 8px 8px 0 0; }
+    .sheet-title { color: #9b9b9b; font-size: 9px; }
+    .sheet-button { min-height: 42px; color: #1a1a1a; font-size: 11px; }
+    .sheet-button.contact-option { color: #b58a31; }
+    .sheet-cancel { margin: 7px 8px 0; width: calc(100% - 16px); border-radius: 8px; color: #111; }
+
+    .entry-phone { color: #243034; background: #f4f1eb; }
+    .entry-screen { height: 100%; overflow: hidden; color: #243034; background: #f4f1eb; }
+    .entry-scroll { height: 100%; overflow-y: auto; padding: 16px 12px; scrollbar-width: none; }
+    .entry-hero { padding: 18px 15px; border: 1px solid #dfe3e2; background: #fff; text-align: left; }
+    .entry-kicker { color: var(--new); font-size: 9px; font-weight: 900; }
+    .entry-hero h3 { margin: 8px 0 6px; font-size: 16px; }
+    .entry-hero p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.55; }
+    .entry-options { display: grid; gap: 10px; margin-top: 12px; }
+    .entry-options .card-entry { display: grid; grid-template-columns: 1fr 62px; align-items: center; gap: 8px; padding: 11px 10px 11px 13px; color: #243034; }
+    .entry-options .card-copy b { display: block; font-size: 12px; }
+    .entry-options .card-copy small { display: block; margin-top: 5px; color: var(--muted); font-size: 9px; }
+    .product-thumb { width: 54px; height: 54px; display: grid; place-items: end center; position: relative; overflow: hidden; padding-bottom: 4px; border: 2px solid #f1d4c2; color: #fff; background: #c43c35; font-size: 7px; font-weight: 900; }
+    .product-thumb::before { content: "健康\A资料"; white-space: pre; position: absolute; left: 5px; top: 5px; width: 29px; height: 32px; display: grid; place-items: center; color: #a62224; background: #fff2dc; font-size: 8px; line-height: 1; }
+    .entry-redaction { margin: 14px 2px 0; color: var(--muted); font-size: 8px; line-height: 1.5; }
+    .contact-phone { color: #f3f3f3; background: #0b0b0c; }
+
+    .webview-phone { color: #fff; background: #0d0d0e; }
+    .webview-bar { height: 45px; flex: 0 0 45px; display: grid; grid-template-columns: 34px 1fr 34px; align-items: center; padding: 0 8px; color: #ddd; background: #111113; font-size: 12px; text-align: center; }
+    .webview-close { font-size: 25px; font-weight: 300; }
+    .webview-more { font-size: 16px; }
+    .webview-progress { height: 2px; flex: 0 0 2px; width: 44%; background: #08c95b; animation: webview-load .65s linear forwards; transform-origin: left; }
+    @keyframes webview-load { from { transform: scaleX(.08); } to { transform: scaleX(1); } }
+    .link-loading-screen { min-height: 0; flex: 1; display: grid; place-items: center; background: #fff; }
+    .loading-toast { width: 72px; height: 72px; display: grid; place-items: center; gap: 3px; padding: 13px 7px 8px; border-radius: 5px; color: #fff; background: rgba(40,40,40,.84); font-size: 8px; }
+    .loading-spinner { width: 25px; height: 25px; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .contact-screen { height: 100%; display: flex; flex-direction: column; overflow-y: auto; }
+    .contact-screen.light-theme { color: #111; background: #ededed; }
+    .contact-screen.dark-theme { color: #eaeaea; background: #0e0e0f; }
+    .contact-screen .contact-profile { display: grid; grid-template-columns: 62px 1fr; gap: 12px; align-items: center; padding: 20px 16px 17px; text-align: left; }
+    .contact-screen.light-theme .contact-profile { background: #fff; }
+    .contact-screen.dark-theme .contact-profile { background: #111112; }
+    .portrait { width: 62px; height: 62px; position: relative; overflow: hidden; border-radius: 4px; background: #d9ddd9; }
+    .portrait::before { content: ""; position: absolute; left: 18px; top: 9px; width: 27px; height: 27px; border-radius: 50% 50% 44% 44%; background: #d5a783; box-shadow: 0 -7px 0 #38342f; }
+    .portrait::after { content: ""; position: absolute; left: 10px; right: 10px; bottom: -5px; height: 34px; border-radius: 18px 18px 0 0; background: #27384a; }
+    .profile-copy h3 { margin: 0; font-size: 16px; }
+    .profile-copy p { margin: 5px 0 0; color: #b4823d; font-size: 9px; }
+    .profile-copy small { display: block; margin-top: 5px; color: #8a8a8d; font-size: 8px; }
+    .contact-section { margin-top: 9px; padding: 0 13px; }
+    .contact-screen.light-theme .contact-section { background: #fff; }
+    .contact-screen.dark-theme .contact-section { background: #151516; }
+    .friend-summary { min-height: 70px; display: grid; grid-template-columns: 1fr 12px; align-content: center; gap: 6px 8px; margin-top: 9px; padding: 11px 13px; background: #151516; }
+    .friend-summary b { font-size: 10px; font-weight: 600; }
+    .friend-summary span { color: #66676a; font-size: 8px; }
+    .friend-summary i { grid-column: 2; grid-row: 1 / span 2; align-self: center; color: #5f6063; font-size: 18px; }
+    .section-label { padding: 9px 0 5px; color: #848487; font-size: 8px; }
+    .contact-row { min-height: 39px; display: grid; grid-template-columns: 58px 1fr 10px; align-items: center; gap: 8px; border-bottom: 1px solid rgba(127,127,127,.15); font-size: 9px; }
+    .contact-row span:first-child { color: #777b7d; }
+    .contact-row b { font-weight: 600; }
+    .moments { display: flex; gap: 4px; padding: 5px 0; }
+    .moment-thumb { width: 34px; height: 27px; background: #769482; }
+    .moment-thumb:nth-child(2) { background: #b6c6d3; }
+    .moment-thumb:nth-child(3) { background: #7791a0; }
+    .contact-screen .contact-action { margin-top: 0; padding: 0; }
+    .contact-screen .contact-action .primary-action { min-height: 48px; margin-top: 0; border-radius: 0; }
+    .contact-screen.dark-theme .primary-action { color: #848895; border-top: 1px solid #0d0d0e; background: #151516; }
+    .contact-screen.light-theme .primary-action { color: #286e9b; border-top: 1px solid #ededed; background: #fff; }
+    .contact-screen .added-state { color: #2f7d5e; background: #dfeee7; }
+
+    .phone button:focus-visible, .phone [tabindex]:focus-visible { outline: 0; box-shadow: inset 0 0 0 3px rgba(44, 184, 115, .82); }
+
+    @media (max-width: 979px) {
+      .intro { align-items: flex-start; }
+      .stage { grid-template-columns: 1fr; gap: 34px; }
+      .lane-workspace { grid-template-columns: minmax(240px, 300px) minmax(0, 1fr); }
+    }
+
+    @media (max-width: 700px) {
+      .demo-header { align-items: flex-start; flex-wrap: wrap; padding: 16px 20px; }
+      .privacy-note { width: 100%; }
+      .shell { padding: 20px 20px 40px; }
+      .intro { flex-direction: column; }
+      .controls { width: 100%; justify-content: flex-start; }
+      .mode-readout { order: 3; width: 100%; justify-items: start; place-items: center start; min-height: 28px; }
+      .metrics { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 579px) {
+      h1 { font-size: 26px; }
+      .lede { font-size: 14px; }
+      .stage { gap: 38px; }
+      .lane-heading { display: block; }
+      .lane-heading p { margin-top: 4px; line-height: 1.5; }
+      .lane-workspace { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+      .phone { width: min(100%, 300px); margin: 0 auto; }
+      .steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 12px; }
+      .step { min-width: 0; }
+      .feedback { margin: 14px 0; padding: 0 8px; }
+    }
+
+    @media (max-width: 379px) {
+      .demo-header { padding-inline: 14px; }
+      .shell { padding-inline: 14px; }
+      .controls { gap: 8px; }
+      .segment { width: 100%; }
+      .segment button { flex: 1; padding-inline: 8px; }
+      .reset-button { width: 100%; }
+      .steps { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+      .holding .hold-fill { animation-duration: .8s !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="demo-header">
+    <a class="back-link" href="cases.html#case-lianlu">← 返回企微获客案例</a>
+      <p class="privacy-note" data-testid="privacy-note">虚构重绘 · 仅演示用户操作 · 具体机制已隐藏</p>
+  </header>
+
+  <main class="shell">
+    <section class="intro" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">企微获客链路改造 · 交互模拟</p>
+        <h1 id="page-title">把中老年用户容易卡住的“长按识别”，改成直接点击</h1>
+        <p class="lede">重点不是单纯少一步，而是把用户不熟悉的“持续长按 + 菜单选择”，换成更熟悉的点击文案或卡片。</p>
+      </div>
+      <div class="controls" aria-label="演示控制">
+        <div class="segment" aria-label="操作模式">
+          <button type="button" data-testid="manual-mode" aria-pressed="true">手动操作</button>
+          <button type="button" data-testid="auto-mode" aria-pressed="false">自动演示</button>
+        </div>
+        <div class="mode-readout" data-testid="mode-status" aria-live="polite">
+          <span>手动操作</span>
+          <strong class="countdown" data-testid="countdown"></strong>
+        </div>
+        <button class="reset-button" type="button" data-testid="reset-all">↻ 重置两条链路</button>
+      </div>
+    </section>
+
+    <section class="stage" aria-label="新旧获客链路对照">
+      <article class="lane old" aria-labelledby="old-lane-title">
+        <div class="lane-heading">
+          <h2 id="old-lane-title">原链路</h2>
+          <p>不熟悉长按识别的用户容易卡在这里</p>
+        </div>
+        <div class="lane-workspace">
+          <div class="phone" data-testid="old-phone" data-state="OLD_AD" aria-label="原链路手机模拟"></div>
+          <div class="steps" data-testid="old-steps" aria-label="原链路步骤"></div>
+        </div>
+      </article>
+
+      <article class="lane new" aria-labelledby="new-lane-title">
+        <div class="lane-heading">
+          <h2 id="new-lane-title">新链路</h2>
+          <p>进入可点击承接页后，文案和卡片都能点击</p>
+        </div>
+        <div class="lane-workspace">
+          <div class="phone" data-testid="new-phone" data-state="NEW_AD" aria-label="新链路手机模拟"></div>
+          <div class="steps" data-testid="new-steps" aria-label="新链路步骤"></div>
+        </div>
+      </article>
+    </section>
+
+    <div class="feedback" data-testid="feedback" role="status" aria-live="polite">核心对比：需要学会长按识别，还是沿用熟悉的点击操作。</div>
+
+    <section class="comparison" aria-labelledby="comparison-title">
+      <h2 id="comparison-title">关键不是少一步，而是移除长按识别门槛</h2>
+      <div class="metrics">
+        <table class="metric-table old">
+          <caption>原链路</caption>
+          <tbody>
+            <tr><th scope="row">核心操作门槛</th><td>需要学会长按识别</td></tr>
+            <tr><th scope="row">识别后还要</th><td>从系统菜单选对入口</td></tr>
+            <tr><th scope="row">获客入口</th><td>二维码</td></tr>
+            <tr><th scope="row">当前状态</th><td data-testid="old-completion"></td></tr>
+          </tbody>
+        </table>
+        <table class="metric-table new">
+          <caption>新链路</caption>
+          <tbody>
+            <tr><th scope="row">核心操作方式</th><td>沿用熟悉的点击操作</td></tr>
+            <tr><th scope="row">入口选择</th><td>文案或卡片都可点击</td></tr>
+            <tr><th scope="row">获客入口</th><td>文案 + 卡片</td></tr>
+            <tr><th scope="row">当前状态</th><td data-testid="new-completion"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="metric-note">本页只演示用户操作差异；具体承接机制与平台能力配置不对外展示。页面不连接真实企业微信，也不提交任何信息。</p>
+    </section>
+  </main>
+
+  <script>
+    const INITIAL = Object.freeze({
+      mode: 'manual',
+      countdown: null,
+      oldLane: 'OLD_AD',
+      newLane: 'NEW_AD',
+      feedback: '核心对比：需要学会长按识别，还是沿用熟悉的点击操作。'
+    });
+
+    const TRANSITIONS = Object.freeze({
+      old: {
+        OLD_AD: { CLAIM_CLICK: { to: 'OLD_H5' } },
+        OLD_H5: { HOLD_START: { to: 'OLD_HOLDING' } },
+        OLD_HOLDING: {
+          HOLD_COMPLETE: { to: 'OLD_MENU' },
+          HOLD_ABORT: { to: 'OLD_H5' }
+        },
+        OLD_MENU: {
+          MENU_OPEN_CONTACT: { to: 'OLD_CONTACT' },
+          MENU_CANCEL: { to: 'OLD_H5' },
+          MENU_SHARE: { to: 'OLD_MENU' },
+          MENU_FAVORITE: { to: 'OLD_MENU' },
+          MENU_SAVE: { to: 'OLD_MENU' }
+        },
+        OLD_CONTACT: { ADD_CONTACT: { to: 'OLD_ADDED' } }
+      },
+      new: {
+        NEW_AD: { CLAIM_CLICK: { to: 'NEW_ENTRY' } },
+        NEW_ENTRY: { ACQUISITION_CLICK: { to: 'NEW_LINK_LOADING' } },
+        NEW_LINK_LOADING: { LINK_RESOLVE: { to: 'NEW_CONTACT' } },
+        NEW_CONTACT: { ADD_CONTACT: { to: 'NEW_ADDED' } }
+      }
+    });
+
+    const OLD_STEPS = Object.freeze([
+      ['广告起点', '点击领取资料'],
+      ['H5 落地页', '离开原生页面'],
+      ['长按二维码', '持续按住 0.8 秒'],
+      ['系统菜单', '选择打开联系人'],
+      ['添加联系人', '完成加微']
+    ]);
+    const NEW_STEPS = Object.freeze([
+      ['广告起点', '点击领取资料'],
+      ['可点击承接页', '文案或卡片均可点击'],
+      ['添加联系人', '任一入口直达']
+    ]);
+    const OLD_RANK = Object.freeze({ OLD_AD: 0, OLD_H5: 1, OLD_HOLDING: 2, OLD_MENU: 3, OLD_CONTACT: 4, OLD_ADDED: 5 });
+    const NEW_RANK = Object.freeze({ NEW_AD: 0, NEW_ENTRY: 1, NEW_LINK_LOADING: 2, NEW_CONTACT: 2, NEW_ADDED: 3 });
+    const AUTO_EVENTS = Object.freeze([
+      [3000, 'old', 'CLAIM_CLICK'],
+      [3000, 'new', 'CLAIM_CLICK'],
+      [4400, 'old', 'HOLD_START'],
+      [5200, 'old', 'HOLD_COMPLETE'],
+      [6200, 'new', 'ACQUISITION_CLICK'],
+      [6850, 'new', 'LINK_RESOLVE'],
+      [7600, 'new', 'ADD_CONTACT'],
+      [8000, 'old', 'MENU_OPEN_CONTACT'],
+      [10700, 'old', 'ADD_CONTACT']
+    ]);
+
+    let state = { ...INITIAL };
+    const timers = new Map();
+    const hold = { active: false, timer: null, pointerId: null, input: null };
+
+    const oldPhone = document.querySelector('[data-testid="old-phone"]');
+    const newPhone = document.querySelector('[data-testid="new-phone"]');
+    const oldSteps = document.querySelector('[data-testid="old-steps"]');
+    const newSteps = document.querySelector('[data-testid="new-steps"]');
+    const feedback = document.querySelector('[data-testid="feedback"]');
+    const manualButton = document.querySelector('[data-testid="manual-mode"]');
+    const autoButton = document.querySelector('[data-testid="auto-mode"]');
+    const modeStatus = document.querySelector('[data-testid="mode-status"]');
+
+    function registerTimer(kind, delay, callback) {
+      const id = window.setTimeout(() => {
+        timers.delete(id);
+        callback();
+      }, delay);
+      timers.set(id, kind);
+      return id;
+    }
+
+    function clearTimer(id) {
+      if (id === null || !timers.has(id)) return;
+      window.clearTimeout(id);
+      timers.delete(id);
+    }
+
+    function clearTimers(kind) {
+      for (const [id, timerKind] of timers) {
+        if (!kind || timerKind === kind) {
+          window.clearTimeout(id);
+          timers.delete(id);
+        }
+      }
+    }
+
+    function dispatch(lane, event) {
+      const stateKey = lane === 'old' ? 'oldLane' : 'newLane';
+      const transition = TRANSITIONS[lane][state[stateKey]]?.[event];
+      if (!transition) return false;
+      state[stateKey] = transition.to;
+      render();
+      return true;
+    }
+
+    function deviceStatus(theme = 'light', time = '17:34') {
+      return `<div class="device-status ${theme}">
+        <span class="device-time">${time}</span>
+        <span class="dynamic-island" aria-hidden="true"></span>
+        <span class="device-signals"><span class="signal-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>5G</span><span class="battery">58</span></span>
+      </div>`;
+    }
+
+    function nativeAppbar(title, theme = 'light', subtitle = '') {
+      return `<div class="native-appbar ${theme}">
+        <span class="native-back" aria-hidden="true">‹</span>
+        <span class="native-title"><strong>${title}</strong>${subtitle ? `<small>${subtitle}</small>` : ''}</span>
+        <span class="native-more" aria-hidden="true">•••</span>
+      </div>`;
+    }
+
+    function videoPeople() {
+      return Array.from({ length: 19 }, () => '<i></i>').join('');
+    }
+
+    function adView(lane) {
+      return `<div class="phone-screen video-phone">
+        ${deviceStatus('dark')}
+        <div class="short-video-ad">
+          <span class="video-back" aria-hidden="true">‹</span>
+          <span class="video-pill" aria-hidden="true"><b>•••</b><b>◉</b></span>
+          <span class="video-close" aria-hidden="true">×</span>
+          <div class="ad-hero-banner" aria-hidden="true">
+            <div class="coast-rail"></div><div class="coast-people">${videoPeople()}</div>
+            <span class="video-play"><i class="play-triangle"></i>播放视频</span>
+            <p class="video-headline">这份健康资料，很多人都在找</p>
+          </div>
+          <div class="ad-vertical-creative" aria-hidden="true">
+            <div class="creative-scene"><div class="creative-window"></div><div class="creative-person"></div></div>
+            <div class="creative-caption">从一个常见问题说起</div>
+            <div class="creative-proof"><span class="mini-device">记录</span><span class="proof-lines"><i></i><i></i><i></i></span></div>
+            <div class="creative-fineprint">虚构健康资料内容，仅用于演示页面结构。请以专业机构建议为准。</div>
+          </div>
+          <div class="ad-cta-bar">
+            <span class="cta-seal">领取<br>入口</span>
+            <span class="cta-copy"><b>健康生活资料</b><small>资料已准备好</small></span>
+            <button class="ad-claim" type="button" data-testid="${lane}-claim" data-event="CLAIM_CLICK">立即领取</button>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    function qrMarkup(size = 21, salt = 0) {
+      const cells = [];
+      const inFinder = (row, col, top, left) => {
+        const r = row - top;
+        const c = col - left;
+        if (r < 0 || r > 6 || c < 0 || c > 6) return false;
+        return r === 0 || r === 6 || c === 0 || c === 6 || (r >= 2 && r <= 4 && c >= 2 && c <= 4);
+      };
+      for (let row = 0; row < size; row += 1) {
+        for (let col = 0; col < size; col += 1) {
+          const finder = inFinder(row, col, 0, 0) || inFinder(row, col, 0, size - 7) || inFinder(row, col, size - 7, 0);
+          const data = ((row * 17 + col * 11 + row * col * 3 + salt * 7) % 13) < 6;
+          cells.push(`<i class="qr-cell${finder || data ? ' on' : ''}"></i>`);
+        }
+      }
+      return cells.join('');
+    }
+
+    function avatarStrip() {
+      return Array.from({ length: 9 }, () => '<i class="avatar-dot"></i>').join('');
+    }
+
+    function claimRows() {
+      return [
+        ['周女士', '176****3807', '广州', '刚刚'],
+        ['林先生', '135****9964', '成都', '1分钟前'],
+        ['许女士', '156****6837', '长沙', '2分钟前'],
+        ['陈先生', '153****6158', '南昌', '3分钟前']
+      ].map(row => `<div class="claim-row">${row.map(value => `<span>${value}</span>`).join('')}</div>`).join('');
+    }
+
+    function compactQr(salt = 4) {
+      return `<span class="fake-qr dense compact" aria-hidden="true">${qrMarkup(15, salt)}</span>`;
+    }
+
+    function h5View(holding = false, withMenu = false) {
+      const page = `<div class="phone-screen">
+        ${deviceStatus('light', '17:53')}
+        ${nativeAppbar('0元领取四季养生手册', 'light')}
+        <div class="screen-body h5-view">
+          <div class="h5-scroll">
+            <section class="h5-hero">
+              <h3 class="h5-title">中老年健康生活手册</h3>
+              <div class="gift-tags"><b>免费送</b><b>免费学</b></div>
+              <div class="health-book-cover" aria-hidden="true"></div>
+              <div class="hero-arrow">↓ 立即添加顾问　领取健康资料 ↓</div>
+            </section>
+            <section class="claim-panel${holding ? ' holding' : ''}">
+              <h3>0元领取四季养生手册</h3>
+              <p class="claim-instruction">👇 长按下方二维码 0.8 秒<br>选择「打开企业联系人」</p>
+              <div class="qr-wrap">
+                <div class="fake-qr dense" data-testid="old-qr" data-hold-target tabindex="0" role="button" aria-label="长按二维码 0.8 秒">
+                  ${qrMarkup(21, 2)}<span class="qr-center-badge">健康<br>资料</span>
+                </div>
+                <div class="hold-track" aria-hidden="true"><div class="hold-fill"></div></div>
+                <div class="hold-label">${holding ? '请继续按住…' : '长按 0.8 秒识别'}</div>
+              </div>
+              <p class="claim-count">已有 8,315 位用户领取虚构资料</p>
+            </section>
+            <section class="claim-list"><h3>0元领取用户名单</h3>${claimRows()}</section>
+            <section class="secondary-qr-card">
+              <b>0元领取四季养生手册</b>
+              <div class="fake-qr dense" aria-hidden="true">${qrMarkup(21, 8)}<span class="qr-center-badge">资料</span></div>
+              <p class="claim-count">已有 8,315 位用户开启健康计划</p>
+              <div class="avatar-strip" aria-hidden="true">${avatarStrip()}</div>
+            </section>
+          </div>
+          <div class="sticky-claim-bar">
+            <span class="free-stamp">免费<br>领取</span>
+            <span class="sticky-copy"><b>0元领取</b><small>长按右侧二维码添加顾问</small></span>
+            <span class="mini-qr-wrap"><b class="pointing-hand">☛</b>${compactQr()}</span>
+          </div>
+          ${withMenu ? `<div class="menu-overlay" role="dialog" aria-modal="true" aria-label="模拟系统菜单">
+            <div class="action-sheet"><div class="sheet-group">
+              <div class="sheet-title">图片操作</div>
+              <button class="sheet-button" type="button" data-testid="menu-share" data-event="MENU_SHARE">转发给朋友</button>
+              <button class="sheet-button" type="button" data-testid="menu-favorite" data-event="MENU_FAVORITE">收藏</button>
+              <button class="sheet-button" type="button" data-testid="menu-save" data-event="MENU_SAVE">保存图片</button>
+              <button class="sheet-button contact-option" type="button" data-testid="menu-open-contact" data-event="MENU_OPEN_CONTACT">打开企业联系人「林顾问」</button>
+            </div><button class="sheet-button sheet-cancel" type="button" data-testid="menu-cancel" data-event="MENU_CANCEL">取消</button></div>
+          </div>` : ''}
+        </div>
+      </div>`;
+      return page;
+    }
+
+    function entryView() {
+      return `<div class="phone-screen entry-phone">
+        ${deviceStatus('light')}
+        ${nativeAppbar('资料领取', 'light', '公开交互演示')}
+        <div class="screen-body entry-screen">
+          <div class="entry-scroll">
+            <section class="entry-hero">
+              <span class="entry-kicker">可点击承接页</span>
+              <h3>健康生活资料已准备好</h3>
+              <p>无需长按识别，点击下方任一入口即可继续。</p>
+            </section>
+            <section class="entry-options" aria-label="可点击领取入口">
+              <button class="message-entry" type="button" data-testid="acquisition-text" data-event="ACQUISITION_CLICK">
+                <b>文案入口</b><span>点击领取资料并继续添加联系人</span><strong>继续领取 →</strong>
+              </button>
+              <button class="card-entry" type="button" data-testid="acquisition-card" data-event="ACQUISITION_CLICK">
+                <span class="card-copy"><b>资料领取卡片</b><small>点击卡片继续</small></span><span class="product-thumb">领取</span>
+              </button>
+            </section>
+            <p class="entry-redaction">公开演示仅保留用户操作，具体承接机制已隐藏。</p>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    function linkLoadingView() {
+      return `<div class="phone-screen webview-phone">
+        ${deviceStatus('dark')}
+        <div class="webview-bar"><span class="webview-close">×</span><span>正在打开添加入口</span><span class="webview-more">•••</span></div>
+        <div class="webview-progress" aria-hidden="true"></div>
+        <div class="link-loading-screen" data-testid="link-loading">
+          <div class="loading-toast"><span class="loading-spinner" aria-hidden="true"></span><span>正在加载</span></div>
+        </div>
+      </div>`;
+    }
+
+    function contactView(lane, added) {
+      const dark = lane === 'new';
+      const theme = dark ? 'dark' : 'light';
+      const name = dark ? '王顾问' : '林顾问';
+      const friendDetails = dark
+        ? '<section class="friend-summary"><b>朋友资料</b><span>添加朋友的备注名，并设置朋友权限。</span><i>›</i></section>'
+        : '<section class="contact-section"><div class="section-label">朋友资料</div><div class="contact-row"><span>来源</span><b>来自扫一扫</b><i>›</i></div><div class="contact-row"><span>朋友圈</span><span class="moments"><i class="moment-thumb"></i><i class="moment-thumb"></i><i class="moment-thumb"></i></span><i>›</i></div></section>';
+      const enterpriseDetails = dark
+        ? `<div class="contact-row"><span>来自</span><b>企业微信</b><i>›</i></div><div class="contact-row"><span>企业</span><b>青禾生活服务有限公司</b><i>›</i></div><div class="contact-row"><span>实名</span><b>${name}</b><i>›</i></div>`
+        : `<div class="contact-row"><span>来自</span><b>企业微信</b><i>›</i></div><div class="contact-row"><span>企业</span><b>青禾健康服务有限公司</b><i>›</i></div><div class="contact-row"><span>实名</span><b>${name}</b><i>›</i></div><div class="contact-row"><span>投诉建议</span><b>我要反馈</b><i>›</i></div>`;
+      return `<div class="phone-screen ${dark ? 'contact-phone' : ''}">
+        ${deviceStatus(theme, dark ? '17:34' : '17:53')}
+        ${nativeAppbar('', theme)}
+        <div class="screen-body">
+          <div class="contact-screen ${theme}-theme">
+            <div class="contact-profile"><span class="portrait" aria-hidden="true"></span><span class="profile-copy"><h3>${name} <small>👤</small></h3><p>@${dark ? '青禾生活服务' : '青禾健康服务'}</p></span></div>
+            ${friendDetails}
+            <section class="contact-section"><div class="section-label">企业信息</div>${enterpriseDetails}</section>
+            <div class="contact-action">${added
+              ? '<button class="primary-action added-state" type="button" disabled>✓ 已添加到通讯录</button>'
+              : `<button class="primary-action" type="button" data-testid="${lane}-add-contact" data-event="ADD_CONTACT">添加到通讯录</button>`}</div>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    function renderOldLane() {
+      oldPhone.dataset.state = state.oldLane;
+      if (state.oldLane === 'OLD_AD') oldPhone.innerHTML = adView('old');
+      if (state.oldLane === 'OLD_H5') oldPhone.innerHTML = h5View();
+      if (state.oldLane === 'OLD_HOLDING') oldPhone.innerHTML = h5View(true);
+      if (state.oldLane === 'OLD_MENU') oldPhone.innerHTML = h5View(false, true);
+      if (state.oldLane === 'OLD_CONTACT') oldPhone.innerHTML = contactView('old', false);
+      if (state.oldLane === 'OLD_ADDED') oldPhone.innerHTML = contactView('old', true);
+    }
+
+    function renderNewLane() {
+      newPhone.dataset.state = state.newLane;
+      if (state.newLane === 'NEW_AD') newPhone.innerHTML = adView('new');
+      if (state.newLane === 'NEW_ENTRY') newPhone.innerHTML = entryView();
+      if (state.newLane === 'NEW_LINK_LOADING') newPhone.innerHTML = linkLoadingView();
+      if (state.newLane === 'NEW_CONTACT') newPhone.innerHTML = contactView('new', false);
+      if (state.newLane === 'NEW_ADDED') newPhone.innerHTML = contactView('new', true);
+    }
+
+    function renderSteps(container, definitions, rank, maxRank) {
+      container.innerHTML = definitions.map(([title, detail], index) => {
+        const stepRank = index;
+        const status = rank > stepRank ? 'done' : (rank === stepRank ? 'active' : 'pending');
+        return `<div class="step ${status}"><span class="step-index">${index + 1}</span><span><b>${title}</b><small>${detail}</small></span></div>`;
+      }).join('');
+      if (rank >= maxRank) {
+        container.querySelectorAll('.step').forEach(step => step.classList.add('done'));
+      }
+    }
+
+    function completionLabel(laneState) {
+      if (laneState.endsWith('_AD')) return '未开始';
+      if (laneState.endsWith('_ADDED')) return '已添加';
+      return '进行中';
+    }
+
+    function renderMetrics() {
+      document.querySelector('[data-testid="old-completion"]').textContent = completionLabel(state.oldLane);
+      document.querySelector('[data-testid="new-completion"]').textContent = completionLabel(state.newLane);
+    }
+
+    function renderControls() {
+      const isAuto = state.mode === 'auto';
+      manualButton.setAttribute('aria-pressed', String(!isAuto));
+      autoButton.setAttribute('aria-pressed', String(isAuto));
+      const label = isAuto
+        ? (state.countdown === null ? (state.oldLane === 'OLD_ADDED' && state.newLane === 'NEW_ADDED' ? '演示完成' : '自动演示中') : '即将同时开始')
+        : '手动操作';
+      modeStatus.innerHTML = `<span>${label}</span><strong class="countdown" data-testid="countdown">${state.countdown ?? ''}</strong>`;
+    }
+
+    function captureFocus() {
+      const active = document.activeElement;
+      if (!active || active === document.body) return null;
+      if (active.dataset.testid) return { testid: active.dataset.testid };
+      if (active.dataset.holdTarget !== undefined) return { holdTarget: true };
+      return null;
+    }
+
+    function restoreFocus(target) {
+      if (!target) return;
+      const selector = target.testid
+        ? `[data-testid="${target.testid}"]`
+        : (target.holdTarget ? '[data-hold-target]' : null);
+      document.querySelector(selector)?.focus();
+    }
+
+    function render(options = {}) {
+      const focusTarget = options.focus || captureFocus();
+      renderOldLane();
+      renderNewLane();
+      renderSteps(oldSteps, OLD_STEPS, OLD_RANK[state.oldLane], 5);
+      renderSteps(newSteps, NEW_STEPS, NEW_RANK[state.newLane], 3);
+      renderMetrics();
+      renderControls();
+      feedback.textContent = state.feedback;
+      restoreFocus(focusTarget);
+    }
+
+    function showFeedback(message) {
+      state.feedback = message;
+      feedback.textContent = message;
+    }
+
+    function scheduleLinkResolution() {
+      if (document.hidden || state.mode !== 'manual' || state.newLane !== 'NEW_LINK_LOADING') return;
+      clearTimers('navigation');
+      registerTimer('navigation', 650, () => dispatch('new', 'LINK_RESOLVE'));
+    }
+
+    function updateAutoFeedback(lane, event) {
+      if (lane === 'new' && event === 'ACQUISITION_CLICK') state.feedback = '新链路正在打开获客入口。';
+      if (lane === 'new' && event === 'LINK_RESOLVE') state.feedback = '获客入口已打开联系人资料。';
+      if (lane === 'new' && event === 'ADD_CONTACT') state.feedback = '新链路通过点击完成添加；原链路仍卡在长按与菜单选择。';
+      if (lane === 'old' && event === 'HOLD_COMPLETE') state.feedback = '原链路完成长按，仍需在系统菜单中选择联系人。';
+      if (lane === 'old' && event === 'ADD_CONTACT') state.feedback = '对比完成：原链路要求掌握长按和菜单选择，新链路只需点击。';
+      feedback.textContent = state.feedback;
+    }
+
+    function startAutoDemo() {
+      resetAll({ mode: 'auto' });
+      state.countdown = 3;
+      state.feedback = '3 秒后，两条链路将从同一广告同时开始。';
+      renderControls();
+      feedback.textContent = state.feedback;
+
+      registerTimer('demo', 1000, () => {
+        if (state.mode !== 'auto') return;
+        state.countdown = 2;
+        renderControls();
+      });
+      registerTimer('demo', 2000, () => {
+        if (state.mode !== 'auto') return;
+        state.countdown = 1;
+        renderControls();
+      });
+
+      for (const [delay, lane, event] of AUTO_EVENTS) {
+        registerTimer('demo', delay, () => {
+          if (state.mode !== 'auto') return;
+          if (delay === 3000) state.countdown = null;
+          if (!dispatch(lane, event)) return;
+          updateAutoFeedback(lane, event);
+        });
+      }
+    }
+
+    function cancelAutomation(message = '自动演示已暂停，可从当前步骤继续操作。') {
+      if (state.mode !== 'auto') return false;
+      clearTimers('demo');
+      state.mode = 'manual';
+      state.countdown = null;
+
+      // A simulated hold has no physical pointer to continue after takeover.
+      if (state.oldLane === 'OLD_HOLDING') {
+        state.oldLane = 'OLD_H5';
+        oldPhone.dataset.state = 'OLD_H5';
+        oldPhone.querySelector('.claim-panel')?.classList.remove('holding');
+        const holdLabel = oldPhone.querySelector('.hold-label');
+        if (holdLabel) holdLabel.textContent = '长按 0.8 秒识别';
+      }
+
+      renderSteps(oldSteps, OLD_STEPS, OLD_RANK[state.oldLane], 5);
+      renderSteps(newSteps, NEW_STEPS, NEW_RANK[state.newLane], 3);
+      renderMetrics();
+      renderControls();
+      showFeedback(message);
+      scheduleLinkResolution();
+      return true;
+    }
+
+    function startHold(input, pointerId = null) {
+      if (state.oldLane !== 'OLD_H5' || hold.active) return false;
+      if (!dispatch('old', 'HOLD_START')) return false;
+      hold.active = true;
+      hold.input = input;
+      hold.pointerId = pointerId;
+      hold.timer = registerTimer('hold', 800, completeHold);
+      return true;
+    }
+
+    function abortHold(message = '点击没有反应，请长按二维码 0.8 秒。这正是中老年用户容易卡住的操作。') {
+      if (!hold.active) return false;
+      clearTimer(hold.timer);
+      hold.active = false;
+      hold.timer = null;
+      hold.pointerId = null;
+      hold.input = null;
+      const changed = dispatch('old', 'HOLD_ABORT');
+      if (changed) showFeedback(message);
+      return changed;
+    }
+
+    function completeHold() {
+      if (!hold.active || state.oldLane !== 'OLD_HOLDING') return false;
+      hold.active = false;
+      hold.timer = null;
+      hold.pointerId = null;
+      hold.input = null;
+      const changed = dispatch('old', 'HOLD_COMPLETE');
+      if (changed) {
+        document.querySelector('[data-testid="menu-open-contact"]')?.focus();
+        showFeedback('长按识别完成，已弹出模拟系统菜单。');
+      }
+      return changed;
+    }
+
+    function handleLaneClick(lane, event) {
+      const control = event.target.closest('[data-event]');
+      if (!control) return;
+      const action = control.dataset.event;
+      const changed = dispatch(lane, action);
+      if (!changed) return;
+      if (lane === 'new' && action === 'CLAIM_CLICK') {
+        showFeedback('已进入可点击承接页，可选择文案或卡片继续。');
+      } else if (lane === 'new' && action === 'ACQUISITION_CLICK') {
+        showFeedback('正在打开获客入口，请稍候。');
+        scheduleLinkResolution();
+      } else if (action === 'CLAIM_CLICK') {
+        showFeedback('已进入 H5，请长按二维码 0.8 秒。');
+      } else if (action === 'MENU_OPEN_CONTACT') {
+        showFeedback('已从模拟系统菜单打开联系人页。');
+      } else if (action === 'MENU_CANCEL') {
+        document.querySelector('[data-hold-target]')?.focus();
+        showFeedback('已取消，请重新长按二维码。');
+      } else if (action === 'MENU_SHARE' || action === 'MENU_FAVORITE' || action === 'MENU_SAVE') {
+        showFeedback('该菜单项仅作提示，不会调用系统功能。');
+      } else if (action === 'ADD_CONTACT') {
+        showFeedback('模拟完成：联系人已添加。');
+      }
+    }
+
+    function resetAll(options = {}) {
+      clearTimers();
+      hold.active = false;
+      hold.timer = null;
+      hold.pointerId = null;
+      hold.input = null;
+      state = { ...INITIAL, mode: options.mode || 'manual' };
+      render();
+    }
+
+    oldPhone.addEventListener('click', event => handleLaneClick('old', event));
+    newPhone.addEventListener('click', event => handleLaneClick('new', event));
+    for (const phone of [oldPhone, newPhone]) {
+      phone.addEventListener('pointerdown', () => cancelAutomation(), true);
+      phone.addEventListener('keydown', () => cancelAutomation(), true);
+    }
+    oldPhone.addEventListener('pointerdown', event => {
+      if (!event.target.closest('[data-hold-target]') || event.button !== 0) return;
+      event.preventDefault();
+      startHold('pointer', event.pointerId);
+    });
+    oldPhone.addEventListener('pointerup', event => {
+      if (!hold.active || hold.input !== 'pointer' || hold.pointerId !== event.pointerId) return;
+      abortHold();
+    });
+    oldPhone.addEventListener('pointercancel', event => {
+      if (!hold.active || hold.input !== 'pointer' || hold.pointerId !== event.pointerId) return;
+      abortHold();
+    });
+    oldPhone.addEventListener('pointerout', event => {
+      if (!hold.active || hold.input !== 'pointer') return;
+      const target = event.target.closest('[data-hold-target]');
+      if (target && !target.contains(event.relatedTarget)) abortHold();
+    });
+    oldPhone.addEventListener('contextmenu', event => {
+      if (event.target.closest('[data-hold-target]')) event.preventDefault();
+    });
+    oldPhone.addEventListener('keydown', event => {
+      if (!event.target.closest('[data-hold-target]') || event.code !== 'Space' || event.repeat) return;
+      event.preventDefault();
+      startHold('keyboard');
+    });
+    oldPhone.addEventListener('keyup', event => {
+      if (event.code !== 'Space' || !hold.active || hold.input !== 'keyboard') return;
+      event.preventDefault();
+      abortHold();
+    });
+    document.querySelector('[data-testid="reset-all"]').addEventListener('click', () => resetAll());
+    autoButton.addEventListener('click', startAutoDemo);
+    manualButton.addEventListener('click', () => {
+      if (!cancelAutomation('已切换为手动操作，当前进度已保留。')) {
+        showFeedback('当前已是手动操作。');
+      }
+    });
+
+    window.addEventListener('blur', () => abortHold());
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        clearTimers('navigation');
+        if (!cancelAutomation('页面进入后台，自动演示已暂停。')) {
+          clearTimers('message');
+          abortHold();
+        }
+        return;
+      }
+      scheduleLinkResolution();
+    });
+
+    render();
+  </script>
+</body>
+</html>

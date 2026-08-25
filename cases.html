@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>王钧灏 - 作品集：三个项目案例</title>
+  <meta name="description" content="王钧灏作品集：企微获客链路、AI 创意生产与投放验证、AI 广告日报与问题排查。每个案例讲清背景、关键判断、执行逻辑、结果验证和归因边界。">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.png" type="image/png" sizes="256x256">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="王钧灏 · 作品集：三个项目案例">
+  <meta property="og:description" content="三个完整项目案例，按简历顺序呈现；对应 Demo 就近放在案例末尾。">
+  <meta property="og:image" content="https://kinghowang.github.io/kingho-resume/og-image.png">
+  <meta property="og:url" content="https://kinghowang.github.io/kingho-resume/cases.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    :root{--c-green:#1e8449;--c-amber:#b9770e}
+    .page-head{max-width:960px;margin:0 auto;padding:56px 48px 8px}
+    .back-link{display:inline-flex;align-items:center;min-height:44px;font-size:.85rem;color:var(--accent);text-decoration:none;font-weight:600}
+    .back-link:hover{text-decoration:underline}
+    .page-head h1{font-family:var(--font-display);font-size:2.4rem;font-weight:700;margin:12px 0 8px}
+    .page-head .sub{color:var(--muted);font-size:1rem;max-width:700px}
+    .disclaimer{max-width:864px;margin:24px auto 10px;padding:13px 0;border-top:1px solid #e6c986;border-bottom:1px solid #e6c986;font-size:.84rem;color:#735f2a;line-height:1.65}
+    .disclaimer strong{color:#5f4c1d}
+    .project-list{max-width:864px;margin:18px auto 0;padding:0 0 36px}
+    .project-case{padding:38px 0 42px;border-top:1px solid var(--border);opacity:1;transform:none;scroll-margin-top:20px}
+    .project-case.reveal-pending{opacity:0;transform:translateY(24px)}
+    .project-case.reveal-pending.visible{animation:fadeUp .55s ease forwards}
+    .project-case:last-child{border-bottom:1px solid var(--border)}
+    .project-case-head{display:grid;grid-template-columns:58px minmax(0,1fr);gap:18px;align-items:start}
+    .project-case-no{font-family:var(--font-display);font-size:1.55rem;line-height:1;color:var(--accent);font-weight:700}
+    .project-case-title h2{font-family:var(--font-display);font-size:1.28rem;line-height:1.35;font-weight:700}
+    .project-case-role{margin-top:5px;color:#657274;font-size:.76rem}
+    .project-context{max-width:760px;margin:19px 0 18px 76px;color:#354047;font-size:.9rem;line-height:1.72}
+    .project-label{display:block;margin-bottom:4px;color:var(--accent);font-size:.72rem;font-weight:700}
+    .project-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin-left:76px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+    .project-detail{min-width:0;padding:18px 24px 18px 0}
+    .project-detail:nth-child(even){border-left:1px solid var(--border);padding-left:24px;padding-right:0}
+    .project-detail:nth-child(n+3){border-top:1px solid var(--border)}
+    .project-detail h3{margin-bottom:6px;color:var(--accent);font-size:.76rem;font-weight:700}
+    .project-detail p{color:#354047;font-size:.85rem;line-height:1.68}
+    .project-detail.attribution h3{color:var(--c-green)}
+    .project-demos{display:grid;grid-template-columns:128px minmax(0,1fr);gap:14px;margin:18px 0 0 76px;align-items:start}
+    .project-demos-title{padding-top:11px;color:#333;font-size:.76rem;font-weight:700}
+    .project-demo-links{display:flex;flex-wrap:wrap;gap:8px 14px}
+    .project-demo-link{display:inline-flex;align-items:center;min-height:44px;color:var(--accent);font-size:.8rem;font-weight:700;text-decoration:none;border-bottom:1px solid #dfa39b}
+    .project-demo-link:hover{text-decoration:underline}
+    .footer{margin-top:0}
+    @media(max-width:960px){
+      .disclaimer,.project-list{margin-left:48px;margin-right:48px}
+    }
+    @media(max-width:640px){
+      .page-head{padding:36px 20px 4px}
+      .page-head h1{font-size:1.7rem}
+      .disclaimer,.project-list{margin-left:20px;margin-right:20px}
+      .project-case{padding:30px 0 34px}
+      .project-case-head{grid-template-columns:42px minmax(0,1fr);gap:10px}
+      .project-case-no{font-size:1.25rem}
+      .project-context,.project-detail-grid,.project-demos{margin-left:52px}
+      .project-detail-grid{grid-template-columns:1fr}
+      .project-detail{padding:15px 0}
+      .project-detail:nth-child(even){border-left:0;border-top:1px solid var(--border);padding-left:0}
+      .project-detail:nth-child(n+3){border-top:1px solid var(--border)}
+      .project-demos{grid-template-columns:1fr;gap:2px}
+      .project-demos-title{padding-top:0}
+      .project-demo-links{display:grid;grid-template-columns:1fr}
+      .project-demo-link{width:100%}
+    }
+  </style>
+</head>
+<body>
+
+<header class="page-head" data-reveal>
+  <a class="back-link" href="index.html">← 返回简历主页</a>
+  <h1>作品集 · 项目案例</h1>
+  <p class="sub">三个项目按简历顺序呈现。每个案例独立讲清关键判断、执行逻辑、结果与归因边界，再就近进入对应 Demo。</p>
+</header>
+
+<div class="disclaimer" data-reveal>
+  <strong>脱敏说明：</strong>本页基于真实工作项目整理；客户 / 代理商名称、绝对数据、内部表名和界面素材均已脱敏或示意化处理。
+</div>
+
+<main class="project-list" aria-label="项目案例">
+  <article class="project-case" id="case-lianlu" data-testid="project-case" data-reveal>
+    <header class="project-case-head">
+      <div class="project-case-no" aria-hidden="true">01</div>
+      <div class="project-case-title">
+        <h2>企微获客链路改造</h2>
+        <p class="project-case-role">产品方案设计 · 协同落地 · 数据验证</p>
+      </div>
+    </header>
+    <p class="project-context"><span class="project-label">必要背景</span>原链路要求用户在 H5 长按二维码，再从系统菜单选择识别；中老年主力用户不熟悉这一步，容易在加微前退出。</p>
+    <div class="project-detail-grid">
+      <section class="project-detail"><h3>关键判断</h3><p>问题不只是链路多一步，而是关键动作不符合目标用户的常用操作习惯。目标是移除长按和菜单判断，不是单纯减少页面数量。</p></section>
+      <section class="project-detail"><h3>方案逻辑</h3><p>重新设计加微承接链路，通过可直接点击的文案与卡片，把陌生的“长按识别”改成更熟悉的点击操作。公开案例只展示用户层方案，具体承接机制与平台能力配置不对外披露。</p></section>
+      <section class="project-detail"><h3>结果验证</h3><p>曝光-加微率提升 50% 以上；曝光-地址率提升 40% 以上；广告主后续转化未下降。</p></section>
+      <section class="project-detail attribution"><h3>归因边界</h3><p>指标为相对原链路的提升，绝对值已脱敏；后续转化未下降作为质量护栏。CPM 同步提升只作为平台效率结果，不单独归因为前端链路改造。</p></section>
+    </div>
+    <nav class="project-demos" aria-label="企微获客链路改造对应 Demo">
+      <p class="project-demos-title">对应 Demo</p>
+      <div class="project-demo-links"><a class="project-demo-link" href="demo-wecom-flow.html">体验企微链路 Demo ↗</a></div>
+    </nav>
+  </article>
+
+  <article class="project-case" data-testid="project-case" data-reveal>
+    <header class="project-case-head">
+      <div class="project-case-no" aria-hidden="true">02</div>
+      <div class="project-case-title">
+        <h2>AI 创意生产与投放验证</h2>
+        <p class="project-case-role">素材洞察 · Agent 生产执行 · 人工抽检</p>
+      </div>
+    </header>
+    <p class="project-context"><span class="project-label">必要背景</span>新 SKU 素材制作需要复用历史有效经验，同时不能让缺少视觉判断能力的 Agent 自行决定创意方向。</p>
+    <div class="project-detail-grid">
+      <section class="project-detail"><h3>关键判断</h3><p>人工查看广告素材逐秒表现和分段聚合数据，找出可复用与需优化部分并形成新 SKU 制作建议；Agent 按已确定方向执行剪辑，人工最终抽检。</p></section>
+      <section class="project-detail"><h3>执行流程</h3><p>素材洞察 → 制作建议 → 悟空任务卡与剪辑脚本执行 → 自动质检与白名单自修 → 人工抽检 → 投放验证。</p></section>
+      <section class="project-detail"><h3>结果验证</h3><p>基准为同期同 SKU 全量素材，CPM 与 CTCVR 综合表现处于中上游；减少逐条跟进与重复制作投入，不量化节省比例。</p></section>
+      <section class="project-detail attribution"><h3>归因边界</h3><p>只支持稳定产出可投、表现不差的素材；不包装为头部爆款，不称全部投放表现由 AI 单独造成。</p></section>
+    </div>
+    <nav class="project-demos" aria-label="AI 创意生产与投放验证对应 Demo">
+      <p class="project-demos-title">对应 Demo</p>
+      <div class="project-demo-links">
+        <a class="project-demo-link" href="demo-creative.html">查看创意分析 Demo ↗</a>
+        <a class="project-demo-link" href="demo-wukong.html">体验悟空生产流程 ↗</a>
+      </div>
+    </nav>
+  </article>
+
+  <article class="project-case" data-testid="project-case" data-reveal>
+    <header class="project-case-head">
+      <div class="project-case-no" aria-hidden="true">03</div>
+      <div class="project-case-title">
+        <h2>AI 广告日报与问题排查</h2>
+        <p class="project-case-role">AI 初筛 · 人工核验 · MRD 反馈</p>
+      </div>
+    </header>
+    <p class="project-context"><span class="project-label">必要背景</span>广告日报需要快速发现异常，同时避免运营直接采用模型给出的未经核验结论。</p>
+    <div class="project-detail-grid">
+      <section class="project-detail"><h3>关键判断</h3><p>AI 只按固定口径汇总核心表现、异常变化和待排查线索；运营在公司内部大数据看板 Grafana-Lite 下钻，用明细数据核验问题和影响范围并最终判断。</p></section>
+      <section class="project-detail"><h3>执行流程</h3><p>固定指标口径 → 数分机器人生成日报和线索 → Grafana-Lite 下钻核验 → 整理确认的问题、数据依据与影响范围为 MRD → 反馈产研。</p></section>
+      <section class="project-detail"><h3>结果验证</h3><p>日报整理及数据排查从小时级缩短至分钟级；每周向产研提交 1 至 2 份 MRD。</p></section>
+      <section class="project-detail attribution"><h3>归因边界</h3><p>不声明 MRD 的采纳或上线数量，不把最终业务判断或问题解决归给 AI，不把 Grafana-Lite 的建设归属作为卖点。</p></section>
+    </div>
+    <nav class="project-demos" aria-label="AI 广告日报与问题排查对应 Demo">
+      <p class="project-demos-title">对应 Demo</p>
+      <div class="project-demo-links">
+        <a class="project-demo-link" href="demo-shufen.html">体验数分机器人 ↗</a>
+        <a class="project-demo-link" href="demo-eval.html">查看 Eval 评测 ↗</a>
+      </div>
+    </nav>
+  </article>
+</main>
+
+<footer class="footer">王钧灏 · 商业化广告运营 → AI 商业化产品 · 作品集（脱敏） · 2026</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  const els=document.querySelectorAll('[data-reveal]');
+  const projectCases=document.querySelectorAll('.project-case[data-reveal]');
+  const showProjectCases=()=>projectCases.forEach(el=>{
+    el.classList.remove('reveal-pending');
+    el.classList.add('visible');
+  });
+  if(typeof IntersectionObserver!=='function'){
+    showProjectCases();
+    return;
+  }
+  let io;
+  try{
+    io=new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{if(e.isIntersecting){
+        e.target.classList.add('visible');
+        if(e.target.classList.contains('project-case')){
+          const finishReveal=()=>e.target.classList.remove('reveal-pending');
+          e.target.addEventListener('animationend',finishReveal,{once:true});
+          setTimeout(finishReveal,650);
+        }
+        io.unobserve(e.target);
+      }})
+    },{threshold:.08});
+    projectCases.forEach(el=>el.classList.add('reveal-pending'));
+    els.forEach(el=>io.observe(el));
+  }catch(error){
+    if(io)io.disconnect();
+    showProjectCases();
+  }
+});
+
+</script>
+</body>
+</html>

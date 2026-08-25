@@ -1,0 +1,20 @@
+# macOS
+.DS_Store
+
+# 环境与密钥（永不入库）
+.env
+.env.*
+*.log
+
+# 依赖与构建
+node_modules/
+dist/
+test-results/
+
+# 本地 agent 工作文件
+.superpowers/
+.worktrees/
+
+# 编辑器
+.vscode/
+.idea/
