@@ -37,7 +37,7 @@
 
     button, input, textarea { font: inherit; letter-spacing: 0; }
 
-    button, .back-link {
+    button {
       min-height: 44px;
       border: 1px solid var(--line);
       border-radius: 6px;
@@ -47,7 +47,7 @@
       cursor: pointer;
     }
 
-    button:hover:not(:disabled), button:focus-visible, .back-link:focus-visible {
+    button:hover:not(:disabled), button:focus-visible {
       border-color: var(--accent);
       outline: 3px solid rgba(159, 79, 53, 0.15);
       outline-offset: 1px;
@@ -75,13 +75,6 @@
     .brand span, .mode { color: var(--muted); font-size: 12px; }
 
     .top-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
-
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      text-decoration: none;
-      white-space: nowrap;
-    }
 
     .intro {
       display: grid;
@@ -522,8 +515,16 @@
       *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
     }
   </style>
+  <link rel="stylesheet" href="demo-nav.css">
+  <script src="demo-nav.js" defer></script>
 </head>
 <body>
+  <nav class="demo-nav" data-demo-nav data-project="creative" aria-label="Demo 导航">
+    <div class="demo-nav__inner">
+      <a href="index.html" data-demo-back>返回简历</a>
+      <div class="demo-nav__exits"><a href="index.html" data-demo-home>简历主页</a><a href="cases.html" data-demo-cases>作品集</a></div>
+    </div>
+  </nav>
   <main data-testid="demo-root" data-state="SETUP">
     <header class="topbar">
       <div class="brand">
@@ -532,7 +533,6 @@
       </div>
       <div class="top-actions">
         <span class="mode" data-testid="mode-status">手动模式</span>
-        <a class="back-link" href="cases.html">返回作品集</a>
         <button type="button" class="secondary" data-testid="auto-demo" data-action="auto">自动演示完整闭环</button>
         <button type="button" data-testid="reset-demo" data-action="reset">重置演示</button>
       </div>

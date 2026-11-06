@@ -69,8 +69,12 @@ test('starts as a sanitized, offline-only static demonstration', async ({ page }
   await expect(page.getByTestId('privacy-note')).toContainText('不调用真实模型');
 
   await expect(page.locator('img, video, audio, iframe')).toHaveCount(0);
-  await expect(page.locator('script[src], link[rel="stylesheet"], a[href^="http"]')).toHaveCount(0);
-  expect(secondaryRequests).toEqual([]);
+  await expect(page.locator('script[src]')).toHaveCount(1);
+  await expect(page.locator('script[src]')).toHaveAttribute('src', 'demo-nav.js');
+  await expect(page.locator('link[rel="stylesheet"]')).toHaveCount(1);
+  await expect(page.locator('link[rel="stylesheet"]')).toHaveAttribute('href', 'demo-nav.css');
+  await expect(page.locator('a[href^="http"]')).toHaveCount(0);
+  expect(secondaryRequests.sort()).toEqual([`${BASE}/demo-nav.css`, `${BASE}/demo-nav.js`]);
   expect(sockets).toEqual([]);
 
   const source = await page.content();
@@ -155,7 +159,7 @@ test('keeps reviewed evidence public-safe and offline', async ({ page }) => {
   expect(text).not.toMatch(/\.md 摘录|\.json 摘录/i);
   await expect(evidence.locator('img, video, audio, iframe')).toHaveCount(0);
   await expect(evidence.locator('script[src], link[rel="stylesheet"], a[href^="http"]')).toHaveCount(0);
-  expect(secondaryRequests).toEqual([]);
+  expect(secondaryRequests.sort()).toEqual([`${BASE}/demo-nav.css`, `${BASE}/demo-nav.js`]);
 });
 
 test('validates the synthetic setup and generates three segments with 25 task cards', async ({ page }) => {

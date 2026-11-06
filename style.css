@@ -55,7 +55,7 @@ body{
   margin-bottom:6px;
 }
 .hero-text .tagline{font-size:1.05rem;color:var(--muted);margin-bottom:14px}
-.contact-row{display:flex;flex-wrap:wrap;gap:18px;font-size:.88rem;color:var(--muted)}
+.contact-row{display:flex;align-items:center;flex-wrap:wrap;gap:18px;font-size:.88rem;color:var(--muted)}
 .contact-row > *::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-right:8px;vertical-align:middle}
 /* 微信：contact-row 内联入口 + 点击弹层 */
 .contact-copy,.wechat-trigger{display:inline-flex;align-items:center;gap:6px;font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;appearance:none;

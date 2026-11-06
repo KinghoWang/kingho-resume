@@ -42,19 +42,19 @@ test('portfolio renders three complete project cases in résumé order', async (
   await page.goto(`${BASE}/cases.html`);
 
   await expect(page).toHaveTitle('王钧灏 - 作品集：三个项目案例');
-  await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', '王钧灏作品集：企微获客链路、AI 创意生产与投放验证、AI 广告日报与问题排查。每个案例讲清背景、关键判断、执行逻辑、结果验证和归因边界。');
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', '王钧灏作品集：AI 广告日报与问题排查、AI 创意生产与投放验证、企微获客链路改造。AI 工具主要供内部运营使用，外部应用仍在开发。');
   await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', '王钧灏 · 作品集：三个项目案例');
-  await expect(page.locator('meta[property="og:description"]')).toHaveAttribute('content', '三个完整项目案例，按简历顺序呈现；对应 Demo 就近放在案例末尾。');
+  await expect(page.locator('meta[property="og:description"]')).toHaveAttribute('content', '三个公开项目案例，与简历中对应项目顺序一致；对应 Demo 就近放在案例末尾。');
   await expect(page.getByRole('heading', { level: 1, name: '作品集 · 项目案例' })).toBeVisible();
-  await expect(page.locator('.page-head .sub')).toHaveText('三个项目按简历顺序呈现。每个案例独立讲清关键判断、执行逻辑、结果与归因边界，再就近进入对应 Demo。');
+  await expect(page.locator('.page-head .sub')).toHaveText('三个公开案例，与简历中对应项目顺序一致。渠道专项仅在简历中概述，不公开内部底稿；以下案例提供过程说明与对应 Demo。');
   await expect(page.locator('.disclaimer')).toContainText('本页基于真实工作项目整理；客户 / 代理商名称、绝对数据、内部表名和界面素材均已脱敏或示意化处理。');
 
   const projectCases = page.locator('[data-testid="project-case"]');
   await expect(projectCases).toHaveCount(3);
-  await expect(projectCases.nth(0)).toHaveAttribute('id', 'case-lianlu');
-  await expect(projectCases.nth(0)).toContainText('企微获客链路改造');
+  await expect(projectCases.nth(2)).toHaveAttribute('id', 'case-lianlu');
+  await expect(projectCases.nth(0)).toContainText('AI 广告日报与问题排查');
   await expect(projectCases.nth(1)).toContainText('AI 创意生产与投放验证');
-  await expect(projectCases.nth(2)).toContainText('AI 广告日报与问题排查');
+  await expect(projectCases.nth(2)).toContainText('企微获客链路改造');
 
   for (const projectCase of await projectCases.all()) {
     await expect(projectCase).toContainText('必要背景');
@@ -127,22 +127,22 @@ test('portfolio embeds each Demo URL exactly once beside its project', async ({ 
   await page.goto(`${BASE}/cases.html`);
   const projectCases = page.locator('[data-testid="project-case"]');
 
-  await expect(projectCases.nth(0).locator('a[href="demo-wecom-flow.html"]')).toHaveCount(1);
-  await expect(projectCases.nth(0).locator('a')).toHaveCount(1);
-  await expect(projectCases.nth(1).locator('a[href="demo-creative.html"]')).toHaveCount(1);
-  await expect(projectCases.nth(1).locator('a[href="demo-wukong.html"]')).toHaveCount(1);
+  await expect(projectCases.nth(2).locator('a[href="demo-wecom-flow.html?from=cases"]')).toHaveCount(1);
+  await expect(projectCases.nth(2).locator('a')).toHaveCount(1);
+  await expect(projectCases.nth(1).locator('a[href="demo-creative.html?from=cases"]')).toHaveCount(1);
+  await expect(projectCases.nth(1).locator('a[href="demo-wukong.html?from=cases"]')).toHaveCount(1);
   await expect(projectCases.nth(1).locator('a[href="demo-advideo.html"]')).toHaveCount(0);
   await expect(projectCases.nth(1).locator('a')).toHaveCount(2);
-  await expect(projectCases.nth(2).locator('a[href="demo-shufen.html"]')).toHaveCount(1);
-  await expect(projectCases.nth(2).locator('a[href="demo-eval.html"]')).toHaveCount(1);
-  await expect(projectCases.nth(2).locator('a')).toHaveCount(2);
+  await expect(projectCases.nth(0).locator('a[href="demo-shufen.html?from=cases"]')).toHaveCount(1);
+  await expect(projectCases.nth(0).locator('a[href="demo-eval.html?from=cases"]')).toHaveCount(1);
+  await expect(projectCases.nth(0).locator('a')).toHaveCount(2);
 
-  const published = await page.locator('a[href^="demo-"][href$=".html"]').evaluateAll((links) =>
+  const published = await page.locator('a[href^="demo-"]').evaluateAll((links) =>
     links.map((link) => link.getAttribute('href')).sort()
   );
-  expect(published).toEqual(PUBLIC_DEMOS);
+  expect(published).toEqual(PUBLIC_DEMOS.map(href => `${href}?from=cases`));
   for (const href of PUBLIC_DEMOS) {
-    await expect(page.locator(`a[href="${href}"]`)).toHaveCount(1);
+    await expect(page.locator(`a[href="${href}?from=cases"]`)).toHaveCount(1);
   }
 });
 
@@ -150,20 +150,23 @@ test('portfolio keeps the approved evidence and attribution boundaries', async (
   await page.goto(`${BASE}/cases.html#case-lianlu`);
   const projectCases = page.locator('[data-testid="project-case"]');
 
-  await expect(projectCases.nth(0)).toContainText('中老年主力用户不熟悉这一步');
-  await expect(projectCases.nth(0)).toContainText('曝光-加微率提升 50% 以上');
-  await expect(projectCases.nth(0)).toContainText('曝光-地址率提升 40% 以上');
-  await expect(projectCases.nth(0)).toContainText('广告主后续转化未下降');
-  await expect(projectCases.nth(0)).toContainText('不单独归因为前端链路改造');
+  await expect(projectCases.nth(2)).toContainText('中老年主力用户不熟悉这一步');
+  await expect(projectCases.nth(2)).toContainText('前转效率改善集中在部分行业');
+  await expect(projectCases.nth(2)).toContainText('不熟悉长按扫码的人群加微率提升明显');
+  await expect(projectCases.nth(2)).toContainText('此前项目观测：曝光-加微率提升 50% 以上');
+  await expect(projectCases.nth(2)).toContainText('曝光-加微率提升 50% 以上');
+  await expect(projectCases.nth(2)).toContainText('曝光-地址率提升 40% 以上');
+  await expect(projectCases.nth(2)).toContainText('广告主后续转化未下降');
+  await expect(projectCases.nth(2)).toContainText('不单独归因为前端链路改造');
 
   await expect(projectCases.nth(1)).toContainText('同期同 SKU 全量素材');
   await expect(projectCases.nth(1)).toContainText('CPM 与 CTCVR 综合表现处于中上游');
   await expect(projectCases.nth(1)).toContainText('不包装为头部爆款');
 
-  await expect(projectCases.nth(2)).toContainText('小时级缩短至分钟级');
-  await expect(projectCases.nth(2)).toContainText('每周向产研提交 1 至 2 份 MRD');
-  await expect(projectCases.nth(2)).toContainText('不声明 MRD 的采纳或上线数量');
-  await expect(projectCases.nth(2)).toContainText('不把 Grafana-Lite 的建设归属作为卖点');
+  await expect(projectCases.nth(0)).toContainText('小时级缩短至分钟级');
+  await expect(projectCases.nth(0)).toContainText('每周向产研提交 1 至 2 份 MRD');
+  await expect(projectCases.nth(0)).toContainText('不声明 MRD 的采纳或上线数量');
+  await expect(projectCases.nth(0)).toContainText('不把 Grafana-Lite 的建设归属作为卖点');
 });
 
 test('portfolio removes the duplicate cards, Demo directory, and supplemental cases', async ({ page }) => {

@@ -304,7 +304,7 @@ for (const viewport of [
 
 test('navigation links meet the 44px touch target on mobile', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  const backBox = await page.getByRole('link', { name: '返回企微获客案例' }).boundingBox();
+  const backBox = await page.locator('[data-demo-back]').boundingBox();
   expect(backBox.height).toBeGreaterThanOrEqual(44);
 
   await page.goto(`${BASE}/cases.html#case-lianlu`);
@@ -325,18 +325,18 @@ test('reduced motion keeps the hold indicator aligned with the 800ms state', asy
   await page.keyboard.up('Space');
 });
 
-test('Case 01 links to the demo and preserves the published evidence', async ({ page }) => {
+test('WeCom case links to the demo and preserves the published evidence', async ({ page }) => {
   await page.goto(`${BASE}/cases.html#case-lianlu`);
   const caseOne = page.locator('#case-lianlu');
   await expect(caseOne.getByRole('link', { name: '体验企微链路 Demo' }))
-    .toHaveAttribute('href', 'demo-wecom-flow.html');
+    .toHaveAttribute('href', 'demo-wecom-flow.html?from=cases');
   await expect(caseOne).toContainText('曝光-加微率提升 50% 以上');
   await expect(caseOne).toContainText('曝光-地址率提升 40% 以上');
   await expect(caseOne).toContainText('广告主后续转化未下降');
   await expect(caseOne).toContainText('中老年主力用户不熟悉这一步');
   await expect(caseOne).toContainText('具体承接机制与平台能力配置不对外披露');
 
-  await page.goto(`${BASE}/demo-wecom-flow.html`);
-  await expect(page.getByRole('link', { name: '返回企微获客案例' }))
+  await page.goto(`${BASE}/demo-wecom-flow.html?from=cases`);
+  await expect(page.locator('[data-demo-back]'))
     .toHaveAttribute('href', 'cases.html#case-lianlu');
 });

@@ -92,9 +92,10 @@ const compactFontSizes = {
 };
 
 const projectRails = [
-  { number: '01', category: 'PRODUCT' },
-  { number: '02', category: 'AI CREATIVE' },
-  { number: '03', category: 'ANALYTICS' },
+  { number: '01', category: 'CHANNEL' },
+  { number: '02', category: 'ANALYTICS' },
+  { number: '03', category: 'AI CREATIVE' },
+  { number: '04', category: 'PRODUCT' },
 ];
 
 const projectContracts = {
@@ -106,7 +107,7 @@ const projectContracts = {
         steps: [
           ['用户卡在哪', '原链路要求用户在 H5 长按二维码，再从系统菜单选择识别。中老年主力用户不熟悉这一步，容易中途退出。'],
           ['我怎么改', '重新设计加微承接链路，通过可直接点击的文案与卡片，把陌生的“长按识别”改成更熟悉的点击操作。'],
-          ['上线结果', '曝光-加微率提升 50% 以上，曝光-地址率提升 40% 以上；广告主后续转化未下降，CPM 同步提升。'],
+          ['上线结果', '分行业复盘发现，前转效率改善集中在部分行业，不熟悉长按扫码的人群加微率提升明显。此前项目观测：曝光-加微率提升 50% 以上，曝光-地址率提升 40% 以上；广告主后续转化未下降，CPM 同步提升。'],
         ],
         boundary: '相对提升，绝对值已脱敏',
         links: [
@@ -122,7 +123,7 @@ const projectContracts = {
           ['再做素材', '基于 grok-built 自建悟空 Agent，把剪辑拆成任务卡，用剪辑脚本和自动质检约束非多模态模型；基本能一次生成待抽检成片，再由人工抽检。'],
           ['最后看投放', '新素材的 CPM 与 CTCVR 综合表现，处于同期同 SKU 全量素材中上游；减少人工逐条跟进和重复制作。'],
         ],
-        boundary: '人工判断方向，Agent 负责执行',
+        boundary: '内部运营使用；人工判断方向，Agent 负责执行',
         links: [
           ['demo-creative.html', '体验创意分析 Demo'],
           ['demo-wukong.html', '体验悟空生产流程'],
@@ -136,7 +137,7 @@ const projectContracts = {
           ['运营再核验', '运营进入公司内部大数据看板 Grafana-Lite 下钻，用明细数据确认问题及其影响范围，不直接采用 AI 结论。'],
           ['反馈产研', '把确认的问题和数据证据整理成 MRD，每周向产研提交 1 至 2 份。'],
         ],
-        boundary: 'AI 提供线索，人工核验并最终判断',
+        boundary: '内部运营使用；AI 提供线索，人工核验并最终判断',
         links: [
           ['demo-shufen.html', '体验数分机器人'],
           ['demo-eval.html', '查看 Eval 证据'],
@@ -154,7 +155,7 @@ const projectContracts = {
         steps: [
           ['Where users dropped', 'The old H5 flow required users to long-press a QR code, then choose recognition from the system menu. Many older users were unfamiliar with this step and left before adding WeCom.'],
           ['What I changed', 'I redesigned the WeCom acquisition flow around directly tappable text and card entries, replacing unfamiliar long-press recognition with a familiar tap.'],
-          ['Post-launch result', 'Impression-to-WeCom-contact conversion rose 50%+, and impression-to-address conversion rose 40%+. Downstream advertiser conversion held flat while CPM improved.'],
+          ['Post-launch result', 'Follow-up analysis by industry found front-end conversion gains limited to some industries, with clear improvements in WeCom add rates among users unfamiliar with long-press QR scanning. Earlier project observations: impression-to-WeCom-contact conversion rose 50%+, and impression-to-address conversion rose 40%+. Downstream advertiser conversion held flat while CPM improved.'],
         ],
         boundary: 'Relative lifts; absolute values sanitized',
         links: [
@@ -170,7 +171,7 @@ const projectContracts = {
           ['Produce the creative', 'I built Wukong Agent on grok-built, split editing into task cards, and used editing scripts and automated QA to constrain a non-multimodal model. It generally produced a review-ready cut in one pass, followed by human spot checks.'],
           ['Validate in delivery', 'Combined CPM and CTCVR performance ranked upper-middle within the same-period, same-SKU full creative set, while reducing manual follow-up and repeat production.'],
         ],
-        boundary: 'People set the direction; the Agent executes',
+        boundary: 'Internal operations use; people set the direction, the Agent executes',
         links: [
           ['demo-creative.html', 'Try the creative analysis demo'],
           ['demo-wukong.html', 'Try the Wukong production workflow'],
@@ -184,7 +185,7 @@ const projectContracts = {
           ['Operators verify', 'Operators drill down in the internal big-data dashboard Grafana-Lite to verify the issue and its affected scope from detailed data instead of directly accepting AI conclusions.'],
           ['Feed back to product and engineering', 'I turn confirmed issues and supporting data into one to two MRDs per week for product and engineering review.'],
         ],
-        boundary: 'AI provides leads; people verify and make the final call',
+        boundary: 'Internal operations use; AI provides leads, people verify and make the final call',
         links: [
           ['demo-shufen.html', 'Try the analytics agent'],
           ['demo-eval.html', 'View Eval evidence'],
@@ -200,11 +201,11 @@ async function expectProjectContract(page, file) {
   await page.goto(`${BASE}/${file}`);
   const contract = projectContracts[file];
   const projects = page.locator('.resume-project-list > .resume-project');
-  await expect(projects).toHaveCount(3);
+  await expect(projects).toHaveCount(4);
 
   for (let projectIndex = 0; projectIndex < contract.projects.length; projectIndex += 1) {
-    const project = projects.nth(projectIndex);
     const expectedProject = contract.projects[projectIndex];
+    const project = projects.filter({ has: page.getByRole('heading', { name: expectedProject.title, exact: true }) });
     await expect(project.locator('.resume-project__header h3')).toHaveText(expectedProject.title);
     await expect(project.locator('.resume-project__meta')).toHaveText(expectedProject.role);
     await expect(project.locator('.resume-project__step')).toHaveCount(3);
@@ -220,7 +221,8 @@ async function expectProjectContract(page, file) {
     await expect(project.locator('.resume-project__boundary')).toHaveText(expectedProject.boundary);
     await expect(project.locator('.project-link')).toHaveCount(2);
     for (const [href, label] of expectedProject.links) {
-      await expect(project.locator(`a.project-link[href="${href}"]`)).toHaveText(label);
+      const entryHref = href.startsWith('demo-') ? `${href}?from=${file === 'en.html' ? 'en' : 'resume'}` : href;
+      await expect(project.locator(`a.project-link[href="${entryHref}"]`)).toHaveText(label);
     }
   }
 
@@ -248,7 +250,7 @@ const contactContracts = {
 test('resume pages request the versioned stylesheet for contact UI', async ({ page }) => {
   for (const file of Object.keys(contactContracts)) {
     await gotoWithFonts(page, file);
-    await expect(page.locator('link[rel="stylesheet"]')).toHaveAttribute('href', 'style.css?v=20260820-contact-copy');
+    await expect(page.locator('link[rel="stylesheet"]')).toHaveAttribute('href', 'style.css?v=20261104-contact-alignment');
     const styles = await page.locator('[data-testid="contact-email"]').evaluate((button) => ({
       borderTopWidth: getComputedStyle(button).borderTopWidth,
       display: getComputedStyle(button).display,
@@ -378,11 +380,11 @@ test('WeChat dialog copies the ID and reports clipboard failures honestly', asyn
   await expect(page.locator('#wechatCopy')).toHaveText('Copy manually');
 });
 
-test('Chinese resume presents three product, AI and data projects with WeCom first', async ({ page }) => {
+test('Chinese resume preserves the three existing project narratives', async ({ page }) => {
   await expectProjectContract(page, 'index.html');
 });
 
-test('English resume presents three product, AI and data projects with WeCom first', async ({ page }) => {
+test('English resume preserves the three existing project narratives', async ({ page }) => {
   await expectProjectContract(page, 'en.html');
 });
 
@@ -396,10 +398,37 @@ test('project role metadata meets WCAG AA text contrast', async ({ page }) => {
         foreground: getComputedStyle(meta).color,
       };
     }));
-    expect(samples).toHaveLength(3);
+    expect(samples).toHaveLength(4);
     for (let index = 0; index < samples.length; index += 1) {
       const sample = samples[index];
       expect(contrastRatio(sample.foreground, sample.background), `${file} project ${index + 1} role metadata`).toBeGreaterThanOrEqual(4.5);
+    }
+  }
+});
+
+test('wrapped contact rows vertically align buttons and personal details', async ({ page }) => {
+  for (const width of [360, 390, 520, 640, 768, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const file of ['index.html', 'en.html']) {
+      await gotoWithFonts(page, file);
+      const items = await page.locator('.contact-row > *').evaluateAll((elements) =>
+        elements.map((element) => {
+          const box = element.getBoundingClientRect();
+          const label = element.querySelector('span') || element;
+          const range = document.createRange();
+          range.selectNodeContents(label);
+          const text = range.getBoundingClientRect();
+          return { top: box.top, bottom: box.bottom, center: (text.top + text.bottom) / 2 };
+        })
+      );
+      for (let index = 0; index < items.length; index += 1) {
+        for (const other of items.slice(index + 1)) {
+          const item = items[index];
+          if (Math.min(item.bottom, other.bottom) > Math.max(item.top, other.top)) {
+            expect(Math.abs(item.center - other.center), `${file} at ${width}px`).toBeLessThanOrEqual(1);
+          }
+        }
+      }
     }
   }
 });
@@ -415,22 +444,24 @@ test('resume heroes describe a portfolio of three project cases', async ({ page 
 test('resume positioning and current role use the approved execution-level copy', async ({ page }) => {
   const contracts = {
     'index.html': {
-      tagline: '商业化策略 × AI 产品 · 数据驱动增长 · 5 年广告运营经验',
-      leadStart: '5 年商业化广告运营经验，工作重点从投放执行逐步延伸到策略、数据和产品改造。',
+      tagline: '渠道运营 · 广告商业化 · AI 运营提效 · 5 年广告运营经验',
+      leadStart: '5 年广告商业化运营经验，工作覆盖平台侧代理商运营、投放分析与产品协同。',
       employer: '北京太字流动',
       bullets: [
         '行业商业化运营：负责中医 & 大健康行业从冷启动到规模化，预算占比 5% → 90%+；参与行业商业化策略制定与落地。',
         '客户组合与预算保障：服务 60+ 客户，覆盖兴趣教育与中医大健康，年消耗 3 亿+ 量级；负责行业趋势分析、消耗监控和预算稳定性保障。',
+        '代理商运营：负责代理商预算分配与政策执行跟进，结合投放数据开展经营复盘。',
       ],
       excluded: ['5 年商业化广告操盘者', '5 年商业化操盘', '行业变现操盘', '数据驱动决策', '素材与链路策略'],
     },
     'en.html': {
-      tagline: 'Commercial Strategy × AI Product · Data-Driven Growth · 5 Years in Ad Operations',
-      leadStart: 'Five years in commercial ad operations, with my work extending from campaign execution into strategy, data and product improvements.',
+      tagline: 'Channel Operations · Ad Monetization · AI-Assisted Operations · 5 Years in Ad Operations',
+      leadStart: 'Five years in ad monetization operations, spanning platform-side agency operations, delivery analysis and product collaboration.',
       employer: 'Beijing Taizi Liudong',
       bullets: [
         'Industry commercialization operations: responsible for taking TCM & healthcare from cold start to scale, growing its budget share from 5% to 90%+; participated in commercialization strategy design and execution.',
         'Client portfolio and budget stability: served 60+ clients across interest education and TCM & healthcare at ¥300M+ annual-spend scale; tracked industry trends, spend delivery and budget stability.',
+        'Agency operations: responsible for agency budget allocation and policy-execution follow-up, with business reviews informed by delivery data.',
       ],
       excluded: ['operator', 'owner', 'Data-driven decisions', 'Creative and funnel strategy'],
     },
@@ -442,7 +473,7 @@ test('resume positioning and current role use the approved execution-level copy'
     await expect(page.locator('.lead')).toContainText(contract.leadStart);
     const employer = page.locator('.tl-card').filter({ hasText: contract.employer });
     const bullets = employer.locator('.tl-list li');
-    await expect(bullets).toHaveCount(2);
+    await expect(bullets).toHaveCount(3);
     for (let index = 0; index < contract.bullets.length; index += 1) {
       expect(normalize(await bullets.nth(index).innerText())).toBe(contract.bullets[index]);
     }
@@ -457,24 +488,24 @@ test('portfolio publishes five unique online demos once inside project cases', a
   await expect(page.locator('[data-testid="project-case"]')).toHaveCount(3);
   await expect(page.locator('[data-section="demo-directory"]')).toHaveCount(0);
   const expected = ['demo-creative.html', 'demo-eval.html', 'demo-shufen.html', 'demo-wecom-flow.html', 'demo-wukong.html'];
-  const published = await page.locator('a[href^="demo-"][href$=".html"]').evaluateAll((links) =>
+  const published = await page.locator('a[href^="demo-"]').evaluateAll((links) =>
     links.map((link) => link.getAttribute('href')).sort()
   );
-  expect(published).toEqual(expected);
+  expect(published).toEqual(expected.map(href => `${href}?from=cases`));
   await expect(page.locator('a[href="demo-advideo.html"]')).toHaveCount(0);
   for (const href of expected) {
-    await expect(page.locator(`a[href="${href}"]`)).toHaveCount(1);
+    await expect(page.locator(`a[href="${href}?from=cases"]`)).toHaveCount(1);
   }
 });
 
 test('both resume languages promote WeCom out of work bullets without duplicating it', async ({ page }) => {
   await page.goto(`${BASE}/index.html`);
   await expect(page.locator('li').filter({ hasText: '链路产品优化' })).toHaveCount(0);
-  await expect(page.locator('.resume-project').first()).toContainText('长按二维码');
+  await expect(page.locator('.resume-project').last()).toContainText('长按二维码');
 
   await page.goto(`${BASE}/en.html`);
   await expect(page.locator('li').filter({ hasText: 'Funnel product optimization' })).toHaveCount(0);
-  await expect(page.locator('.resume-project').first()).toContainText('long-press a QR code');
+  await expect(page.locator('.resume-project').last()).toContainText('long-press a QR code');
 });
 
 test('resume keeps contribution claims tied to their verified evidence', async ({ page }) => {
@@ -482,7 +513,7 @@ test('resume keeps contribution claims tied to their verified evidence', async (
     await page.goto(`${BASE}/${file}`);
     await expect(page.locator('.stat')).toHaveCount(0);
     await expect(page.locator('.statwall')).toHaveCount(0);
-    await expect(page.locator('.resume-project-list > .resume-project')).toHaveCount(3);
+    await expect(page.locator('.resume-project-list > .resume-project')).toHaveCount(4);
     await expect(page.locator('body')).toContainText(/5%\s*(?:→|to)\s*90%\+/);
     await expect(page.locator('body')).toContainText(/低于大盘.*14%|较大盘低\s*14%|14%\s*below.*benchmark/i);
     await expect(page.locator('body')).toContainText(/20%\s*(?:→|to)\s*60%/i);
@@ -537,7 +568,7 @@ test('only Baidu and Yike use the compact work layout without losing copy', asyn
     const education = educationSection.locator('.tl-card');
     await expect(current).not.toHaveClass(/tl-card--compact/);
     await expect(education).not.toHaveClass(/tl-card--compact/);
-    await expect(current.locator('.tl-list li')).toHaveCount(2);
+    await expect(current.locator('.tl-list li')).toHaveCount(3);
     const currentGeometry = await current.evaluate((node) => ({
       clientHeight: node.clientHeight,
       clientWidth: node.clientWidth,
@@ -673,9 +704,9 @@ for (const viewport of [
       const contactStatus = page.locator('[data-testid="contact-copy-status"]');
       await expect(contactStatus).toHaveCount(1);
       const projects = page.locator('.resume-project-list > .resume-project');
-      await expect(projects).toHaveCount(3);
+      await expect(projects).toHaveCount(4);
 
-      for (let projectIndex = 0; projectIndex < 3; projectIndex += 1) {
+      for (let projectIndex = 0; projectIndex < projectRails.length; projectIndex += 1) {
         const project = projects.nth(projectIndex);
         const rail = project.locator('.resume-project__rail');
         const expectedRail = projectRails[projectIndex];

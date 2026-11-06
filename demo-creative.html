@@ -48,8 +48,6 @@ button,select{font:inherit}
 button{cursor:pointer}
 button:focus-visible,select:focus-visible{outline:2px solid rgba(214,83,67,.68);outline-offset:2px}
 .topbar{position:sticky;top:0;z-index:20;background:linear-gradient(135deg,#101510 0%,#171e18 60%,#20251f 100%);color:#fff;border-bottom:1px solid rgba(214,83,67,.74);box-shadow:0 14px 34px rgba(13,18,13,.22)}
-.topbar-back{display:inline-block;margin-bottom:8px;color:#d7dfd9;text-decoration:none;font-size:12px;font-weight:850}
-.topbar-back:hover{color:#fff}
 .topbar-inner{max-width:1560px;margin:0 auto;padding:18px 22px;display:grid;grid-template-columns:minmax(280px,1fr) auto;gap:18px;align-items:end}
 .eyebrow{font-size:11px;color:#aebbb2;text-transform:uppercase;letter-spacing:.14em;font-weight:850;margin-bottom:6px}
 h1{margin:0;font-family:"DIN Condensed","Avenir Next Condensed","PingFang SC",sans-serif;font-size:30px;line-height:1.05;letter-spacing:0}
@@ -431,12 +429,19 @@ tr.selected td{background:#fff6ea}
 @media(max-width:1200px){.ab-picker{grid-template-columns:1fr;gap:8px}.ab-vs{margin:0;width:38px;height:38px;font-size:11px}.ab-cards{grid-template-columns:repeat(3,minmax(0,1fr))}.ab-grid{grid-template-columns:1fr}.ab-triad{grid-template-columns:1fr}.ab-heatmap-row,.ab-heatmap-header{grid-template-columns:36px repeat(7,minmax(0,1fr))}.ab-video-pair{grid-template-columns:1fr}}
 @media(max-width:760px){.ab-cards{grid-template-columns:1fr 1fr}.ab-heatmap-row,.ab-heatmap-header{grid-template-columns:32px repeat(7,1fr);font-size:10px}.ab-heatmap-cell{min-height:46px}}
 </style>
+<link rel="stylesheet" href="demo-nav.css">
+<script src="demo-nav.js" defer></script>
 </head>
 <body>
+<nav class="demo-nav" data-demo-nav data-project="creative" aria-label="Demo 导航">
+  <div class="demo-nav__inner">
+    <a href="index.html" data-demo-back>返回简历</a>
+    <div class="demo-nav__exits"><a href="index.html" data-demo-home>简历主页</a><a href="cases.html" data-demo-cases>作品集</a></div>
+  </div>
+</nav>
 <header class="topbar">
   <div class="topbar-inner">
     <div>
-      <a class="topbar-back" href="cases.html">← 返回作品集</a>
       <div class="eyebrow">Creative Segment OS · <span class="version-tag" title="v2.8.0 · 2026-07-17 · 对抗式审查修一批：统一角色分类器 + 修 02 卡双计数 + depthFilter 口径
 • 【根因：两套分类器】03角色热力图/骨架用 JS segmentRole（把 whole+作用描述全塞进正则，转化/承诺/咨询 到处命中 → 69% 段错判福利促单）；
 •     04行动清单用 Python classify_role（只认段名，早已正确）。两套 taxonomy 还不一样（开场悬念 vs 开场钩子…），同工具两套口径

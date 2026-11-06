@@ -1,8 +1,8 @@
-# Kingho Wang — Commercial Strategy / AI Commercialization PM · Resume & Portfolio
+# Kingho Wang — Channel Operations / Ad Monetization · Resume & Portfolio
 
 **English** | [中文](./README.md)
 
-> 5 years in ad monetization (hundreds of millions RMB budget, industry 0→1) + self-built AI / data products. Understands monetization, understands data, builds tools with AI.
+> Five years in ad operations, spanning agency incentives and budget planning, delivery diagnosis, product collaboration and AI-assisted operations. AI tools primarily serve internal operations; external-facing applications are still in development.
 
 **Live site 👉 https://kinghowang.github.io/kingho-resume/**
 
@@ -14,13 +14,13 @@
 
 | Version | Positioning | Link |
 |---|---|---|
-| Home (default) | **Commercial Strategy / AI Commercialization PM** (Chinese) | [index.html](https://kinghowang.github.io/kingho-resume/) |
+| Home (default) | **Channel Operations / Ad Monetization** (Chinese) | [index.html](https://kinghowang.github.io/kingho-resume/) |
 | English | Same résumé, English | [en.html](https://kinghowang.github.io/kingho-resume/en.html) |
 | PDF | One-page version for applications | [Download](https://kinghowang.github.io/kingho-resume/kingho-resume-ai-pm.pdf) |
 
 ## 🚀 Portfolio
 
-**Three complete project cases (in résumé order)**: WeCom acquisition-flow redesign, AI creative production and delivery validation, and AI ad reporting and issue investigation. Each case independently explains the necessary context, key judgment, execution flow, result validation, and attribution boundary.
+**Three complete project cases (in résumé order)**: AI ad reporting and issue investigation, AI creative production and delivery validation, and WeCom acquisition-flow redesign. The agency program is summarized in the résumé without disclosing internal working documents; these three cases follow the relative order of their résumé entries.
 
 The five demos are embedded once at the end of the relevant case, so readers can understand the project before choosing what to try. The table below remains as a direct-access index.
 
@@ -44,7 +44,9 @@ All client / agency names, internal table names, dashboard URLs, and figures are
 
 ## 🛠 Tech
 
-Pure static `HTML / CSS / JS`, zero framework, zero dependencies, hosted on GitHub Pages; demos are single self-contained files (inlined rule engine / Chart.js / retrieval logic). System font stack for fast loading.
+Static `HTML / CSS / JS` with no build step, hosted on GitHub Pages. Each demo keeps its own demonstration logic; shared navigation lives in `demo-nav.css` / `demo-nav.js`, which must be published alongside the pages. System fonts require no online font service.
+
+Demo entry parameters return visitors to the matching resume project or portfolio case, preserving English resume entry points. Direct visits default to the resume. Resume and portfolio links remain available at the top without relying on browser history or referrer data.
 
 ## 📮 Contact
 

@@ -42,7 +42,6 @@
       padding: 18px 28px;
       border-bottom: 1px solid var(--line);
     }
-    .back-link { min-height: 44px; display: inline-flex; align-items: center; color: var(--link); text-decoration: none; font-size: 14px; font-weight: 700; }
     .privacy-note { margin: 0; color: var(--muted); font-size: 12px; }
     .shell { max-width: 1380px; margin: 0 auto; padding: 22px 28px 48px; }
     .intro { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 18px; }
@@ -548,10 +547,17 @@
       .holding .hold-fill { animation-duration: .8s !important; }
     }
   </style>
+  <link rel="stylesheet" href="demo-nav.css">
+  <script src="demo-nav.js" defer></script>
 </head>
 <body>
+  <nav class="demo-nav" data-demo-nav data-project="wecom" aria-label="Demo 导航">
+    <div class="demo-nav__inner">
+      <a href="index.html" data-demo-back>返回简历</a>
+      <div class="demo-nav__exits"><a href="index.html" data-demo-home>简历主页</a><a href="cases.html" data-demo-cases>作品集</a></div>
+    </div>
+  </nav>
   <header class="demo-header">
-    <a class="back-link" href="cases.html#case-lianlu">← 返回企微获客案例</a>
       <p class="privacy-note" data-testid="privacy-note">虚构重绘 · 仅演示用户操作 · 具体机制已隐藏</p>
   </header>
 
