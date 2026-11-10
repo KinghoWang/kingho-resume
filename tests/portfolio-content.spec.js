@@ -151,6 +151,8 @@ test('portfolio keeps the approved evidence and attribution boundaries', async (
   const projectCases = page.locator('[data-testid="project-case"]');
 
   await expect(projectCases.nth(2)).toContainText('中老年主力用户不熟悉这一步');
+  await expect(projectCases.nth(2)).toContainText('项目完成后发现，这一思路与腾讯广告企微获客方案的方向一致');
+  await expect(projectCases.nth(2)).not.toContainText(/参考腾讯|对标腾讯|腾讯广告背书|官方验证/);
   await expect(projectCases.nth(2)).toContainText('点击进入企业微信添加页面');
   await expect(projectCases.nth(2)).toContainText('解决的重点是用户不会操作，而不只是路径长短');
   await expect(projectCases.nth(2)).toContainText('前转效率改善集中在部分行业');
