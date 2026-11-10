@@ -151,8 +151,12 @@ test('portfolio keeps the approved evidence and attribution boundaries', async (
   const projectCases = page.locator('[data-testid="project-case"]');
 
   await expect(projectCases.nth(2)).toContainText('中老年主力用户不熟悉这一步');
+  await expect(projectCases.nth(2)).toContainText('点击进入企业微信添加页面');
+  await expect(projectCases.nth(2)).toContainText('解决的重点是用户不会操作，而不只是路径长短');
   await expect(projectCases.nth(2)).toContainText('前转效率改善集中在部分行业');
   await expect(projectCases.nth(2)).toContainText('不熟悉长按扫码的人群加微率提升明显');
+  await expect(projectCases.nth(2)).toContainText('不外推为所有行业普遍有效');
+  await expect(projectCases.nth(2)).not.toContainText(/客服会话|JSAPI|动态路由|不对外披露|一键加微成功/);
   await expect(projectCases.nth(2)).toContainText('此前项目观测：曝光-加微率提升 50% 以上');
   await expect(projectCases.nth(2)).toContainText('曝光-加微率提升 50% 以上');
   await expect(projectCases.nth(2)).toContainText('曝光-地址率提升 40% 以上');

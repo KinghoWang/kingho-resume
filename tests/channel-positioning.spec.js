@@ -31,6 +31,26 @@ test('channel achievements are not duplicated in employment bullets', async ({ p
   await expect(currentJob).not.toContainText(/春节|备款锁定|ROI|系数|时段|增量口径/);
 });
 
+test('WeCom copy distinguishes entering the add-contact page from successful addition', async ({ page }) => {
+  for (const file of ['index.html', 'en.html']) {
+    await page.goto(`${BASE}/${file}`);
+    const wecom = page.locator('#project-wecom');
+    await expect(wecom).toContainText(file === 'index.html'
+      ? '可点击的文案与卡片替代长按识别及菜单选择'
+      : 'replaces long-press QR recognition and menu selection with tappable text and cards');
+    await expect(wecom).toContainText(file === 'index.html'
+      ? '点击进入企业微信添加页面'
+      : 'Tapping opens the WeCom add-contact page');
+    await expect(wecom).toContainText(file === 'index.html'
+      ? '不外推为所有行业普遍有效'
+      : 'The gains should not be generalized across all industries');
+    await expect(wecom).toContainText(file === 'index.html'
+      ? '此前项目观测：曝光-加微率提升 50% 以上'
+      : 'Earlier project observations: impression-to-WeCom-contact conversion rose 50%+');
+    await expect(wecom).not.toContainText(/客服会话|JSAPI|动态路由|不对外披露|一键加微成功|customer.service conversation|one.tap.*successful/i);
+  }
+});
+
 test('portfolio states the current internal AI usage boundary', () => {
   const html = fs.readFileSync(path.join(__dirname, '..', 'cases.html'), 'utf8');
   expect(html).toContain('主要供内部运营使用');

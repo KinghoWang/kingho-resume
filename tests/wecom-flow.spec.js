@@ -334,7 +334,8 @@ test('WeCom case links to the demo and preserves the published evidence', async 
   await expect(caseOne).toContainText('曝光-地址率提升 40% 以上');
   await expect(caseOne).toContainText('广告主后续转化未下降');
   await expect(caseOne).toContainText('中老年主力用户不熟悉这一步');
-  await expect(caseOne).toContainText('具体承接机制与平台能力配置不对外披露');
+  await expect(caseOne).toContainText('点击进入企业微信添加页面');
+  await expect(caseOne).not.toContainText(/客服会话|具体承接机制|平台能力配置不对外披露/);
 
   await page.goto(`${BASE}/demo-wecom-flow.html?from=cases`);
   await expect(page.locator('[data-demo-back]'))

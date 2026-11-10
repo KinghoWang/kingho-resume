@@ -26,8 +26,12 @@ titles = [
 positions = [text.index(title) for title in titles]
 assert positions == sorted(positions)
 wecom = text[positions[3]:text.index("工作经历")]
+assert "可点击的文案与卡片替代长按识别及菜单选择" in wecom
+assert "点击进入企业微信添加页面" in wecom
 assert "前转效率改善集中在部分行业" in wecom
 assert "不熟悉长按扫码的人群加微率提升明显" in wecom
+assert "不外推为所有行业普遍有效" in wecom
+assert not re.search(r"客服会话|JSAPI|动态路由|不对外披露|一键加微成功", wecom)
 assert "此前观测：北极星曝光-加微率+50%+" in wecom
 assert "曝光-地址率+40%+" in wecom
 assert "广告主后转无损" in wecom
